@@ -1,0 +1,9 @@
+tosca_definitions_version: demaf
+
+relationship_types:
+  demaf.relationships.ConnectsTo:
+    derived_from: demaf.relationships.DependsOn
+    metadata:
+      targetNamespace: "demaf.relationships"
+      abstract: "false"
+      final: "false"

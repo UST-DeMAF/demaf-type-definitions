@@ -1,0 +1,9 @@
+tosca_definitions_version: demaf
+
+node_types:
+  demaf.nodetypes.MessageBroker:
+    derived_from: demaf.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "demaf.nodetypes"
+      abstract: "false"
+      final: "false"

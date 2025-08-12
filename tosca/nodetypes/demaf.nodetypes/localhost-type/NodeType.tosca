@@ -1,0 +1,14 @@
+tosca_definitions_version: demaf
+
+node_types:
+  demaf.nodetypes.localhost-type:
+    derived_from: demaf.nodetypes.BaseType
+    metadata:
+      targetNamespace: "demaf.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      ansible_connection:
+        type: STRING
+        required: false
+        default: 
