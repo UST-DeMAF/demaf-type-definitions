@@ -1,0 +1,79 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.uibackend-SoftwareApplication:
+    derived_from: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort:
+        type: STRING
+        required: true
+        default: 80:8080
+      T2_COMPUTATION_SIMULATOR_ENABLED:
+        type: STRING
+        required: true
+        default: FALSE
+      T2_COMPUTATION_SIMULATOR_URL:
+        type: STRING
+        required: true
+        default: http://computation-simulator/compute
+      T2_RESERVATION_ENDPOINT:
+        type: STRING
+        required: true
+        default: reservation
+      T2_JAEGER_ENABLED:
+        type: STRING
+        required: true
+        default: FALSE
+      T2_JAEGER_HOST:
+        type: STRING
+        required: true
+        default: simplest-agent
+      T2_CART_URL:
+        type: STRING
+        required: true
+        default: http://cart/cart
+      T2_ORCHESTRATOR_URL:
+        type: STRING
+        required: true
+        default: http://orchestrator/order
+      T2_INVENTORY_URL:
+        type: STRING
+        required: true
+        default: http://inventory/inventory
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 8080
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

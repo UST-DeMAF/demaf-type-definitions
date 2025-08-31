@@ -1,0 +1,111 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.injector-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 9090:9090
+      exposedPort_https:
+        type: STRING
+        required: true
+        default: 443:4000
+      ACTORS_SERVICE_NAME:
+        type: STRING
+        required: true
+        default: placement
+      DAPR_SENTRY_ADDRESS:
+        type: STRING
+        required: true
+        default: dapr-sentry.default.svc.cluster.local:443
+      SIDECAR_RUN_AS_NON_ROOT:
+        type: STRING
+        required: true
+        default: true
+      SIDECAR_READ_ONLY_ROOT_FILESYSTEM:
+        type: STRING
+        required: true
+        default: true
+      ENABLE_K8S_DOWNWARD_APIS:
+        type: STRING
+        required: true
+        default: false
+      SIDECAR_IMAGE:
+        type: STRING
+        required: true
+        default: ghcr.io/dapr/daprd:1.15.6
+      ACTORS_SERVICE_ADDRESS:
+        type: STRING
+        required: true
+        default: dapr-placement-server:50005
+      DAPR_TRUST_ANCHORS_FILE:
+        type: STRING
+        required: true
+        default: /var/run/secrets/dapr.io/tls/ca.crt
+      KUBE_CLUSTER_DOMAIN:
+        type: STRING
+        required: true
+        default: cluster.local
+      DAPR_CONTROL_PLANE_TRUST_DOMAIN:
+        type: STRING
+        required: true
+        default: cluster.local
+      SIDECAR_IMAGE_PULL_POLICY:
+        type: STRING
+        required: true
+        default: IfNotPresent
+      IGNORE_ENTRYPOINT_TOLERATIONS:
+        type: STRING
+        required: true
+        default: [{\"effect\":\"NoSchedule\",\"key\":\"alibabacloud.com/eci\"},{\"effect\":\"NoSchedule\",\"key\":\"azure.com/aci\"},{\"effect\":\"NoSchedule\",\"key\":\"aws\"},{\"effect\":\"NoSchedule\",\"key\":\"huawei.com/cci\"}]
+      SIDECAR_DROP_ALL_CAPABILITIES:
+        type: STRING
+        required: true
+        default: false
+      ACTORS_ENABLED:
+        type: STRING
+        required: true
+        default: true
+      containerPort_https:
+        type: INTEGER
+        required: true
+        default: 4000
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 9090
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

@@ -1,0 +1,115 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.modulith-SoftwareApplication:
+    derived_from: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort:
+        type: STRING
+        required: true
+        default: 80:8080
+      T2_COMPUTATION_SIMULATOR_ENABLED:
+        type: STRING
+        required: true
+        default: FALSE
+      T2_INVENTORY_SET_UNITS_TO_MAX:
+        type: STRING
+        required: true
+        default: FALSE
+      T2_CART_TTL:
+        type: STRING
+        required: true
+        default: 0
+      SPRING_DATASOURCE_USERNAME:
+        type: STRING
+        required: true
+        default: postgres
+      SPRING_DATASOURCE_URL:
+        type: STRING
+        required: true
+        default: jdbc:postgresql://postgres:5432/postgres
+      T2_COMPUTATION_SIMULATOR_PI_TOTAL_POINTS:
+        type: STRING
+        required: true
+        default: 1000000000
+      SPRING_PROFILES_ACTIVE:
+        type: STRING
+        required: true
+        default: prod
+      T2_PAYMENT_PROVIDER_ENABLED:
+        type: STRING
+        required: true
+        default: TRUE
+      T2_PAYMENT_PROVIDER_DUMMY_URL:
+        type: STRING
+        required: true
+        default: http://creditinstitute/pay
+      MONGO_HOST:
+        type: STRING
+        required: true
+        default: mongo-mongodb
+      T2_INVENTORY_SIZE:
+        type: STRING
+        required: true
+        default: 25
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+        type: STRING
+        required: true
+        default: org.postgresql.Driver
+      SPRING_DATASOURCE_PASSWORD:
+        type: STRING
+        required: true
+        default: postgres
+      T2_INVENTORY_TTL:
+        type: STRING
+        required: true
+        default: 0
+      T2_INVENTORY_TASKRATE:
+        type: STRING
+        required: true
+        default: 0
+      T2_PAYMENT_PROVIDER_TIMEOUT:
+        type: STRING
+        required: true
+        default: 5
+      T2_CART_TASKRATE:
+        type: STRING
+        required: true
+        default: 0
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 8080
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

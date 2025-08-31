@@ -1,0 +1,75 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.scheduler-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_api_50006:50006:
+        type: STRING
+        required: true
+        default: 50006:50006
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 9090:9090
+      exposedPort_etcd-peer:
+        type: STRING
+        required: true
+        default: 2380:2380
+      exposedPort_etcd-client:
+        type: STRING
+        required: true
+        default: 2379:2379
+      exposedPort_api_443:50006:
+        type: STRING
+        required: true
+        default: 443:50006
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 50006
+      containerPort_etcd-client:
+        type: INTEGER
+        required: true
+        default: 2379
+      containerPort_etcd-peer:
+        type: INTEGER
+        required: true
+        default: 2380
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 9090
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

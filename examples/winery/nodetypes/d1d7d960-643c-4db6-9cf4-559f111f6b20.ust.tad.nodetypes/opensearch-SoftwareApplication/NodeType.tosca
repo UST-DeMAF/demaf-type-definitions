@@ -1,0 +1,87 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.opensearch-SoftwareApplication:
+    derived_from: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      cluster.name:
+        type: STRING
+        required: false
+        default: demo-cluster
+      node.name:
+        type: STRING
+        required: false
+        default: demo-node
+      bootstrap.memory_lock:
+        type: STRING
+        required: false
+        default: true
+      discovery.type:
+        type: STRING
+        required: false
+        default: single-node
+      OPENSEARCH_JAVA_OPTS:
+        type: STRING
+        required: false
+        default: -Xms300m -Xmx300m
+      DISABLE_INSTALL_DEMO_CONFIG:
+        type: STRING
+        required: false
+        default: true
+      DISABLE_SECURITY_PLUGIN:
+        type: STRING
+        required: false
+        default: true
+      memory:
+        type: STRING
+        required: false
+        default: 1000
+      name:
+        type: STRING
+        required: false
+        default: opensearch
+      network_mode:
+        type: STRING
+        required: false
+        default: bridge
+      restart:
+        type: STRING
+        required: false
+        default: unless-stopped
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: opentelemetry-demo
+      ports.internal:
+        type: STRING
+        required: false
+        default: 9200
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

@@ -1,0 +1,83 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.redis-DatabaseSystem:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-redis:
+        type: STRING
+        required: true
+        default: 6379:6379
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: false
+      REDIS_REPLICATION_MODE:
+        type: STRING
+        required: true
+        default: master
+      ALLOW_EMPTY_PASSWORD:
+        type: STRING
+        required: true
+        default: no
+      REDIS_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/redis/secrets/redis-password
+      REDIS_PORT:
+        type: STRING
+        required: true
+        default: 6379
+      REDIS_TLS_ENABLED:
+        type: STRING
+        required: true
+        default: no
+      containerPort_redis:
+        type: INTEGER
+        required: true
+        default: 6379
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+      REDIS_MASTER_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/redis/secrets/redis-password
+      REDIS_MASTER_PORT_NUMBER:
+        type: STRING
+        required: true
+        default: 6379
+      REDIS_MASTER_HOST:
+        type: STRING
+        required: true
+        default: redis-master-0.redis-headless.default.svc.cluster.local
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

@@ -1,0 +1,77 @@
+strict digraph {
+    graph [dpi=96.0, ratio="compress", size="16.4,8.89", splines="ortho"]
+    node [fixedsize="true", shape="polygon",  width=2.34, height=0.63]
+    edge [label="HostedOn", style="solid"]
+    "defaultKubernetesCluster"
+    "opentelemetry-demo-jaeger"
+    "opentelemetry-demo-imageprovider"
+    "opentelemetry-demo-prometheus-server"
+    "opentelemetry-demo-frontendproxy"
+    "opentelemetry-demo-shippingservice"
+    "opentelemetry-demo-cartservice"
+    "otel-demo-opensearch"
+    "opentelemetry-demo-productcatalogservice"
+    "opentelemetry-demo-checkoutservice"
+    "opentelemetry-demo-valkey"
+    "opentelemetry-demo-otelcol"
+    "opentelemetry-demo-currencyservice"
+    "opentelemetry-demo-frontend"
+    "opentelemetry-demo-kafka"
+    "opentelemetry-demo-quoteservice"
+    "opentelemetry-demo-emailservice"
+    "opentelemetry-demo-flagd"
+    "opentelemetry-demo-adservice"
+    "opentelemetry-demo-recommendationservice"
+    "opentelemetry-demo-accountingservice"
+    "opentelemetry-demo-paymentservice"
+    "opentelemetry-demo-frauddetectionservice"
+    "opentelemetry-demo-grafana"
+    "opentelemetry-demo-loadgenerator"
+    "opentelemetry-demo-mongo"
+    "opentelemetry-demo-valkey" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-frontendproxy" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-paymentservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-flagd" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-accountingservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-frauddetectionservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-productcatalogservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-adservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-recommendationservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-otelcol" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-mongo" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-grafana" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-frontend" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-quoteservice" -> "defaultKubernetesCluster"
+    "otel-demo-opensearch" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-loadgenerator" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-currencyservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-shippingservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-checkoutservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-kafka" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-prometheus-server" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-cartservice" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-jaeger" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-imageprovider" -> "defaultKubernetesCluster"
+    "opentelemetry-demo-emailservice" -> "defaultKubernetesCluster"
+    subgraph {
+        edge [label="ConnectsTo", style="dashed"]
+        "opentelemetry-demo-frontend" -> { "opentelemetry-demo-currencyservice" "opentelemetry-demo-otelcol" "opentelemetry-demo-cartservice" "opentelemetry-demo-shippingservice" "opentelemetry-demo-adservice" "opentelemetry-demo-recommendationservice" "opentelemetry-demo-productcatalogservice" "opentelemetry-demo-checkoutservice" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-quoteservice" -> "opentelemetry-demo-otelcol"
+        "opentelemetry-demo-loadgenerator" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-frontendproxy" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-frontendproxy" -> { "opentelemetry-demo-frontend" "opentelemetry-demo-imageprovider" "opentelemetry-demo-jaeger" "opentelemetry-demo-otelcol" "opentelemetry-demo-loadgenerator" "opentelemetry-demo-grafana" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-paymentservice" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-flagd" -> "opentelemetry-demo-otelcol"
+        "opentelemetry-demo-accountingservice" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-kafka" } [weight=2]
+        "opentelemetry-demo-frauddetectionservice" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-flagd" "opentelemetry-demo-kafka" } [weight=2]
+        "opentelemetry-demo-currencyservice" -> "opentelemetry-demo-otelcol"
+        "opentelemetry-demo-productcatalogservice" -> { "opentelemetry-demo-mongo" "opentelemetry-demo-otelcol" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-shippingservice" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-quoteservice" } [weight=2]
+        "opentelemetry-demo-checkoutservice" -> { "opentelemetry-demo-currencyservice" "opentelemetry-demo-otelcol" "opentelemetry-demo-paymentservice" "opentelemetry-demo-cartservice" "opentelemetry-demo-shippingservice" "opentelemetry-demo-emailservice" "opentelemetry-demo-productcatalogservice" "opentelemetry-demo-flagd" "opentelemetry-demo-kafka" } [weight=2]
+        "opentelemetry-demo-adservice" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-recommendationservice" -> { "opentelemetry-demo-productcatalogservice" "opentelemetry-demo-otelcol" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-kafka" -> "opentelemetry-demo-otelcol"
+        "opentelemetry-demo-cartservice" -> { "opentelemetry-demo-otelcol" "opentelemetry-demo-valkey" "opentelemetry-demo-flagd" } [weight=2]
+        "opentelemetry-demo-imageprovider" -> "opentelemetry-demo-otelcol"
+        "opentelemetry-demo-emailservice" -> "opentelemetry-demo-otelcol"
+    }
+}

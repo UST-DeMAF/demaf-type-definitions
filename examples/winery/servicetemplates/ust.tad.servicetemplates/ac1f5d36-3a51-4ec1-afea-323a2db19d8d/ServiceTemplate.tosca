@@ -1,0 +1,219 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: "ust.tad.servicetemplates"
+  name: ac1f5d36-3a51-4ec1-afea-323a2db19d8d
+topology_template:
+  node_templates:
+    MicrosoftAzure_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.CloudProvider
+      metadata:
+        x: '504'
+        y: '499'
+        displayName: MicrosoftAzure
+    t2store_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.azurerm_kubernetes_cluster
+      metadata:
+        x: '504'
+        y: '377'
+        displayName: t2store
+      properties:
+        tags: {"Environment":"Production"}
+        location: West Europe
+        name: t2store-aks1
+        resource_group_name: t2store-resources
+        dns_prefix: t2storeaks1
+        identity.type: SystemAssigned
+        default_node_pool.node_count: 1
+        default_node_pool.name: default_node
+        default_node_pool.vm_size: standard_b4ms
+      requirements:
+        - host:
+            node: MicrosoftAzure_0
+            relationship: t2store_HostedOn_MicrosoftAzure
+            capability: feature
+    creditinstitute_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.creditinstitute-SoftwareApplication
+      metadata:
+        x: '655'
+        y: '254'
+        displayName: creditinstitute
+      properties:
+        exposedPort: 80:8080
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: creditinstitute_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/creditinstitute:main:
+          type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/creditinstitute
+    postgres-postgres-storage-volume_1:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.Storage
+      metadata:
+        x: '999'
+        y: '100'
+        displayName: postgres-postgres-storage-volume
+      properties:
+        storage_size: 1Gi
+      requirements:
+        - attach:
+            node: postgres_0
+            relationship: postgres-postgres-storage-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: postgres-postgres-storage-volume_HostedOn_t2store
+            capability: feature
+    backend_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.modulith-SoftwareApplication
+      metadata:
+        x: '655'
+        y: '100'
+        displayName: backend
+      properties:
+        exposedPort: 80:8080
+        T2_COMPUTATION_SIMULATOR_ENABLED: FALSE
+        T2_INVENTORY_SET_UNITS_TO_MAX: FALSE
+        T2_CART_TTL: 0
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+        T2_COMPUTATION_SIMULATOR_PI_TOTAL_POINTS: 1000000000
+        SPRING_PROFILES_ACTIVE: prod
+        T2_PAYMENT_PROVIDER_ENABLED: TRUE
+        T2_PAYMENT_PROVIDER_DUMMY_URL: http://creditinstitute/pay
+        MONGO_HOST: mongo-mongodb
+        T2_INVENTORY_SIZE: 25
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+        SPRING_DATASOURCE_PASSWORD: postgres
+        T2_INVENTORY_TTL: 0
+        T2_INVENTORY_TASKRATE: 0
+        T2_PAYMENT_PROVIDER_TIMEOUT: 5
+        T2_CART_TASKRATE: 0
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: postgres_0
+            relationship: backend_ConnectsTo_postgres
+            capability: feature
+        - connect:
+            node: creditinstitute_0
+            relationship: backend_ConnectsTo_creditinstitute
+            capability: feature
+        - connect:
+            node: mongo-mongodb_0
+            relationship: backend_ConnectsTo_mongo-mongodb
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: backend_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/modulith:main:
+          type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/modulith
+    mongo-mongodb_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.mongodb-DatabaseSystem
+      metadata:
+        x: '279'
+        y: '254'
+        displayName: mongo-mongodb
+      properties:
+        exposedPort_mongodb: 27017:27017
+        MONGODB_DISABLE_SYSTEM_LOG: no
+        ALLOW_EMPTY_PASSWORD: yes
+        BITNAMI_DEBUG: false
+        MONGODB_PORT_NUMBER: 27017
+        MONGODB_SYSTEM_LOG_VERBOSITY: 0
+        MONGODB_ENABLE_IPV6: no
+        MONGODB_DISABLE_JAVASCRIPT: no
+        MONGODB_ENABLE_JOURNAL: yes
+        MONGODB_ENABLE_DIRECTORY_PER_DB: no
+        containerPort_mongodb: 27017
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: mongo-mongodb_HostedOn_t2store
+            capability: feature
+      artifacts:
+        docker.io/bitnami/mongodb:8.0.11-debian-12-r0:
+          type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/mongodb
+    mongo-mongodb-datadir-volume_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.Storage
+      metadata:
+        x: '112'
+        y: '100'
+        displayName: mongo-mongodb-datadir-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: mongo-mongodb_0
+            relationship: mongo-mongodb-datadir-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: mongo-mongodb-datadir-volume_HostedOn_t2store
+            capability: feature
+    postgres_0:
+      type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.postgres-DatabaseSystem
+      metadata:
+        x: '903'
+        y: '254'
+        displayName: postgres
+      properties:
+        exposedPort: 5432:5432
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        containerPort: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: postgres_HostedOn_t2store
+            capability: feature
+      artifacts:
+        postgres:12.16-bullseye:
+          type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/_/postgres
+  relationship_templates: 
+    t2store_HostedOn_MicrosoftAzure:
+      type: tosca.relationships.HostedOn
+    mongo-mongodb_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    mongo-mongodb-datadir-mount:
+      type: tosca.relationships.AttachesTo
+    mongo-mongodb-datadir-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    backend_ConnectsTo_postgres:
+      type: tosca.relationships.ConnectsTo
+    backend_ConnectsTo_creditinstitute:
+      type: tosca.relationships.ConnectsTo
+    backend_ConnectsTo_mongo-mongodb:
+      type: tosca.relationships.ConnectsTo
+    backend_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    creditinstitute_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    postgres_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    postgres-postgres-storage-mount:
+      type: tosca.relationships.AttachesTo
+    postgres-postgres-storage-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn

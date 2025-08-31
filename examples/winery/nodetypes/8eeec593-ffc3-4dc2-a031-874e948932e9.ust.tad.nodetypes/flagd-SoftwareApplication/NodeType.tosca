@@ -1,0 +1,56 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes.flagd-SoftwareApplication:
+    derived_from: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      FLAGD_OTEL_COLLECTOR_URI:
+        type: STRING
+        required: false
+        default: otelcol:4317
+      OTEL_RESOURCE_ATTRIBUTES:
+        type: STRING
+        required: false
+        default: service.name=flagd,service.namespace=opentelemetry-demo,service.version=1.11.1
+      OTEL_SERVICE_NAME:
+        type: STRING
+        required: false
+        default: flagd
+      FLAGD_METRICS_EXPORTER:
+        type: STRING
+        required: false
+        default: otel
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      file:
+        type: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.artifacttypes.file
+        description: ""
+        deploy_path: ""
+        file: ""
+      docker_image:
+        type: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

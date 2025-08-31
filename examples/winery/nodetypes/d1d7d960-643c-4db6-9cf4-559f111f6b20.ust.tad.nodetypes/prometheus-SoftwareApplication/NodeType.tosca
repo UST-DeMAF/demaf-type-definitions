@@ -1,0 +1,75 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.prometheus-SoftwareApplication:
+    derived_from: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      command:
+        type: STRING
+        required: false
+        default: --web.console.templates=/etc/prometheus/consoles --web.console.libraries=/etc/prometheus/console_libraries --storage.tsdb.retention.time=1h --config.file=/etc/prometheus/prometheus-config.yaml --storage.tsdb.path=/prometheus --web.enable-lifecycle --web.route-prefix=/ --enable-feature=exemplar-storage --enable-feature=otlp-write-receiver
+      memory:
+        type: STRING
+        required: false
+        default: 300
+      network_mode:
+        type: STRING
+        required: false
+        default: bridge
+      restart:
+        type: STRING
+        required: false
+        default: unless-stopped
+      name:
+        type: STRING
+        required: false
+        default: prometheus
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: opentelemetry-demo
+      ports.internal:
+        type: STRING
+        required: false
+        default: 9090
+      ports.external:
+        type: STRING
+        required: false
+        default: 9090
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /etc/prometheus/prometheus-config.yaml
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: abspath("files/prometheus/prometheus-config.yaml")
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

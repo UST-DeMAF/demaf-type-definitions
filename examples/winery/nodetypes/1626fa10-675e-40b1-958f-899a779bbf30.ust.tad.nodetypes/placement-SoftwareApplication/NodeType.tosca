@@ -1,0 +1,63 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.placement-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 9090:9090
+      exposedPort_api:
+        type: STRING
+        required: true
+        default: 50005:50005
+      exposedPort_raft-node:
+        type: STRING
+        required: true
+        default: 8201:8201
+      containerPort_raft-node:
+        type: INTEGER
+        required: true
+        default: 8201
+      containerPort_api:
+        type: INTEGER
+        required: true
+        default: 50005
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 9090
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

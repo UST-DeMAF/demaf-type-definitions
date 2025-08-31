@@ -1,0 +1,67 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.flagd-SoftwareApplication:
+    derived_from: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-service:
+        type: STRING
+        required: true
+        default: 8013:8013
+      OTEL_RESOURCE_ATTRIBUTES:
+        type: STRING
+        required: true
+        default: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+      FLAGD_METRICS_EXPORTER:
+        type: STRING
+        required: true
+        default: otel
+      OTEL_COLLECTOR_NAME:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-otelcol
+      FLAGD_OTEL_COLLECTOR_URI:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-otelcol:4317
+      OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+        type: STRING
+        required: true
+        default: cumulative
+      containerPort_service:
+        type: INTEGER
+        required: true
+        default: 8013
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

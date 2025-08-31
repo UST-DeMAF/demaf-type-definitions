@@ -1,0 +1,1223 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: "ust.tad.servicetemplates"
+  name: d1d7d960-643c-4db6-9cf4-559f111f6b20
+topology_template:
+  node_templates:
+    recommendationservice_16:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1257'
+        y: '546'
+        displayName: recommendationservice
+      properties:
+        memory: 500
+        depends_on: [productcatalogservice,otelcol,flagd]
+        name: recommendation-service
+        RECOMMENDATION_SERVICE_PORT: 9001
+        PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        OTEL_PYTHON_LOG_CORRELATION: true
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: recommendationservice
+        PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
+        network_mode: bridge
+        hostname: recommendationservice
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 9001
+      requirements:
+        - connect:
+            node: productcatalogservice_6
+            relationship: recommendationservice_ConnectsTo_productcatalogservice
+            capability: feature
+        - connect:
+            node: otelcol_0
+            relationship: recommendationservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: recommendationservice_ConnectsTo_flagd
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: recommendationservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-recommendationservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-recommendationservice
+    accountingservice_12:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3607'
+        y: '715'
+        displayName: accountingservice
+      properties:
+        KAFKA_SERVICE_ADDR: kafka:9092
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4318
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: Cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: accountingservice
+        depends_on: [otelcol,kafka]
+        hostname: accountingservice
+        name: accounting-service
+        memory: 120
+        network_mode: bridge
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: accountingservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: kafka_3
+            relationship: accountingservice_ConnectsTo_kafka
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: accountingservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-accountingservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-accountingservice
+    emailservice_10:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2285'
+        y: '630'
+        displayName: emailservice
+      properties:
+        memory: 100
+        name: email-service
+        network_mode: bridge
+        hostname: emailservice
+        APP_ENV: production
+        EMAIL_SERVICE_PORT: 6060
+        OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otelcol:4318/v1/traces
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: emailservice
+        restart: unless-stopped
+        depends_on: [otelcol]
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 6060
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: emailservice_ConnectsTo_otelcol
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: emailservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-emailservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-emailservice
+    productcatalogservice_6:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1369'
+        y: '715'
+        displayName: productcatalogservice
+      properties:
+        depends_on: [otelcol,flagd,mongodb-catalog]
+        hostname: productcatalogservice
+        PRODUCT_CATALOG_SERVICE_PORT: 3550
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: productcatalogservice
+        MONGO_USERNAME: mongo
+        MONGO_PASSWORD: mongo_product_catalog
+        MONGO_HOSTNAME: mongo
+        MONGO_PORT: 27017
+        memory: 20
+        name: product-catalog-service
+        network_mode: bridge
+        restart: unless-stopped
+        ports.internal: 3550
+        networks_advanced.name: opentelemetry-demo
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: productcatalogservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: productcatalogservice_ConnectsTo_flagd
+            capability: feature
+        - connect:
+            node: mongodb-catalog_0
+            relationship: productcatalogservice_ConnectsTo_mongodb-catalog
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: productcatalogservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice
+    frauddetectionservice_4:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3009'
+        y: '715'
+        displayName: frauddetectionservice
+      properties:
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        KAFKA_SERVICE_ADDR: kafka:9092
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4318
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: Cumulative
+        OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL_SPAN_ATTRIBUTES: true
+        OTEL_INSTRUMENTATION_MESSAGING_EXPERIMENTAL_RECEIVE_TELEMETRY_ENABLED: true
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: frauddetectionservice
+        depends_on: [otelcol,flagd,kafka]
+        memory: 300
+        name: frauddetection-service
+        network_mode: bridge
+        hostname: frauddetectionservice
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: frauddetectionservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: frauddetectionservice_ConnectsTo_flagd
+            capability: feature
+        - connect:
+            node: kafka_3
+            relationship: frauddetectionservice_ConnectsTo_kafka
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: frauddetectionservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-frauddetectionservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-frauddetectionservice
+    frontendproxy_15:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '804'
+        y: '100'
+        displayName: frontendproxy
+      properties:
+        hostname: frontendproxy
+        depends_on: [frontend,loadgenerator,jaeger,otelcol,imageprovider,flagd,grafana]
+        FRONTEND_PORT: 8080
+        FRONTEND_HOST: frontend
+        LOCUST_WEB_HOST: loadgenerator
+        LOCUST_WEB_PORT: 8089
+        GRAFANA_SERVICE_PORT: 3000
+        GRAFANA_SERVICE_HOST: grafana
+        JAEGER_SERVICE_PORT: 16686
+        JAEGER_SERVICE_HOST: jaeger
+        OTEL_COLLECTOR_HOST: otelcol
+        IMAGE_PROVIDER_HOST: imageprovider
+        IMAGE_PROVIDER_PORT: 8081
+        OTEL_COLLECTOR_PORT_GRPC: 4317
+        OTEL_COLLECTOR_PORT_HTTP: 4318
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        ENVOY_PORT: 8080
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        name: frontend-proxy
+        network_mode: bridge
+        restart: unless-stopped
+        memory: 50
+        ports.internal: 1000
+        ports.external: 1000
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 8080
+        ports.external: 8080
+      requirements:
+        - connect:
+            node: frontend_7
+            relationship: frontendproxy_ConnectsTo_frontend
+            capability: feature
+        - connect:
+            node: loadgenerator_11
+            relationship: frontendproxy_ConnectsTo_loadgenerator
+            capability: feature
+        - connect:
+            node: jaeger_0
+            relationship: frontendproxy_ConnectsTo_jaeger
+            capability: feature
+        - connect:
+            node: otelcol_0
+            relationship: frontendproxy_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: imageprovider_2
+            relationship: frontendproxy_ConnectsTo_imageprovider
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: frontendproxy_ConnectsTo_flagd
+            capability: feature
+        - connect:
+            node: grafana_0
+            relationship: frontendproxy_ConnectsTo_grafana
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: frontendproxy_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-frontendproxy:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-frontendproxy
+    loadgenerator_11:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '472'
+        y: '715'
+        displayName: loadgenerator
+      properties:
+        depends_on: [frontendproxy,otelcol,flagd]
+        memory: 1000
+        name: load-generator
+        LOCUST_WEB_PORT: 8089
+        LOCUST_USERS: 10
+        LOCUST_HOST: http://frontend-proxy:8080
+        LOCUST_HEADLESS: false
+        LOCUST_AUTOSTART: true
+        LOCUST_BROWSER_TRAFFIC_ENABLED: true
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: loadgenerator
+        PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
+        LOCUST_WEB_HOST: 0.0.0.0
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        hostname: loadgenerator
+        network_mode: bridge
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 8089
+      requirements:
+        - connect:
+            node: frontendproxy_15
+            relationship: loadgenerator_ConnectsTo_frontendproxy
+            capability: feature
+        - connect:
+            node: otelcol_0
+            relationship: loadgenerator_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: loadgenerator_ConnectsTo_flagd
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: loadgenerator_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-loadgenerator:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-loadgenerator
+    adservice_1:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '821'
+        y: '715'
+        displayName: adservice
+      properties:
+        AD_SERVICE_PORT: 9555
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4318
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: Cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_LOGS_EXPORTER: otlp
+        OTEL_SERVICE_NAME: adservice
+        name: ad-service
+        memory: 300
+        network_mode: bridge
+        depends_on: [otelcol,flagd]
+        hostname: adservice
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 9555
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: adservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: adservice_ConnectsTo_flagd
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: adservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-adservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-adservice
+    shippingservice_5:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2899'
+        y: '546'
+        displayName: shippingservice
+      properties:
+        name: shipping-service
+        memory: 20
+        network_mode: bridge
+        SHIPPING_SERVICE_PORT: 50050
+        QUOTE_SERVICE_ADDR: http://quoteservice:8090
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: shippingservice
+        hostname: shippingservice
+        restart: unless-stopped
+        depends_on: [otelcol,quoteservice]
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 50050
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: shippingservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: quoteservice_14
+            relationship: shippingservice_ConnectsTo_quoteservice
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: shippingservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-shippingservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-shippingservice
+    currencyservice_8:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2351'
+        y: '546'
+        displayName: currencyservice
+      properties:
+        name: currency-service
+        CURRENCY_SERVICE_PORT: 7001
+        VERSION: 1.11.1
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: currencyservice
+        hostname: currencyservice
+        memory: 20
+        network_mode: bridge
+        restart: unless-stopped
+        depends_on: [otelcol]
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 7001
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: currencyservice_ConnectsTo_otelcol
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: currencyservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-currencyservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-currencyservice
+    prometheus_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.prometheus-SoftwareApplication
+      metadata:
+        x: '3460'
+        y: '1024'
+        displayName: prometheus
+      properties:
+        command: --web.console.templates=/etc/prometheus/consoles --web.console.libraries=/etc/prometheus/console_libraries --storage.tsdb.retention.time=1h --config.file=/etc/prometheus/prometheus-config.yaml --storage.tsdb.path=/prometheus --web.enable-lifecycle --web.route-prefix=/ --enable-feature=exemplar-storage --enable-feature=otlp-write-receiver
+        memory: 300
+        network_mode: bridge
+        restart: unless-stopped
+        name: prometheus
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 9090
+        ports.external: 9090
+        volumes.container_path: /etc/prometheus/prometheus-config.yaml
+        volumes.host_path: abspath("files/prometheus/prometheus-config.yaml")
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: prometheus_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        quay.io/prometheus/prometheus:v2.54.1:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: quay.io/prometheus/prometheus:v2.54.1
+    valkey-cart_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.valkey-DatabaseSystem
+      metadata:
+        x: '2949'
+        y: '869'
+        displayName: valkey-cart
+      properties:
+        user: valkey
+        memory: 20
+        network_mode: bridge
+        name: valkey-cart
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 6379
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: valkey-cart_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        valkey/valkey:8.0-alpine:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/valkey/valkey
+    paymentservice_13:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1917'
+        y: '715'
+        displayName: paymentservice
+      properties:
+        name: payment-service
+        PAYMENT_SERVICE_PORT: 50051
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: paymentservice
+        memory: 120
+        network_mode: bridge
+        depends_on: [otelcol,flagd]
+        hostname: paymentservice
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 50051
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: paymentservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: paymentservice_ConnectsTo_flagd
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: paymentservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-paymentservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-paymentservice
+    quoteservice_14:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3257'
+        y: '715'
+        displayName: quoteservice
+      properties:
+        name: quote-service
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4318
+        OTEL_PHP_AUTOLOAD_ENABLED: true
+        QUOTE_SERVICE_PORT: 8090
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: quoteservice
+        OTEL_PHP_INTERNAL_METRICS_ENABLED: true
+        memory: 40
+        network_mode: bridge
+        hostname: quoteservice
+        restart: unless-stopped
+        depends_on: [otelcol]
+        ports.internal: 8090
+        networks_advanced.name: opentelemetry-demo
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: quoteservice_ConnectsTo_otelcol
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: quoteservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-quoteservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-quoteservice
+    cartservice_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2613'
+        y: '715'
+        displayName: cartservice
+      properties:
+        CART_SERVICE_PORT: 7070
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        VALKEY_ADDR: valkey-cart:6379
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: cartservice
+        ASPNETCORE_URLS: http://*:7070
+        name: cart-service
+        hostname: cartservice
+        network_mode: bridge
+        memory: 160
+        restart: unless-stopped
+        depends_on: [valkey-cart,otelcol,flagd]
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 7070
+      requirements:
+        - connect:
+            node: valkey-cart_0
+            relationship: cartservice_ConnectsTo_valkey-cart
+            capability: feature
+        - connect:
+            node: otelcol_0
+            relationship: cartservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: cartservice_ConnectsTo_flagd
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: cartservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-cartservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-cartservice
+    mongodb-catalog_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.mongo-DatabaseSystem
+      metadata:
+        x: '1275'
+        y: '869'
+        displayName: mongodb-catalog
+      properties:
+        hostname: mongo
+        name: mongodb-catalog
+        memory: 256
+        network_mode: bridge
+        MONGO_INITDB_ROOT_USERNAME: mongo
+        MONGO_INITDB_ROOT_PASSWORD: mongo_product_catalog
+        restart: unless-stopped
+        healthcheck.timeout: 10s
+        healthcheck.interval: 5s
+        healthcheck.test: echo db.runCommand(ping).ok | mongosh localhost:27017/test --quiet
+        healthcheck.start_period: 10s
+        healthcheck.retries: 10
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 27017
+        ports.external: 27017
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: mongodb-catalog_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        mongo:8.0.0-rc9:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/_/mongo
+    DefaultDockerEngine_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.DockerEngine
+      metadata:
+        x: '2493'
+        y: '1146'
+        displayName: DefaultDockerEngine
+    jaeger_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.all-in-one-SoftwareApplication
+      metadata:
+        x: '1097'
+        y: '1024'
+        displayName: jaeger
+      properties:
+        memory: 400
+        METRICS_STORAGE_TYPE: prometheus
+        command: --memory.max-traces=5000 --query.base-path=/jaeger/ui --prometheus.server-url=http://prometheus:9090 --prometheus.query.normalize-calls=true --prometheus.query.normalize-duration=true
+        network_mode: bridge
+        name: jaeger
+        restart: unless-stopped
+        ports.internal: 16686
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 4317
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: jaeger_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        jaegertracing/all-in-one:1.60:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/jaegertracing/all-in-one
+    otelcol_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.opentelemetry-collector-contrib-SoftwareApplication
+      metadata:
+        x: '2109'
+        y: '869'
+        displayName: otelcol
+      properties:
+        memory: 200
+        user: 0:0
+        network_mode: bridge
+        command: --config=/etc/otelcol-config.yml --config=/etc/otelcol-config-extras.yml
+        name: otel-col
+        hostname: otelcol
+        restart: unless-stopped
+        depends_on: [jaeger]
+        ENVOY_PORT: 8080
+        OTEL_COLLECTOR_HOST: otelcol
+        OTEL_COLLECTOR_PORT_GRPC: 4317
+        OTEL_COLLECTOR_PORT_HTTP: 4318
+        networks_advanced.name: opentelemetry-demo
+        volumes.container_path: /var/run/docker.sock
+        volumes.host_path: /var/run/docker.sock
+        ports.internal: 4317
+        ports.internal: 4318
+        volumes.container_path: /etc/otelcol-config-extras.yml
+        volumes.host_path: abspath("files/otelcollector/otelcol-config-extras.yml")
+        volumes.container_path: /etc/otelcol-config.yml
+        volumes.host_path: abspath("files/otelcollector/otelcol-config.yml")
+      requirements:
+        - connect:
+            node: jaeger_0
+            relationship: otelcol_ConnectsTo_jaeger
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: otelcol_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        otel/opentelemetry-collector-contrib:0.108.0:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/otel/opentelemetry-collector-contrib
+    imageprovider_2:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '804'
+        y: '307'
+        displayName: imageprovider
+      properties:
+        name: image-provider
+        IMAGE_PROVIDER_PORT: 8081
+        OTEL_COLLECTOR_HOST: otelcol
+        OTEL_COLLECTOR_PORT_GRPC: 4317
+        OTEL_SERVICE_NAME: imageprovider
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        memory: 120
+        network_mode: bridge
+        restart: unless-stopped
+        depends_on: [otelcol]
+        hostname: imageprovider
+        ports.internal: 8081
+        networks_advanced.name: opentelemetry-demo
+      requirements:
+        - connect:
+            node: otelcol_0
+            relationship: imageprovider_ConnectsTo_otelcol
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: imageprovider_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-imageprovider:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-imageprovider
+    grafana_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.grafana-SoftwareApplication
+      metadata:
+        x: '187'
+        y: '222'
+        displayName: grafana
+      properties:
+        GF_INSTALL_PLUGINS: grafana-opensearch-datasource
+        memory: 100
+        name: grafana
+        network_mode: bridge
+        restart: unless-stopped
+        ports.internal: 3000
+        networks_advanced.name: opentelemetry-demo
+        volumes.host_path: abspath("files/grafana/provisioning/")
+        volumes.container_path: /etc/grafana/provisioning/
+        volumes.host_path: abspath("files/grafana/grafana.ini")
+        volumes.container_path: /etc/grafana/grafana.ini
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: grafana_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        grafana/grafana:11.2.0:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/grafana/grafana
+    checkoutservice_9:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2201'
+        y: '391'
+        displayName: checkoutservice
+      properties:
+        hostname: checkoutservice
+        name: checkout-service
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        CHECKOUT_SERVICE_PORT: 5050
+        CART_SERVICE_ADDR: cartservice:7070
+        CURRENCY_SERVICE_ADDR: currencyservice:7001
+        EMAIL_SERVICE_ADDR: http://emailservice:6060
+        PAYMENT_SERVICE_ADDR: paymentservice:50051
+        PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+        SHIPPING_SERVICE_ADDR: shippingservice:50050
+        KAFKA_SERVICE_ADDR: kafka:9092
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: Cumulative
+        OTEL_RESOURCE_ATTRIBUTES: opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: checkoutservice
+        memory: 20
+        network_mode: bridge
+        depends_on: [cartservice,currencyservice,emailservice,paymentservice,productcatalogservice,shippingservice,otelcol,flagd,kafka]
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 5050
+      requirements:
+        - connect:
+            node: cartservice_0
+            relationship: checkoutservice_ConnectsTo_cartservice
+            capability: feature
+        - connect:
+            node: currencyservice_8
+            relationship: checkoutservice_ConnectsTo_currencyservice
+            capability: feature
+        - connect:
+            node: emailservice_10
+            relationship: checkoutservice_ConnectsTo_emailservice
+            capability: feature
+        - connect:
+            node: paymentservice_13
+            relationship: checkoutservice_ConnectsTo_paymentservice
+            capability: feature
+        - connect:
+            node: productcatalogservice_6
+            relationship: checkoutservice_ConnectsTo_productcatalogservice
+            capability: feature
+        - connect:
+            node: shippingservice_5
+            relationship: checkoutservice_ConnectsTo_shippingservice
+            capability: feature
+        - connect:
+            node: otelcol_0
+            relationship: checkoutservice_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: checkoutservice_ConnectsTo_flagd
+            capability: feature
+        - connect:
+            node: kafka_3
+            relationship: checkoutservice_ConnectsTo_kafka
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: checkoutservice_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-checkoutservice:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-checkoutservice
+    opensearch_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.opensearch-SoftwareApplication
+      metadata:
+        x: '3708'
+        y: '1024'
+        displayName: opensearch
+      properties:
+        cluster.name: demo-cluster
+        node.name: demo-node
+        bootstrap.memory_lock: true
+        discovery.type: single-node
+        OPENSEARCH_JAVA_OPTS: -Xms300m -Xmx300m
+        DISABLE_INSTALL_DEMO_CONFIG: true
+        DISABLE_SECURITY_PLUGIN: true
+        memory: 1000
+        name: opensearch
+        network_mode: bridge
+        restart: unless-stopped
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 9200
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: opensearch_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        opensearchproject/opensearch:2.16.0:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/opensearchproject/opensearch
+    flagd_0:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.flagd-SoftwareApplication
+      metadata:
+        x: '787'
+        y: '869'
+        displayName: flagd
+      properties:
+        command: start --uri file:./etc/flagd/demo.flagd.json
+        FLAGD_OTEL_COLLECTOR_URI: otelcol:4317
+        FLAGD_METRICS_EXPORTER: otel
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: flagd
+        network_mode: bridge
+        memory: 50
+        name: flagd
+        networks_advanced.name: opentelemetry-demo
+        ports.internal: 8013
+        volumes.host_path: abspath("files/flagd")
+        volumes.container_path: /etc/flagd
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: flagd_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-feature/flagd:v0.11.2:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-feature/flagd:v0.11.2
+    kafka_3:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3457'
+        y: '869'
+        displayName: kafka
+      properties:
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4318
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        OTEL_SERVICE_NAME: kafka
+        KAFKA_HEAP_OPTS: -Xmx400m -Xms400m
+        memory: 600
+        name: kafka
+        network_mode: bridge
+        restart: unless-stopped
+        ports.internal: 9092
+        networks_advanced.name: opentelemetry-demo
+        healthcheck.timeout: 10s
+        healthcheck.interval: 5s
+        healthcheck.test: nc -z kafka 9092
+        healthcheck.start_period: 10s
+        healthcheck.retries: 10
+      requirements:
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: kafka_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-kafka:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-kafka
+    frontend_7:
+      type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1457'
+        y: '222'
+        displayName: frontend
+      properties:
+        PORT: 8080
+        FRONTEND_ADDR: frontend:8080
+        AD_SERVICE_ADDR: adservice:9555
+        CART_SERVICE_ADDR: cartservice:7070
+        CHECKOUT_SERVICE_ADDR: checkoutservice:5050
+        CURRENCY_SERVICE_ADDR: currencyservice:7001
+        PRODUCT_CATALOG_SERVICE_ADDR: productcatalogservice:3550
+        RECOMMENDATION_SERVICE_ADDR: recommendationservice:9001
+        SHIPPING_SERVICE_ADDR: shippingservice:50050
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://otelcol:4317
+        OTEL_RESOURCE_ATTRIBUTES: service.namespace=opentelemetry-demo,service.version=1.11.1
+        ENV_PLATFORM: local
+        OTEL_SERVICE_NAME: frontend
+        PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://localhost:8080/otlp-http/v1/traces
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        WEB_OTEL_SERVICE_NAME: frontend-web
+        OTEL_COLLECTOR_HOST: otelcol
+        FLAGD_HOST: flagd
+        FLAGD_PORT: 8013
+        name: frontend
+        memory: 250
+        depends_on: [adservice,cartservice,checkoutservice,currencyservice,productcatalogservice,recommendationservice,shippingservice,otelcol,flagd]
+        network_mode: bridge
+        restart: unless-stopped
+        ports.internal: 8080
+        networks_advanced.name: opentelemetry-demo
+      requirements:
+        - connect:
+            node: adservice_1
+            relationship: frontend_ConnectsTo_adservice
+            capability: feature
+        - connect:
+            node: cartservice_0
+            relationship: frontend_ConnectsTo_cartservice
+            capability: feature
+        - connect:
+            node: checkoutservice_9
+            relationship: frontend_ConnectsTo_checkoutservice
+            capability: feature
+        - connect:
+            node: currencyservice_8
+            relationship: frontend_ConnectsTo_currencyservice
+            capability: feature
+        - connect:
+            node: productcatalogservice_6
+            relationship: frontend_ConnectsTo_productcatalogservice
+            capability: feature
+        - connect:
+            node: recommendationservice_16
+            relationship: frontend_ConnectsTo_recommendationservice
+            capability: feature
+        - connect:
+            node: shippingservice_5
+            relationship: frontend_ConnectsTo_shippingservice
+            capability: feature
+        - connect:
+            node: otelcol_0
+            relationship: frontend_ConnectsTo_otelcol
+            capability: feature
+        - connect:
+            node: flagd_0
+            relationship: frontend_ConnectsTo_flagd
+            capability: feature
+        - host:
+            node: DefaultDockerEngine_0
+            relationship: frontend_HostedOn_DefaultDockerEngine
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-frontend:
+          type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-frontend
+  relationship_templates: 
+    cartservice_ConnectsTo_valkey-cart:
+      type: tosca.relationships.ConnectsTo
+    cartservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    cartservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    adservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    adservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    imageprovider_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    frauddetectionservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    frauddetectionservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    frauddetectionservice_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    shippingservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    shippingservice_ConnectsTo_quoteservice:
+      type: tosca.relationships.ConnectsTo
+    productcatalogservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    productcatalogservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    productcatalogservice_ConnectsTo_mongodb-catalog:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_adservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_cartservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_checkoutservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_currencyservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_productcatalogservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_recommendationservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_shippingservice:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    frontend_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    otelcol_ConnectsTo_jaeger:
+      type: tosca.relationships.ConnectsTo
+    currencyservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_cartservice:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_currencyservice:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_emailservice:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_paymentservice:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_productcatalogservice:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_shippingservice:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    checkoutservice_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    emailservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    loadgenerator_ConnectsTo_frontendproxy:
+      type: tosca.relationships.ConnectsTo
+    loadgenerator_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    loadgenerator_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    accountingservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    accountingservice_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    paymentservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    paymentservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    quoteservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_frontend:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_loadgenerator:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_jaeger:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_imageprovider:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    frontendproxy_ConnectsTo_grafana:
+      type: tosca.relationships.ConnectsTo
+    recommendationservice_ConnectsTo_productcatalogservice:
+      type: tosca.relationships.ConnectsTo
+    recommendationservice_ConnectsTo_otelcol:
+      type: tosca.relationships.ConnectsTo
+    recommendationservice_ConnectsTo_flagd:
+      type: tosca.relationships.ConnectsTo
+    cartservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    flagd_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    adservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    mongodb-catalog_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    imageprovider_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    kafka_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    frauddetectionservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    shippingservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    jaeger_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    productcatalogservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    grafana_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    frontend_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    otelcol_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    prometheus_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    currencyservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    checkoutservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    opensearch_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    emailservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    loadgenerator_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    accountingservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    paymentservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    quoteservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    frontendproxy_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    recommendationservice_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn
+    valkey-cart_HostedOn_DefaultDockerEngine:
+      type: tosca.relationships.HostedOn

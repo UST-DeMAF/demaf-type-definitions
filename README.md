@@ -5,6 +5,8 @@ In this repository we provide the definitions of abstract component and relation
 1. [EDMM Yaml files](edmm/)
 1. or corresponding definitions of [TOSCA node types and relationship types](tosca/)
 
+
+
 The DeMAF Type Definitions are loosely based on a mix of
 
 1. the types defined in the [EDMM modeling repository](<https://github.com/UST-EDMM/modeling-repository>)
@@ -12,6 +14,11 @@ The DeMAF Type Definitions are loosely based on a mix of
 [GitHub Repository](<https://github.com/OpenTOSCA/tosca-normative-types-repository>)
 
 The DeMAF Type Definitions may be modified and extended in the future.
+
+## Examples
+
+We provide some examples of technology-specific deployment models and their corresponding EDMM model using the type system in [examples](examples/).
+In examples/winery we provide TOSCA models generated from the EDMM models for importing and viewing them in Eclipse Winery.
 
 ## Component Types
 

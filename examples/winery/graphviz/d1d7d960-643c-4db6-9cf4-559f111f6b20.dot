@@ -1,0 +1,76 @@
+strict digraph {
+    graph [dpi=96.0, ratio="compress", size="16.4,8.89", splines="ortho"]
+    node [fixedsize="true", shape="polygon",  width=2.34, height=0.63]
+    edge [label="HostedOn", style="solid"]
+    "cartservice"
+    "flagd"
+    "adservice"
+    "mongodb-catalog"
+    "imageprovider"
+    "kafka"
+    "frauddetectionservice"
+    "shippingservice"
+    "jaeger"
+    "productcatalogservice"
+    "grafana"
+    "frontend"
+    "otelcol"
+    "prometheus"
+    "currencyservice"
+    "checkoutservice"
+    "opensearch"
+    "emailservice"
+    "loadgenerator"
+    "accountingservice"
+    "paymentservice"
+    "quoteservice"
+    "frontendproxy"
+    "recommendationservice"
+    "valkey-cart"
+    "DefaultDockerEngine"
+    "recommendationservice" -> "DefaultDockerEngine"
+    "accountingservice" -> "DefaultDockerEngine"
+    "emailservice" -> "DefaultDockerEngine"
+    "productcatalogservice" -> "DefaultDockerEngine"
+    "frauddetectionservice" -> "DefaultDockerEngine"
+    "frontendproxy" -> "DefaultDockerEngine"
+    "loadgenerator" -> "DefaultDockerEngine"
+    "adservice" -> "DefaultDockerEngine"
+    "shippingservice" -> "DefaultDockerEngine"
+    "currencyservice" -> "DefaultDockerEngine"
+    "prometheus" -> "DefaultDockerEngine"
+    "valkey-cart" -> "DefaultDockerEngine"
+    "paymentservice" -> "DefaultDockerEngine"
+    "quoteservice" -> "DefaultDockerEngine"
+    "cartservice" -> "DefaultDockerEngine"
+    "mongodb-catalog" -> "DefaultDockerEngine"
+    "jaeger" -> "DefaultDockerEngine"
+    "otelcol" -> "DefaultDockerEngine"
+    "imageprovider" -> "DefaultDockerEngine"
+    "grafana" -> "DefaultDockerEngine"
+    "checkoutservice" -> "DefaultDockerEngine"
+    "opensearch" -> "DefaultDockerEngine"
+    "flagd" -> "DefaultDockerEngine"
+    "kafka" -> "DefaultDockerEngine"
+    "frontend" -> "DefaultDockerEngine"
+    subgraph {
+        edge [label="ConnectsTo", style="dashed"]
+        "recommendationservice" -> { "productcatalogservice" "otelcol" "flagd" } [weight=2]
+        "accountingservice" -> { "otelcol" "kafka" } [weight=2]
+        "emailservice" -> "otelcol"
+        "productcatalogservice" -> { "otelcol" "flagd" "mongodb-catalog" } [weight=2]
+        "frauddetectionservice" -> { "otelcol" "flagd" "kafka" } [weight=2]
+        "frontendproxy" -> { "frontend" "loadgenerator" "jaeger" "otelcol" "imageprovider" "flagd" "grafana" } [weight=2]
+        "loadgenerator" -> { "frontendproxy" "otelcol" "flagd" } [weight=2]
+        "otelcol" -> "jaeger"
+        "adservice" -> { "otelcol" "flagd" } [weight=2]
+        "imageprovider" -> "otelcol"
+        "shippingservice" -> { "otelcol" "quoteservice" } [weight=2]
+        "checkoutservice" -> { "cartservice" "currencyservice" "emailservice" "paymentservice" "productcatalogservice" "shippingservice" "otelcol" "flagd" "kafka" } [weight=2]
+        "currencyservice" -> "otelcol"
+        "paymentservice" -> { "otelcol" "flagd" } [weight=2]
+        "quoteservice" -> "otelcol"
+        "frontend" -> { "adservice" "cartservice" "checkoutservice" "currencyservice" "productcatalogservice" "recommendationservice" "shippingservice" "otelcol" "flagd" } [weight=2]
+        "cartservice" -> { "valkey-cart" "otelcol" "flagd" } [weight=2]
+    }
+}

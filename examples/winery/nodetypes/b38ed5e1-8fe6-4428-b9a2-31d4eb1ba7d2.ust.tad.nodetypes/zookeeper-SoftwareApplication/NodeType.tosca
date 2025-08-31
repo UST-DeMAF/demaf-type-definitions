@@ -1,0 +1,143 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.zookeeper-SoftwareApplication:
+    derived_from: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-follower:
+        type: STRING
+        required: true
+        default: 2888:2888
+      exposedPort_tcp-election:
+        type: STRING
+        required: true
+        default: 3888:3888
+      exposedPort_tcp-client:
+        type: STRING
+        required: true
+        default: 2181:2181
+      ZOO_4LW_COMMANDS_WHITELIST:
+        type: STRING
+        required: true
+        default: srvr, mntr, ruok
+      ALLOW_ANONYMOUS_LOGIN:
+        type: STRING
+        required: true
+        default: yes
+      ZOO_SYNC_LIMIT:
+        type: STRING
+        required: true
+        default: 5
+      ZOO_MAX_SESSION_TIMEOUT:
+        type: STRING
+        required: true
+        default: 40000
+      ZOO_TICK_TIME:
+        type: STRING
+        required: true
+        default: 2000
+      ZOO_ENABLE_QUORUM_AUTH:
+        type: STRING
+        required: true
+        default: no
+      ZOO_PRE_ALLOC_SIZE:
+        type: STRING
+        required: true
+        default: 65536
+      ZOO_SERVERS:
+        type: STRING
+        required: true
+        default: kafka-zookeeper-0.kafka-zookeeper-headless.default.svc.cluster.local:2888:3888::1
+      ZOO_AUTOPURGE_RETAIN_COUNT:
+        type: STRING
+        required: true
+        default: 3
+      ZOO_SNAPCOUNT:
+        type: STRING
+        required: true
+        default: 100000
+      ZOO_LOG_LEVEL:
+        type: STRING
+        required: true
+        default: ERROR
+      ZOO_MAX_CLIENT_CNXNS:
+        type: STRING
+        required: true
+        default: 60
+      ZOO_INIT_LIMIT:
+        type: STRING
+        required: true
+        default: 10
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: false
+      ZOO_ENABLE_AUTH:
+        type: STRING
+        required: true
+        default: no
+      ZOO_DATA_LOG_DIR:
+        type: STRING
+        required: true
+        default: 
+      ZOO_LISTEN_ALLIPS_ENABLED:
+        type: STRING
+        required: true
+        default: no
+      ZOO_PORT_NUMBER:
+        type: STRING
+        required: true
+        default: 2181
+      ZOO_AUTOPURGE_INTERVAL:
+        type: STRING
+        required: true
+        default: 0
+      ZOO_HEAP_SIZE:
+        type: STRING
+        required: true
+        default: 1024
+      containerPort_client:
+        type: INTEGER
+        required: true
+        default: 2181
+      containerPort_election:
+        type: INTEGER
+        required: true
+        default: 3888
+      containerPort_follower:
+        type: INTEGER
+        required: true
+        default: 2888
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

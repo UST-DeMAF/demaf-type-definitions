@@ -1,0 +1,83 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.graphql_gateway-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      FLASHCARD_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/flashcard-service/method/graphql
+      MEDIA_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/media-service/method/graphql
+      JWKS_URL:
+        type: STRING
+        required: true
+        default: http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs
+      GATEWAY_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      SKILLLEVEL_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/skilllevel-service/method/graphql
+      QUIZ_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/quiz-service/method/graphql
+      USER_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/user-service/method/graphql
+      REWARD_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/reward-service/method/graphql
+      GATEWAY_HOSTNAME:
+        type: STRING
+        required: true
+        default: 0.0.0.0
+      CONTENT_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+      COURSE_SERVICE_URL:
+        type: STRING
+        required: true
+        default: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

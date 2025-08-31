@@ -1,0 +1,65 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.azurerm_kubernetes_cluster:
+    derived_from: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.KubernetesCluster
+    metadata:
+      targetNamespace: "b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      tags:
+        type: STRING
+        required: false
+        default: {"Environment":"Production"}
+      location:
+        type: STRING
+        required: false
+        default: West Europe
+      name:
+        type: STRING
+        required: false
+        default: t2store-aks1
+      resource_group_name:
+        type: STRING
+        required: false
+        default: t2store-resources
+      dns_prefix:
+        type: STRING
+        required: false
+        default: t2storeaks1
+      identity.type:
+        type: STRING
+        required: false
+        default: SystemAssigned
+      default_node_pool.node_count:
+        type: STRING
+        required: false
+        default: 1
+      default_node_pool.name:
+        type: STRING
+        required: false
+        default: default_node
+      default_node_pool.vm_size:
+        type: STRING
+        required: false
+        default: standard_b4ms
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation

@@ -1,0 +1,1137 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: "ust.tad.servicetemplates"
+  name: 5d75233b-f638-4348-b32b-52debe404d29
+topology_template:
+  node_templates:
+    opentelemetry-demo-valkey_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.valkey-DatabaseSystem
+      metadata:
+        x: '3677'
+        y: '725'
+        displayName: opentelemetry-demo-valkey
+      properties:
+        exposedPort_valkey: 6379:6379
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_valkey: 6379
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-valkey_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        valkey/valkey:7.2-alpine:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/valkey/valkey
+    defaultKubernetesCluster_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.DefaultKubernetesCluster
+      metadata:
+        x: '1315'
+        y: '1002'
+        displayName: defaultKubernetesCluster
+    opentelemetry-demo-frontendproxy_1:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1772'
+        y: '100'
+        displayName: opentelemetry-demo-frontendproxy
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        GRAFANA_SERVICE_PORT: 80
+        OTEL_COLLECTOR_PORT_GRPC: 4317
+        JAEGER_SERVICE_PORT: 16686
+        FRONTEND_PORT: 8080
+        FRONTEND_HOST: opentelemetry-demo-frontend
+        ENVOY_PORT: 8080
+        IMAGE_PROVIDER_HOST: opentelemetry-demo-imageprovider
+        LOCUST_WEB_PORT: 8089
+        OTEL_COLLECTOR_PORT_HTTP: 4318
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        JAEGER_SERVICE_HOST: opentelemetry-demo-jaeger-query
+        OTEL_COLLECTOR_HOST: opentelemetry-demo-otelcol
+        LOCUST_WEB_HOST: opentelemetry-demo-loadgenerator
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        GRAFANA_SERVICE_HOST: opentelemetry-demo-grafana
+        IMAGE_PROVIDER_PORT: 8081
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-frontend_7
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-frontend
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-imageprovider_0
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-imageprovider
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-jaeger_0
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-jaeger
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-loadgenerator_16
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-loadgenerator
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-grafana_0
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-grafana
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-frontendproxy_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-frontendproxy:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-frontendproxy
+    opentelemetry-demo-paymentservice_14:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2936'
+        y: '556'
+        displayName: opentelemetry-demo-paymentservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        PAYMENT_SERVICE_PORT: 8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-paymentservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-paymentservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-paymentservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-paymentservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-paymentservice
+    opentelemetry-demo-flagd_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.flagd-SoftwareApplication
+      metadata:
+        x: '2833'
+        y: '725'
+        displayName: opentelemetry-demo-flagd
+      properties:
+        exposedPort_tcp-service: 8013:8013
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_METRICS_EXPORTER: otel
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_OTEL_COLLECTOR_URI: opentelemetry-demo-otelcol:4317
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8013
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-flagd_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-flagd_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-feature/flagd:v0.11.2:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-feature/flagd:v0.11.2
+    opentelemetry-demo-accountingservice_13:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1797'
+        y: '556'
+        displayName: opentelemetry-demo-accountingservice
+      properties:
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        KAFKA_SERVICE_ADDR: opentelemetry-demo-kafka:9092
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-accountingservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-kafka_8
+            relationship: opentelemetry-demo-accountingservice_ConnectsTo_opentelemetry-demo-kafka
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-accountingservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-accountingservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-accountingservice
+    opentelemetry-demo-frauddetectionservice_15:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2244'
+        y: '556'
+        displayName: opentelemetry-demo-frauddetectionservice
+      properties:
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4318
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        KAFKA_SERVICE_ADDR: opentelemetry-demo-kafka:9092
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-kafka_8
+            relationship: opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-kafka
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-frauddetectionservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-frauddetectionservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-frauddetectionservice
+    opentelemetry-demo-productcatalogservice_4:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '704'
+        y: '556'
+        displayName: opentelemetry-demo-productcatalogservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        MONGO_PASSWORD: mongo_product_catalog
+        MONGO_HOST: opentelemetry-demo-mongo
+        MONGO_PORT: 27017
+        PRODUCT_CATALOG_SERVICE_PORT: 8080
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        MONGO_USERNAME: mongo
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-mongo_0
+            relationship: opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-mongo
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-productcatalogservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice
+    opentelemetry-demo-adservice_11:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1549'
+        y: '556'
+        displayName: opentelemetry-demo-adservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4318
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        AD_SERVICE_PORT: 8080
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_LOGS_EXPORTER: otlp
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-adservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-adservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-adservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-adservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-adservice
+    opentelemetry-demo-recommendationservice_12:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '860'
+        y: '401'
+        displayName: opentelemetry-demo-recommendationservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        PRODUCT_CATALOG_SERVICE_ADDR: opentelemetry-demo-productcatalogservice:8080
+        OTEL_PYTHON_LOG_CORRELATION: true
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        RECOMMENDATION_SERVICE_PORT: 8080
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-productcatalogservice_4
+            relationship: opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-productcatalogservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-recommendationservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-recommendationservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-recommendationservice
+    opentelemetry-demo-otelcol_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.opentelemetry-collector-contrib-SoftwareApplication
+      metadata:
+        x: '1952'
+        y: '879'
+        displayName: opentelemetry-demo-otelcol
+      properties:
+        exposedPort_metrics: 8888:8888
+        exposedPort_jaeger-grpc: 14250:14250
+        exposedPort_jaeger-thrift: 14268:14268
+        exposedPort_otlp-http: 4318:4318
+        exposedPort_jaeger-compact: 6831:6831
+        exposedPort_zipkin: 9411:9411
+        exposedPort_prometheus: 9464:9464
+        exposedPort_otlp: 4317:4317
+        GOMEMLIMIT: 160MiB
+        containerPort_prometheus: 9464
+        containerPort_jaeger-compact: 6831
+        containerPort_jaeger-thrift: 14268
+        containerPort_zipkin: 9411
+        containerPort_jaeger-grpc: 14250
+        containerPort_otlp: 4317
+        containerPort_metrics: 8888
+        containerPort_otlp-http: 4318
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-otelcol_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        otel/opentelemetry-collector-contrib:0.105.0:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/otel/opentelemetry-collector-contrib
+    opentelemetry-demo-mongo_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.mongo-DatabaseSystem
+      metadata:
+        x: '520'
+        y: '725'
+        displayName: opentelemetry-demo-mongo
+      properties:
+        exposedPort_plaintext: 27017:27017
+        MONGO_INITDB_ROOT_PASSWORD: mongo_product_catalog
+        MONGO_INITDB_ROOT_USERNAME: mongo
+        containerPort_plaintext: 27017
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-mongo_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        mongo:8.0.0-rc9:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/_/mongo
+    opentelemetry-demo-grafana_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.grafana-SoftwareApplication
+      metadata:
+        x: '3733'
+        y: '232'
+        displayName: opentelemetry-demo-grafana
+      properties:
+        exposedPort_service: 80:3000
+        GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+        GF_PATHS_PLUGINS: /var/lib/grafana/plugins
+        GF_PATHS_DATA: /var/lib/grafana/
+        GF_PATHS_LOGS: /var/log/grafana
+        containerPort_grafana: 3000
+        containerPort_gossip-tcp: 9094
+        containerPort_gossip-udp: 9094
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-grafana_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/grafana/grafana:11.1.0:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/grafana/grafana
+    opentelemetry-demo-frontend_7:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1772'
+        y: '232'
+        displayName: opentelemetry-demo-frontend
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        WEB_OTEL_SERVICE_NAME: frontend-web
+        FRONTEND_PORT: 8080
+        CURRENCY_SERVICE_ADDR: opentelemetry-demo-currencyservice:8080
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://localhost:8080/otlp-http/v1/traces
+        FRONTEND_ADDR: :8080
+        CART_SERVICE_ADDR: opentelemetry-demo-cartservice:8080
+        SHIPPING_SERVICE_ADDR: opentelemetry-demo-shippingservice:8080
+        AD_SERVICE_ADDR: opentelemetry-demo-adservice:8080
+        RECOMMENDATION_SERVICE_ADDR: opentelemetry-demo-recommendationservice:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        PRODUCT_CATALOG_SERVICE_ADDR: opentelemetry-demo-productcatalogservice:8080
+        OTEL_COLLECTOR_HOST: opentelemetry-demo-otelcol
+        CHECKOUT_SERVICE_ADDR: opentelemetry-demo-checkoutservice:8080
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-currencyservice_6
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-currencyservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-cartservice_3
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-cartservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-shippingservice_2
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-shippingservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-adservice_11
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-adservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-recommendationservice_12
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-recommendationservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-productcatalogservice_4
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-productcatalogservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-checkoutservice_5
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-checkoutservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-frontend_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-frontend:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-frontend
+    opentelemetry-demo-quoteservice_9:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1247'
+        y: '725'
+        displayName: opentelemetry-demo-quoteservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        QUOTE_SERVICE_PORT: 8080
+        OTEL_PHP_AUTOLOAD_ENABLED: true
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4318
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-quoteservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-quoteservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-quoteservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-quoteservice
+    otel-demo-opensearch_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.opensearch-SoftwareApplication
+      metadata:
+        x: '3829'
+        y: '879'
+        displayName: otel-demo-opensearch
+      properties:
+        exposedPort_http: 9200:9200
+        exposedPort_transport: 9300:9300
+        exposedPort_metrics: 9600:9600
+        discovery.seed_hosts: opensearch-cluster-master-headless
+        network.host: 0.0.0.0
+        node.roles: master,ingest,data,remote_cluster_client,
+        cluster.name: demo-cluster
+        DISABLE_INSTALL_DEMO_CONFIG: true
+        discovery.type: single-node
+        bootstrap.memory_lock: true
+        DISABLE_SECURITY_PLUGIN: true
+        OPENSEARCH_JAVA_OPTS: -Xms300m -Xmx300m
+        containerPort_transport: 9300
+        containerPort_metrics: 9600
+        containerPort_http: 9200
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: otel-demo-opensearch_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        opensearchproject/opensearch:2.15.0:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/opensearchproject/opensearch
+    opentelemetry-demo-loadgenerator_16:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3584'
+        y: '556'
+        displayName: opentelemetry-demo-loadgenerator
+      properties:
+        exposedPort_tcp-service: 8089:8089
+        LOCUST_USERS: 10
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
+        LOCUST_WEB_PORT: 8089
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        LOCUST_BROWSER_TRAFFIC_ENABLED: true
+        LOCUST_HOST: http://opentelemetry-demo-frontendproxy:8080
+        LOCUST_AUTOSTART: true
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        LOCUST_SPAWN_RATE: 1
+        LOCUST_HEADLESS: false
+        containerPort_service: 8089
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-frontendproxy_1
+            relationship: opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-frontendproxy
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-loadgenerator_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-loadgenerator:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-loadgenerator
+    opentelemetry-demo-currencyservice_6:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1301'
+        y: '556'
+        displayName: opentelemetry-demo-currencyservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        CURRENCY_SERVICE_PORT: 8080
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        VERSION: 1.11.1
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-currencyservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-currencyservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-currencyservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-currencyservice
+    opentelemetry-demo-shippingservice_2:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '1003'
+        y: '556'
+        displayName: opentelemetry-demo-shippingservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        QUOTE_SERVICE_ADDR: http://opentelemetry-demo-quoteservice:8080
+        SHIPPING_SERVICE_PORT: 8080
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-shippingservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-quoteservice_9
+            relationship: opentelemetry-demo-shippingservice_ConnectsTo_opentelemetry-demo-quoteservice
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-shippingservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-shippingservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-shippingservice
+    opentelemetry-demo-checkoutservice_5:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2008'
+        y: '401'
+        displayName: opentelemetry-demo-checkoutservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        CURRENCY_SERVICE_ADDR: opentelemetry-demo-currencyservice:8080
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        PAYMENT_SERVICE_ADDR: opentelemetry-demo-paymentservice:8080
+        CART_SERVICE_ADDR: opentelemetry-demo-cartservice:8080
+        SHIPPING_SERVICE_ADDR: opentelemetry-demo-shippingservice:8080
+        CHECKOUT_SERVICE_PORT: 8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        EMAIL_SERVICE_ADDR: http://opentelemetry-demo-emailservice:8080
+        PRODUCT_CATALOG_SERVICE_ADDR: opentelemetry-demo-productcatalogservice:8080
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        FLAGD_HOST: opentelemetry-demo-flagd
+        KAFKA_SERVICE_ADDR: opentelemetry-demo-kafka:9092
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-currencyservice_6
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-currencyservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-paymentservice_14
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-paymentservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-cartservice_3
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-cartservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-shippingservice_2
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-shippingservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-emailservice_10
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-emailservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-productcatalogservice_4
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-productcatalogservice
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-kafka_8
+            relationship: opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-kafka
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-checkoutservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-checkoutservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-checkoutservice
+    opentelemetry-demo-kafka_8:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '2387'
+        y: '725'
+        displayName: opentelemetry-demo-kafka
+      properties:
+        exposedPort_controller: 9093:9093
+        exposedPort_plaintext: 9092:9092
+        KAFKA_HEAP_OPTS: -Xmx400M -Xms400M
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4318
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://opentelemetry-demo-kafka:9092
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_controller: 9093
+        containerPort_plaintext: 9092
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-kafka_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-kafka_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-kafka:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-kafka
+    opentelemetry-demo-prometheus-server_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.prometheus-SoftwareApplication
+      metadata:
+        x: '3581'
+        y: '879'
+        displayName: opentelemetry-demo-prometheus-server
+      properties:
+        exposedPort_http: 9090:9090
+        containerPort: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-prometheus-server_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        quay.io/prometheus/prometheus:v2.53.1:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: quay.io/prometheus/prometheus:v2.53.1
+    opentelemetry-demo-cartservice_3:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3336'
+        y: '556'
+        displayName: opentelemetry-demo-cartservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        FLAGD_PORT: 8013
+        OTEL_EXPORTER_OTLP_ENDPOINT: http://opentelemetry-demo-otelcol:4317
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        ASPNETCORE_URLS: http://*:8080
+        VALKEY_ADDR: opentelemetry-demo-valkey:6379
+        FLAGD_HOST: opentelemetry-demo-flagd
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        CART_SERVICE_PORT: 8080
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-valkey_0
+            relationship: opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-valkey
+            capability: feature
+        - connect:
+            node: opentelemetry-demo-flagd_0
+            relationship: opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-flagd
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-cartservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-cartservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-cartservice
+    opentelemetry-demo-jaeger_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.all-in-one-SoftwareApplication
+      metadata:
+        x: '235'
+        y: '232'
+        displayName: opentelemetry-demo-jaeger
+      properties:
+        exposedPort_grpc-query: 16685:16685
+        exposedPort_http-query: 16686:16686
+        exposedPort_grpc-http: 14250:14250
+        exposedPort_otlp-http: 4318:4318
+        exposedPort_otlp-grpc: 4317:4317
+        exposedPort_http-zipkin: 9411:9411
+        exposedPort_c-tchan-trft: 14267:14267
+        exposedPort_http-c-binary-trft: 14268:14268
+        exposedPort_jg-compact-trft: 6831:6831
+        exposedPort_config-rest: 5778:5778
+        exposedPort_jg-binary-trft: 6832:6832
+        exposedPort_zk-compact-trft: 5775:5775
+        SPAN_STORAGE_TYPE: memory
+        COLLECTOR_ZIPKIN_HOST_PORT: :9411
+        COLLECTOR_OTLP_ENABLED: true
+        METRICS_STORAGE_TYPE: prometheus
+        JAEGER_DISABLED: false
+        containerPort_5775: 5775
+        containerPort_6831: 6831
+        containerPort_6832: 6832
+        containerPort_5778: 5778
+        containerPort_9411: 9411
+        containerPort_16685: 16685
+        containerPort_4317: 4317
+        containerPort_16686: 16686
+        containerPort_4318: 4318
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-jaeger_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        jaegertracing/all-in-one:1.53.0:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/jaegertracing/all-in-one
+    opentelemetry-demo-imageprovider_0:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '369'
+        y: '317'
+        displayName: opentelemetry-demo-imageprovider
+      properties:
+        exposedPort_tcp-service: 8081:8081
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        OTEL_COLLECTOR_PORT_GRPC: 4317
+        OTEL_COLLECTOR_HOST: opentelemetry-demo-otelcol
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        IMAGE_PROVIDER_PORT: 8081
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        containerPort_service: 8081
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-imageprovider_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-imageprovider_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-imageprovider:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-imageprovider
+    opentelemetry-demo-emailservice_10:
+      type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication
+      metadata:
+        x: '3521'
+        y: '640'
+        displayName: opentelemetry-demo-emailservice
+      properties:
+        exposedPort_tcp-service: 8080:8080
+        APP_ENV: production
+        OTEL_RESOURCE_ATTRIBUTES: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+        OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://opentelemetry-demo-otelcol:4318/v1/traces
+        OTEL_COLLECTOR_NAME: opentelemetry-demo-otelcol
+        OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: cumulative
+        EMAIL_SERVICE_PORT: 8080
+        containerPort_service: 8080
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: opentelemetry-demo-otelcol_0
+            relationship: opentelemetry-demo-emailservice_ConnectsTo_opentelemetry-demo-otelcol
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: opentelemetry-demo-emailservice_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/open-telemetry/demo:1.11.1-emailservice:
+          type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/open-telemetry/demo:1.11.1-emailservice
+  relationship_templates: 
+    opentelemetry-demo-jaeger_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-imageprovider_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-imageprovider_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-prometheus-server_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-frontend:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-imageprovider:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-jaeger:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-loadgenerator:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-grafana:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontendproxy_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-shippingservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-shippingservice_ConnectsTo_opentelemetry-demo-quoteservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-shippingservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-valkey:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-cartservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-cartservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    otel-demo-opensearch_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-mongo:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-productcatalogservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-productcatalogservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-currencyservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-paymentservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-cartservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-shippingservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-emailservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-productcatalogservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_ConnectsTo_opentelemetry-demo-kafka:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-checkoutservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-valkey_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-otelcol_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-currencyservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-currencyservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-currencyservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-cartservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-shippingservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-adservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-recommendationservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-productcatalogservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-checkoutservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frontend_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-kafka_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-kafka_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-quoteservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-quoteservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-emailservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-emailservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-flagd_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-flagd_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-adservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-adservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-adservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-productcatalogservice:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-recommendationservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-recommendationservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-accountingservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-accountingservice_ConnectsTo_opentelemetry-demo-kafka:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-accountingservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-paymentservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-paymentservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-paymentservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frauddetectionservice_ConnectsTo_opentelemetry-demo-kafka:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-frauddetectionservice_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-grafana_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-otelcol:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-frontendproxy:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-loadgenerator_ConnectsTo_opentelemetry-demo-flagd:
+      type: tosca.relationships.ConnectsTo
+    opentelemetry-demo-loadgenerator_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    opentelemetry-demo-mongo_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn

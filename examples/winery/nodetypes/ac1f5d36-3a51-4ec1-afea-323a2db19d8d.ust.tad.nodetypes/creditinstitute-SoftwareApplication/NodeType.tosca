@@ -1,0 +1,55 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.creditinstitute-SoftwareApplication:
+    derived_from: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort:
+        type: STRING
+        required: true
+        default: 80:8080
+      T2_JAEGER_ENABLED:
+        type: STRING
+        required: true
+        default: FALSE
+      T2_JAEGER_HOST:
+        type: STRING
+        required: true
+        default: simplest-agent
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 8080
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: ac1f5d36-3a51-4ec1-afea-323a2db19d8d.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

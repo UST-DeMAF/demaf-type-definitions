@@ -1,0 +1,26 @@
+strict digraph {
+    graph [dpi=96.0, ratio="compress", size="16.4,8.89", splines="ortho"]
+    node [fixedsize="true", shape="polygon",  width=2.34, height=0.63]
+    edge [label="HostedOn", style="solid"]
+    "t2store"
+    "MicrosoftAzure"
+    "mongo-mongodb"
+    "mongo-mongodb-datadir-volume"
+    "backend"
+    "creditinstitute"
+    "postgres"
+    "postgres-postgres-storage-volume"
+    "t2store" -> "MicrosoftAzure"
+    "creditinstitute" -> "t2store"
+    "postgres-postgres-storage-volume" -> "t2store"
+    "backend" -> "t2store"
+    "mongo-mongodb" -> "t2store"
+    "mongo-mongodb-datadir-volume" -> "t2store"
+    "postgres" -> "t2store"
+    subgraph {
+        edge [label="ConnectsTo", style="dashed"]
+        "postgres-postgres-storage-volume" -> "postgres"
+        "backend" -> { "postgres" "creditinstitute" "mongo-mongodb" } [weight=2]
+        "mongo-mongodb-datadir-volume" -> "mongo-mongodb"
+    }
+}

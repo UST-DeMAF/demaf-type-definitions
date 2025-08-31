@@ -1,0 +1,51 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.flashcard_service-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      SPRING_DATASOURCE_PASSWORD:
+        type: STRING
+        required: true
+        default: randomGeneratedValue
+      SPRING_DATASOURCE_USERNAME:
+        type: STRING
+        required: true
+        default: gits
+      SPRING_DATASOURCE_URL:
+        type: STRING
+        required: true
+        default: jdbc:postgresql://flashcard-service-db-postgresql:5432/flashcard-service
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

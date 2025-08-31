@@ -1,0 +1,99 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.opensearch-SoftwareApplication:
+    derived_from: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_http:
+        type: STRING
+        required: true
+        default: 9200:9200
+      exposedPort_transport:
+        type: STRING
+        required: true
+        default: 9300:9300
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 9600:9600
+      discovery.seed_hosts:
+        type: STRING
+        required: true
+        default: opensearch-cluster-master-headless
+      network.host:
+        type: STRING
+        required: true
+        default: 0.0.0.0
+      node.roles:
+        type: STRING
+        required: true
+        default: master,ingest,data,remote_cluster_client,
+      cluster.name:
+        type: STRING
+        required: true
+        default: demo-cluster
+      DISABLE_INSTALL_DEMO_CONFIG:
+        type: STRING
+        required: true
+        default: true
+      discovery.type:
+        type: STRING
+        required: true
+        default: single-node
+      bootstrap.memory_lock:
+        type: STRING
+        required: true
+        default: true
+      DISABLE_SECURITY_PLUGIN:
+        type: STRING
+        required: true
+        default: true
+      OPENSEARCH_JAVA_OPTS:
+        type: STRING
+        required: true
+        default: -Xms300m -Xmx300m
+      containerPort_transport:
+        type: INTEGER
+        required: true
+        default: 9300
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 9600
+      containerPort_http:
+        type: INTEGER
+        required: true
+        default: 9200
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

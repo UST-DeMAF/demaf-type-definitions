@@ -1,0 +1,79 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.grafana-SoftwareApplication:
+    derived_from: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      GF_INSTALL_PLUGINS:
+        type: STRING
+        required: false
+        default: grafana-opensearch-datasource
+      memory:
+        type: STRING
+        required: false
+        default: 100
+      name:
+        type: STRING
+        required: false
+        default: grafana
+      network_mode:
+        type: STRING
+        required: false
+        default: bridge
+      restart:
+        type: STRING
+        required: false
+        default: unless-stopped
+      ports.internal:
+        type: STRING
+        required: false
+        default: 3000
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: opentelemetry-demo
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: abspath("files/grafana/provisioning/")
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /etc/grafana/provisioning/
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: abspath("files/grafana/grafana.ini")
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /etc/grafana/grafana.ini
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

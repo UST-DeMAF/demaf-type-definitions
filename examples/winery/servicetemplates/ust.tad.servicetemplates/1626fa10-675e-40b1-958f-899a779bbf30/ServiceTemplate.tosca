@@ -1,0 +1,1417 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: "ust.tad.servicetemplates"
+  name: 1626fa10-675e-40b1-958f-899a779bbf30
+topology_template:
+  node_templates:
+    minio-console_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.minio-object-browser-SoftwareApplication
+      metadata:
+        x: '360'
+        y: '232'
+        displayName: minio-console
+      properties:
+        exposedPort_http: 9090:9090
+        CONSOLE_MINIO_SERVER: http://minio:9000
+        containerPort_http: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: minio_0
+            relationship: minio-console_ConnectsTo_minio
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: minio-console_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/minio-object-browser:2.0.2-debian-12-r1:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/minio-object-browser
+    dapr-operator_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.operator-SoftwareApplication
+      metadata:
+        x: '7451'
+        y: '387'
+        displayName: dapr-operator
+      properties:
+        exposedPort_legacy: 80:6500
+        exposedPort_metrics: 9090:9090
+        exposedPort_grpc: 443:6500
+        containerPort: 6500
+        containerPort_metrics: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: dapr-operator_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/dapr/operator:1.15.6:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/dapr/operator:1.15.6
+    keycloak_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.keycloak-SoftwareApplication
+      metadata:
+        x: '2880'
+        y: '387'
+        displayName: keycloak
+      properties:
+        exposedPort_http_8080:8080: 8080:8080
+        exposedPort_http_80:8080: 80:8080
+        BITNAMI_DEBUG: false
+        KC_BOOTSTRAP_ADMIN_PASSWORD_FILE: /opt/bitnami/keycloak/secrets/admin-password
+        KEYCLOAK_DATABASE_PASSWORD_FILE: /opt/bitnami/keycloak/secrets/db-password
+        KEYCLOAK_HTTP_RELATIVE_PATH: /keycloak/
+        KC_SPI_ADMIN_REALM: master
+        containerPort_discovery: 7800
+        containerPort_http: 8080
+        imagePullPolicy: Always
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: keycloak_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/keycloak:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/keycloak:latest
+    gits-gateway_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.graphql_gateway-SoftwareApplication
+      metadata:
+        x: '2676'
+        y: '232'
+        displayName: gits-gateway
+      properties:
+        FLASHCARD_SERVICE_URL: http://localhost:3500/v1.0/invoke/flashcard-service/method/graphql
+        MEDIA_SERVICE_URL: http://localhost:3500/v1.0/invoke/media-service/method/graphql
+        JWKS_URL: http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs
+        GATEWAY_PORT: 8080
+        SKILLLEVEL_SERVICE_URL: http://localhost:3500/v1.0/invoke/skilllevel-service/method/graphql
+        QUIZ_SERVICE_URL: http://localhost:3500/v1.0/invoke/quiz-service/method/graphql
+        USER_SERVICE_URL: http://localhost:3500/v1.0/invoke/user-service/method/graphql
+        REWARD_SERVICE_URL: http://localhost:3500/v1.0/invoke/reward-service/method/graphql
+        GATEWAY_HOSTNAME: 0.0.0.0
+        CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+        COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-gateway_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-gateway_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-gateway_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: keycloak_0
+            relationship: gits-gateway_ConnectsTo_keycloak
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/graphql_gateway:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/graphql_gateway:latest
+    redis-replicas_1:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.redis-DatabaseSystem
+      metadata:
+        x: '6198'
+        y: '232'
+        displayName: redis-replicas
+      properties:
+        exposedPort_tcp-redis: 6379:6379
+        REDIS_MASTER_PASSWORD_FILE: /opt/bitnami/redis/secrets/redis-password
+        REDIS_MASTER_PORT_NUMBER: 6379
+        REDIS_MASTER_HOST: redis-master-0.redis-headless.default.svc.cluster.local
+        BITNAMI_DEBUG: false
+        ALLOW_EMPTY_PASSWORD: no
+        REDIS_PASSWORD_FILE: /opt/bitnami/redis/secrets/redis-password
+        REDIS_PORT: 6379
+        REDIS_REPLICATION_MODE: replica
+        REDIS_TLS_ENABLED: no
+        containerPort_redis: 6379
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: redis-master_0
+            relationship: redis-replicas_ConnectsTo_redis-master
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: redis-replicas_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/redis:8.0.3-debian-12-r1:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/redis
+    media-service-db-postgresql-data-volume_9:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '1352'
+        y: '232'
+        displayName: media-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: media-service-db-postgresql_5
+            relationship: media-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: media-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    defaultKubernetesCluster_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.DefaultKubernetesCluster
+      metadata:
+        x: '3880'
+        y: '541'
+        displayName: defaultKubernetesCluster
+    user-service-db-postgresql_2:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '4256'
+        y: '387'
+        displayName: user-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRES_DATABASE: user-service
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: user-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    media-service-db-postgresql_5:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '1496'
+        y: '387'
+        displayName: media-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        POSTGRES_DATABASE: media-service
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: media-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    gits-course-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.course_service-SoftwareApplication
+      metadata:
+        x: '2924'
+        y: '232'
+        displayName: gits-course-service
+      properties:
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        SPRING_DATASOURCE_URL: jdbc:postgresql://course-service-db-postgresql:5432/course-service
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-course-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-course-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-course-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: course-service-db-postgresql_3
+            relationship: gits-course-service_ConnectsTo_course-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/course_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/course_service:latest
+    minio_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.minio-DatabaseSystem
+      metadata:
+        x: '992'
+        y: '387'
+        displayName: minio
+      properties:
+        exposedPort_tcp-api: 9000:9000
+        MINIO_ROOT_PASSWORD_FILE: /opt/bitnami/minio/secrets/root-password
+        MINIO_DATA_DIR: /bitnami/minio/data
+        MINIO_ROOT_USER_FILE: /opt/bitnami/minio/secrets/root-user
+        BITNAMI_DEBUG: false
+        MINIO_SCHEME: http
+        MINIO_SKIP_CLIENT: yes
+        MINIO_DISTRIBUTED_MODE_ENABLED: no
+        MINIO_PROMETHEUS_AUTH_TYPE: public
+        MINIO_BROWSER: off
+        MINIO_FORCE_NEW_KEYS: no
+        MINIO_API_PORT_NUMBER: 9000
+        containerPort_api: 9000
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: minio_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/minio:2025.6.13-debian-12-r1:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/minio
+    redis-master-redis-data-volume_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '6464'
+        y: '232'
+        displayName: redis-master-redis-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: redis-master_0
+            relationship: redis-master-redis-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: redis-master-redis-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    flashcard-service-db-postgresql_7:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '616'
+        y: '387'
+        displayName: flashcard-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRES_DATABASE: flashcard-service
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: flashcard-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    quiz-service-db-postgresql_8:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '5008'
+        y: '387'
+        displayName: quiz-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRES_DATABASE: quiz-service
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: quiz-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    flashcard-service-db-postgresql-data-volume_11:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '112'
+        y: '232'
+        displayName: flashcard-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: flashcard-service-db-postgresql_7
+            relationship: flashcard-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: flashcard-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    skilllevel-service-db-postgresql_6:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '3128'
+        y: '387'
+        displayName: skilllevel-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRES_DATABASE: skilllevel-service
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: skilllevel-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    dapr-scheduler-server-dapr-scheduler-data-dir-volume_7:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '7011'
+        y: '232'
+        displayName: dapr-scheduler-server-dapr-scheduler-data-dir-volume
+      properties:
+        storage_size: 1Gi
+      requirements:
+        - attach:
+            node: dapr-scheduler-server_0
+            relationship: dapr-scheduler-server-dapr-scheduler-data-dir-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: dapr-scheduler-server-dapr-scheduler-data-dir-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    gits-flashcard-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.flashcard_service-SoftwareApplication
+      metadata:
+        x: '856'
+        y: '232'
+        displayName: gits-flashcard-service
+      properties:
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        SPRING_DATASOURCE_URL: jdbc:postgresql://flashcard-service-db-postgresql:5432/flashcard-service
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-flashcard-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-flashcard-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-flashcard-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: flashcard-service-db-postgresql_7
+            relationship: gits-flashcard-service_ConnectsTo_flashcard-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/flashcard_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/flashcard_service:latest
+    course-service-db-postgresql-data-volume_5:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '4784'
+        y: '232'
+        displayName: course-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: course-service-db-postgresql_3
+            relationship: course-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: course-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    dapr-placement-server_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.placement-SoftwareApplication
+      metadata:
+        x: '2504'
+        y: '387'
+        displayName: dapr-placement-server
+      properties:
+        exposedPort_metrics: 9090:9090
+        exposedPort_api: 50005:50005
+        exposedPort_raft-node: 8201:8201
+        containerPort_raft-node: 8201
+        containerPort_api: 50005
+        containerPort_metrics: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: dapr-placement-server_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/dapr/placement:1.15.6:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/dapr/placement:1.15.6
+    gits-frontend_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.frontend-SoftwareApplication
+      metadata:
+        x: '112'
+        y: '387'
+        displayName: gits-frontend
+      properties:
+        NEXT_PUBLIC_BACKEND_URL: /api
+        NEXT_PUBLIC_OAUTH_REDIRECT_URL: http://orange.informatik.uni-stuttgart.de
+        NEXT_PUBLIC_OAUTH_CLIENT_ID: gits-frontend
+        NEXT_PUBLIC_OAUTH_AUTHORITY: http://orange.informatik.uni-stuttgart.de/keycloak/realms/GITS
+        imagePullPolicy: Always
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-frontend_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/frontend:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/frontend:latest
+    minio-data-volume_6:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '608'
+        y: '232'
+        displayName: minio-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: minio_0
+            relationship: minio-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: minio-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    keycloak-postgresql_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '6827'
+        y: '387'
+        displayName: keycloak-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_DATABASE: bitnami_keycloak
+        POSTGRES_USER: bn_keycloak
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: keycloak-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.4.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    gits-skilllevel-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.skilllevel_service-SoftwareApplication
+      metadata:
+        x: '2180'
+        y: '232'
+        displayName: gits-skilllevel-service
+      properties:
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        SPRING_DATASOURCE_URL: jdbc:postgresql://skilllevel-service-db-postgresql:5432/skilllevel-service
+        COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+        CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-skilllevel-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-skilllevel-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-skilllevel-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: skilllevel-service-db-postgresql_6
+            relationship: gits-skilllevel-service_ConnectsTo_skilllevel-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/skilllevel_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/skilllevel_service:latest
+    quiz-service-db-postgresql-data-volume_12:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '5622'
+        y: '232'
+        displayName: quiz-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: quiz-service-db-postgresql_8
+            relationship: quiz-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: quiz-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    dapr-scheduler-server_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.scheduler-SoftwareApplication
+      metadata:
+        x: '7203'
+        y: '387'
+        displayName: dapr-scheduler-server
+      properties:
+        exposedPort_api_50006:50006: 50006:50006
+        exposedPort_metrics: 9090:9090
+        exposedPort_etcd-peer: 2380:2380
+        exposedPort_etcd-client: 2379:2379
+        exposedPort_api_443:50006: 443:50006
+        containerPort: 50006
+        containerPort_etcd-client: 2379
+        containerPort_etcd-peer: 2380
+        containerPort_metrics: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: dapr-scheduler-server_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/dapr/scheduler:1.15.6:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/dapr/scheduler:1.15.6
+    reward-service-db-postgresql-data-volume_8:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '4506'
+        y: '232'
+        displayName: reward-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: reward-service-db-postgresql_4
+            relationship: reward-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: reward-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    gits-user-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.user_service-SoftwareApplication
+      metadata:
+        x: '3280'
+        y: '232'
+        displayName: gits-user-service
+      properties:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://user-service-db-postgresql:5432/user-service
+        KEYCLOAK_PASSWORD: test
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        KEYCLOAK_URL: http://keycloak:80/keycloak
+        SPRING_DATASOURCE_USERNAME: gits
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-user-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-user-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-user-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: keycloak_0
+            relationship: gits-user-service_ConnectsTo_keycloak
+            capability: feature
+        - connect:
+            node: user-service-db-postgresql_2
+            relationship: gits-user-service_ConnectsTo_user-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/user_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/user_service:latest
+    reward-service-db-postgresql_4:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '3504'
+        y: '387'
+        displayName: reward-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRES_DATABASE: reward-service
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: reward-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    content-service-db-postgresql_1:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '4632'
+        y: '387'
+        displayName: content-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRES_DATABASE: content-service
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: content-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    user-service-db-postgresql-data-volume_4:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '5088'
+        y: '232'
+        displayName: user-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: user-service-db-postgresql_2
+            relationship: user-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: user-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    gits-reward-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.reward_service-SoftwareApplication
+      metadata:
+        x: '2428'
+        y: '232'
+        displayName: gits-reward-service
+      properties:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://reward-service-db-postgresql:5432/reward-service
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+        CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-reward-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-reward-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-reward-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: reward-service-db-postgresql_4
+            relationship: gits-reward-service_ConnectsTo_reward-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/reward_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/reward_service:latest
+    gits-quiz-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.quiz_service-SoftwareApplication
+      metadata:
+        x: '3886'
+        y: '232'
+        displayName: gits-quiz-service
+      properties:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://quiz-service-db-postgresql:5432/quiz-service
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        COURSE_SERVICE_URL: http://localhost:3500/v1.0/invoke/course-service/method/graphql
+        CONTENT_SERVICE_URL: http://localhost:3500/v1.0/invoke/content-service/method/graphql
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-quiz-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-quiz-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-quiz-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: quiz-service-db-postgresql_8
+            relationship: gits-quiz-service_ConnectsTo_quiz-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/quiz_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/quiz_service:latest
+    redis-master_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.redis-DatabaseSystem
+      metadata:
+        x: '6323'
+        y: '387'
+        displayName: redis-master
+      properties:
+        exposedPort_tcp-redis: 6379:6379
+        BITNAMI_DEBUG: false
+        REDIS_REPLICATION_MODE: master
+        ALLOW_EMPTY_PASSWORD: no
+        REDIS_PASSWORD_FILE: /opt/bitnami/redis/secrets/redis-password
+        REDIS_PORT: 6379
+        REDIS_TLS_ENABLED: no
+        containerPort_redis: 6379
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: redis-master_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/redis:8.0.3-debian-12-r1:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/redis
+    redis-replicas-redis-data-volume_1:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '6096'
+        y: '100'
+        displayName: redis-replicas-redis-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: redis-replicas_1
+            relationship: redis-replicas-redis-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: redis-replicas-redis-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    content-service-db-postgresql-data-volume_3:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '5364'
+        y: '232'
+        displayName: content-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: content-service-db-postgresql_1
+            relationship: content-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: content-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    course-service-db-postgresql_3:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem
+      metadata:
+        x: '3880'
+        y: '387'
+        displayName: course-service-db-postgresql
+      properties:
+        exposedPort_tcp-postgresql: 5432:5432
+        POSTGRESQL_PGAUDIT_LOG_CATALOG: off
+        PGDATA: /bitnami/postgresql/data
+        POSTGRESQL_PORT_NUMBER: 5432
+        POSTGRES_DATABASE: course-service
+        POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/password
+        POSTGRESQL_ENABLE_LDAP: no
+        POSTGRES_POSTGRES_PASSWORD_FILE: /opt/bitnami/postgresql/secrets/postgres-password
+        POSTGRESQL_LOG_DISCONNECTIONS: false
+        POSTGRESQL_CLIENT_MIN_MESSAGES: error
+        POSTGRESQL_SHARED_PRELOAD_LIBRARIES: pgaudit
+        BITNAMI_DEBUG: false
+        POSTGRESQL_LOG_HOSTNAME: false
+        POSTGRESQL_ENABLE_TLS: no
+        POSTGRES_USER: gits
+        POSTGRESQL_VOLUME_DIR: /bitnami/postgresql
+        POSTGRESQL_LOG_CONNECTIONS: false
+        containerPort_tcp-postgresql: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: course-service-db-postgresql_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        docker.io/bitnami/postgresql:17.5.0-debian-12-r17:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/postgresql
+    keel_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.keel-SoftwareApplication
+      metadata:
+        x: '2128'
+        y: '387'
+        displayName: keel
+      properties:
+        NOTIFICATION_LEVEL: info
+        POLL: true
+        POLL_DEFAULTSCHEDULE: "@every 1m"
+        containerPort: 9300
+        imagePullPolicy: Always
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: keel_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        keelhq/keel:0.19.1:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/keelhq/keel
+    gits-content-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.content_service-SoftwareApplication
+      metadata:
+        x: '3528'
+        y: '232'
+        displayName: gits-content-service
+      properties:
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        SPRING_DATASOURCE_URL: jdbc:postgresql://content-service-db-postgresql:5432/content-service
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-content-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-content-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-content-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: content-service-db-postgresql_1
+            relationship: gits-content-service_ConnectsTo_content-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/content_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/content_service:latest
+    dapr-sentry_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.sentry-SoftwareApplication
+      metadata:
+        x: '5896'
+        y: '387'
+        displayName: dapr-sentry
+      properties:
+        exposedPort_metrics: 9090:9090
+        exposedPort_grpc: 443:50001
+        containerPort: 50001
+        containerPort_metrics: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: dapr-sentry_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/dapr/sentry:1.15.6:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/dapr/sentry:1.15.6
+    keycloak-postgresql-data-volume_2:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '6759'
+        y: '232'
+        displayName: keycloak-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: keycloak-postgresql_0
+            relationship: keycloak-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: keycloak-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    skilllevel-service-db-postgresql-data-volume_10:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.Storage
+      metadata:
+        x: '4219'
+        y: '232'
+        displayName: skilllevel-service-db-postgresql-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: skilllevel-service-db-postgresql_6
+            relationship: skilllevel-service-db-postgresql-data-mount
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: skilllevel-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster
+            capability: feature
+    dapr-sidecar-injector_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.injector-SoftwareApplication
+      metadata:
+        x: '5874'
+        y: '232'
+        displayName: dapr-sidecar-injector
+      properties:
+        exposedPort_metrics: 9090:9090
+        exposedPort_https: 443:4000
+        ACTORS_SERVICE_NAME: placement
+        DAPR_SENTRY_ADDRESS: dapr-sentry.default.svc.cluster.local:443
+        SIDECAR_RUN_AS_NON_ROOT: true
+        SIDECAR_READ_ONLY_ROOT_FILESYSTEM: true
+        ENABLE_K8S_DOWNWARD_APIS: false
+        SIDECAR_IMAGE: ghcr.io/dapr/daprd:1.15.6
+        ACTORS_SERVICE_ADDRESS: dapr-placement-server:50005
+        DAPR_TRUST_ANCHORS_FILE: /var/run/secrets/dapr.io/tls/ca.crt
+        KUBE_CLUSTER_DOMAIN: cluster.local
+        DAPR_CONTROL_PLANE_TRUST_DOMAIN: cluster.local
+        SIDECAR_IMAGE_PULL_POLICY: IfNotPresent
+        IGNORE_ENTRYPOINT_TOLERATIONS: [{\"effect\":\"NoSchedule\",\"key\":\"alibabacloud.com/eci\"},{\"effect\":\"NoSchedule\",\"key\":\"azure.com/aci\"},{\"effect\":\"NoSchedule\",\"key\":\"aws\"},{\"effect\":\"NoSchedule\",\"key\":\"huawei.com/cci\"}]
+        SIDECAR_DROP_ALL_CAPABILITIES: false
+        ACTORS_ENABLED: true
+        containerPort_https: 4000
+        containerPort_metrics: 9090
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: dapr-sentry_0
+            relationship: dapr-sidecar-injector_ConnectsTo_dapr-sentry
+            capability: feature
+        - connect:
+            node: dapr-placement-server_0
+            relationship: dapr-sidecar-injector_ConnectsTo_dapr-placement-server
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: dapr-sidecar-injector_HostedOn_defaultKubernetesCluster
+            capability: feature
+      artifacts:
+        ghcr.io/dapr/injector:1.15.6:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/dapr/injector:1.15.6
+    gits-media-service_0:
+      type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.media_service-SoftwareApplication
+      metadata:
+        x: '1104'
+        y: '232'
+        displayName: gits-media-service
+      properties:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://media-service-db-postgresql:5432/media-service
+        SPRING_DATASOURCE_PASSWORD: randomGeneratedValue
+        SPRING_DATASOURCE_USERNAME: gits
+        MINIO_ACCESS_SECRET: randomGeneratedValue
+        MINIO_URL: http://minio:9000
+        MINIO_ACCESS_KEY: gits
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: dapr-placement-server_0
+            relationship: gits-media-service_ConnectsTo_dapr-placement-server
+            capability: feature
+        - connect:
+            node: keel_0
+            relationship: gits-media-service_ConnectsTo_keel
+            capability: feature
+        - host:
+            node: defaultKubernetesCluster_0
+            relationship: gits-media-service_HostedOn_defaultKubernetesCluster
+            capability: feature
+        - connect:
+            node: minio_0
+            relationship: gits-media-service_ConnectsTo_minio
+            capability: feature
+        - connect:
+            node: media-service-db-postgresql_5
+            relationship: gits-media-service_ConnectsTo_media-service-db-postgresql
+            capability: feature
+      artifacts:
+        ghcr.io/it-rex-platform/media_service:latest:
+          type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: ghcr.io/it-rex-platform/media_service:latest
+  relationship_templates: 
+    gits-skilllevel-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-skilllevel-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-course-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-course-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-user-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-user-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-gateway_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-gateway_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-flashcard-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-flashcard-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-reward-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-reward-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-quiz-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-quiz-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-media-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-media-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-content-service_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    gits-content-service_ConnectsTo_keel:
+      type: tosca.relationships.ConnectsTo
+    gits-frontend_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-reward-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-skilllevel-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-flashcard-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-media-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-user-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-course-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-content-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-gateway_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-quiz-service_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    redis-master_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    redis-replicas_ConnectsTo_redis-master:
+      type: tosca.relationships.ConnectsTo
+    redis-replicas_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    redis-master-redis-data-mount:
+      type: tosca.relationships.AttachesTo
+    redis-master-redis-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    redis-replicas-redis-data-mount:
+      type: tosca.relationships.AttachesTo
+    redis-replicas-redis-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    keycloak-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-user-service_ConnectsTo_keycloak:
+      type: tosca.relationships.ConnectsTo
+    gits-gateway_ConnectsTo_keycloak:
+      type: tosca.relationships.ConnectsTo
+    keycloak_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    keycloak-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    keycloak-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-content-service_ConnectsTo_content-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    content-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    content-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    content-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-user-service_ConnectsTo_user-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    user-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    user-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    user-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-course-service_ConnectsTo_course-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    course-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    course-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    course-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    minio-console_ConnectsTo_minio:
+      type: tosca.relationships.ConnectsTo
+    minio-console_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-media-service_ConnectsTo_minio:
+      type: tosca.relationships.ConnectsTo
+    minio_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    minio-data-mount:
+      type: tosca.relationships.AttachesTo
+    minio-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    dapr-placement-server_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    dapr-sentry_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    dapr-sidecar-injector_ConnectsTo_dapr-sentry:
+      type: tosca.relationships.ConnectsTo
+    dapr-sidecar-injector_ConnectsTo_dapr-placement-server:
+      type: tosca.relationships.ConnectsTo
+    dapr-sidecar-injector_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    dapr-scheduler-server_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    dapr-operator_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    dapr-scheduler-server-dapr-scheduler-data-dir-mount:
+      type: tosca.relationships.AttachesTo
+    dapr-scheduler-server-dapr-scheduler-data-dir-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-reward-service_ConnectsTo_reward-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    reward-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    reward-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    reward-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-media-service_ConnectsTo_media-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    media-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    media-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    media-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    keel_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-skilllevel-service_ConnectsTo_skilllevel-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    skilllevel-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    skilllevel-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    skilllevel-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-flashcard-service_ConnectsTo_flashcard-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    flashcard-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    flashcard-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    flashcard-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    gits-quiz-service_ConnectsTo_quiz-service-db-postgresql:
+      type: tosca.relationships.ConnectsTo
+    quiz-service-db-postgresql_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn
+    quiz-service-db-postgresql-data-mount:
+      type: tosca.relationships.AttachesTo
+    quiz-service-db-postgresql-data-volume_HostedOn_defaultKubernetesCluster:
+      type: tosca.relationships.HostedOn

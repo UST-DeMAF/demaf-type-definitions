@@ -1,0 +1,68 @@
+strict digraph {
+    graph [dpi=96.0, ratio="compress", size="16.4,8.89", splines="ortho"]
+    node [fixedsize="true", shape="polygon",  width=2.34, height=0.63]
+    edge [label="HostedOn", style="solid"]
+    "t2store"
+    "MicrosoftAzure"
+    "mongo-cart-mongodb"
+    "mongo-cart-mongodb-datadir-volume"
+    "mongo-order-mongodb"
+    "mongo-order-mongodb-datadir-volume"
+    "kafka"
+    "kafka-zookeeper"
+    "kafka-data-volume"
+    "kafka-zookeeper-data-volume"
+    "orchestrator"
+    "cart"
+    "inventory"
+    "postgres-orchestrator"
+    "uibackend"
+    "order"
+    "ui"
+    "payment"
+    "creditinstitute"
+    "cdcservice"
+    "postgres-inventory"
+    "postgres-inventory-datadir-volume"
+    "postgres-orchestrator-datadir-volume"
+    "postgres-orchestrator" -> "t2store"
+    "postgres-orchestrator-datadir-volume" -> "t2store"
+    "creditinstitute" -> "t2store"
+    "postgres-inventory" -> "t2store"
+    "mongo-order-mongodb" -> "t2store"
+    "kafka-zookeeper" -> "t2store"
+    "kafka-zookeeper-data-volume" -> "t2store"
+    "cdcservice" -> "t2store"
+    "postgres-inventory-datadir-volume" -> "t2store"
+    "inventory" -> "t2store"
+    "cart" -> "t2store"
+    "uibackend" -> "t2store"
+    "orchestrator" -> "t2store"
+    "mongo-cart-mongodb-datadir-volume" -> "t2store"
+    "t2store" -> "MicrosoftAzure"
+    "kafka-data-volume" -> "t2store"
+    "ui" -> "t2store"
+    "kafka" -> "t2store"
+    "mongo-order-mongodb-datadir-volume" -> "t2store"
+    "payment" -> "t2store"
+    "mongo-cart-mongodb" -> "t2store"
+    "order" -> "t2store"
+    subgraph {
+        edge [label="ConnectsTo", style="dashed"]
+        "postgres-orchestrator-datadir-volume" -> "postgres-orchestrator"
+        "kafka-zookeeper-data-volume" -> "kafka-zookeeper"
+        "cdcservice" -> { "postgres-orchestrator" "postgres-inventory" "kafka" "kafka-zookeeper" } [weight=2]
+        "postgres-inventory-datadir-volume" -> "postgres-inventory"
+        "inventory" -> { "postgres-inventory" "kafka" "kafka-zookeeper" } [weight=2]
+        "cart" -> "mongo-cart-mongodb"
+        "uibackend" -> { "cart" "orchestrator" "inventory" } [weight=2]
+        "orchestrator" -> { "postgres-orchestrator" "kafka" "kafka-zookeeper" } [weight=2]
+        "mongo-cart-mongodb-datadir-volume" -> "mongo-cart-mongodb"
+        "kafka-data-volume" -> "kafka"
+        "ui" -> "uibackend"
+        "kafka" -> "kafka-zookeeper"
+        "mongo-order-mongodb-datadir-volume" -> "mongo-order-mongodb"
+        "payment" -> { "postgres-orchestrator" "creditinstitute" "kafka" "kafka-zookeeper" } [weight=2]
+        "order" -> { "postgres-orchestrator" "mongo-order-mongodb" "kafka" "kafka-zookeeper" } [weight=2]
+    }
+}

@@ -1,0 +1,44 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes.grafana-SoftwareApplication:
+    derived_from: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      GF_INSTALL_PLUGINS:
+        type: STRING
+        required: false
+        default: grafana-opensearch-datasource
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      file:
+        type: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.artifacttypes.file
+        description: ""
+        deploy_path: ""
+        file: ""
+      docker_image:
+        type: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

@@ -1,0 +1,111 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.postgresql-DatabaseSystem:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-postgresql:
+        type: STRING
+        required: true
+        default: 5432:5432
+      POSTGRESQL_PGAUDIT_LOG_CATALOG:
+        type: STRING
+        required: true
+        default: off
+      PGDATA:
+        type: STRING
+        required: true
+        default: /bitnami/postgresql/data
+      POSTGRESQL_PORT_NUMBER:
+        type: STRING
+        required: true
+        default: 5432
+      POSTGRES_DATABASE:
+        type: STRING
+        required: true
+        default: bitnami_keycloak
+      POSTGRES_USER:
+        type: STRING
+        required: true
+        default: bn_keycloak
+      POSTGRES_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/postgresql/secrets/password
+      POSTGRESQL_ENABLE_LDAP:
+        type: STRING
+        required: true
+        default: no
+      POSTGRES_POSTGRES_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/postgresql/secrets/postgres-password
+      POSTGRESQL_LOG_DISCONNECTIONS:
+        type: STRING
+        required: true
+        default: false
+      POSTGRESQL_CLIENT_MIN_MESSAGES:
+        type: STRING
+        required: true
+        default: error
+      POSTGRESQL_SHARED_PRELOAD_LIBRARIES:
+        type: STRING
+        required: true
+        default: pgaudit
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: false
+      POSTGRESQL_LOG_HOSTNAME:
+        type: STRING
+        required: true
+        default: false
+      POSTGRESQL_ENABLE_TLS:
+        type: STRING
+        required: true
+        default: no
+      POSTGRESQL_VOLUME_DIR:
+        type: STRING
+        required: true
+        default: /bitnami/postgresql
+      POSTGRESQL_LOG_CONNECTIONS:
+        type: STRING
+        required: true
+        default: false
+      containerPort_tcp-postgresql:
+        type: INTEGER
+        required: true
+        default: 5432
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

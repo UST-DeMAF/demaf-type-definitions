@@ -1,0 +1,119 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.opentelemetry-collector-contrib-SoftwareApplication:
+    derived_from: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      memory:
+        type: STRING
+        required: false
+        default: 200
+      user:
+        type: STRING
+        required: false
+        default: 0:0
+      network_mode:
+        type: STRING
+        required: false
+        default: bridge
+      command:
+        type: STRING
+        required: false
+        default: --config=/etc/otelcol-config.yml --config=/etc/otelcol-config-extras.yml
+      name:
+        type: STRING
+        required: false
+        default: otel-col
+      hostname:
+        type: STRING
+        required: false
+        default: otelcol
+      restart:
+        type: STRING
+        required: false
+        default: unless-stopped
+      depends_on:
+        type: STRING
+        required: false
+        default: [jaeger]
+      ENVOY_PORT:
+        type: STRING
+        required: false
+        default: 8080
+      OTEL_COLLECTOR_HOST:
+        type: STRING
+        required: false
+        default: otelcol
+      OTEL_COLLECTOR_PORT_GRPC:
+        type: STRING
+        required: false
+        default: 4317
+      OTEL_COLLECTOR_PORT_HTTP:
+        type: STRING
+        required: false
+        default: 4318
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: opentelemetry-demo
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /var/run/docker.sock
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: /var/run/docker.sock
+      ports.internal:
+        type: STRING
+        required: false
+        default: 4317
+      ports.internal:
+        type: STRING
+        required: false
+        default: 4318
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /etc/otelcol-config-extras.yml
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: abspath("files/otelcollector/otelcol-config-extras.yml")
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /etc/otelcol-config.yml
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: abspath("files/otelcollector/otelcol-config.yml")
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

@@ -1,0 +1,91 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.minio-DatabaseSystem:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-api:
+        type: STRING
+        required: true
+        default: 9000:9000
+      MINIO_ROOT_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/minio/secrets/root-password
+      MINIO_DATA_DIR:
+        type: STRING
+        required: true
+        default: /bitnami/minio/data
+      MINIO_ROOT_USER_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/minio/secrets/root-user
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: false
+      MINIO_SCHEME:
+        type: STRING
+        required: true
+        default: http
+      MINIO_SKIP_CLIENT:
+        type: STRING
+        required: true
+        default: yes
+      MINIO_DISTRIBUTED_MODE_ENABLED:
+        type: STRING
+        required: true
+        default: no
+      MINIO_PROMETHEUS_AUTH_TYPE:
+        type: STRING
+        required: true
+        default: public
+      MINIO_BROWSER:
+        type: STRING
+        required: true
+        default: off
+      MINIO_FORCE_NEW_KEYS:
+        type: STRING
+        required: true
+        default: no
+      MINIO_API_PORT_NUMBER:
+        type: STRING
+        required: true
+        default: 9000
+      containerPort_api:
+        type: INTEGER
+        required: true
+        default: 9000
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

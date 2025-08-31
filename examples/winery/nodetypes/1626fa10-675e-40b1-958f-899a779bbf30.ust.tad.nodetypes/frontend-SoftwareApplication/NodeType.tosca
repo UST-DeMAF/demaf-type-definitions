@@ -1,0 +1,55 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.frontend-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      NEXT_PUBLIC_BACKEND_URL:
+        type: STRING
+        required: true
+        default: /api
+      NEXT_PUBLIC_OAUTH_REDIRECT_URL:
+        type: STRING
+        required: true
+        default: http://orange.informatik.uni-stuttgart.de
+      NEXT_PUBLIC_OAUTH_CLIENT_ID:
+        type: STRING
+        required: true
+        default: gits-frontend
+      NEXT_PUBLIC_OAUTH_AUTHORITY:
+        type: STRING
+        required: true
+        default: http://orange.informatik.uni-stuttgart.de/keycloak/realms/GITS
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

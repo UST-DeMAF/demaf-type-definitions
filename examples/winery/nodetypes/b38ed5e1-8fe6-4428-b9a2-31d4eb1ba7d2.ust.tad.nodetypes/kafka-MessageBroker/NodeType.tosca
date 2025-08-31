@@ -1,0 +1,199 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.kafka-MessageBroker:
+    derived_from: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.MessageBroker
+    metadata:
+      targetNamespace: "b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-client:
+        type: STRING
+        required: true
+        default: 9092:9092
+      exposedPort_tcp-internal:
+        type: STRING
+        required: true
+        default: 9093:9093
+      KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES:
+        type: STRING
+        required: true
+        default: 102400
+      KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES:
+        type: STRING
+        required: true
+        default: 102400
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP:
+        type: STRING
+        required: true
+        default: INTERNAL:PLAINTEXT,CLIENT:PLAINTEXT
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR:
+        type: STRING
+        required: true
+        default: 1
+      KAFKA_CFG_LOG_FLUSH_INTERVAL_MS:
+        type: STRING
+        required: true
+        default: 1000
+      KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS:
+        type: STRING
+        required: true
+        default: 6000
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR:
+        type: STRING
+        required: true
+        default: 1
+      KAFKA_CFG_LOG_SEGMENT_BYTES:
+        type: STRING
+        required: true
+        default: 1073741824
+      KAFKA_CFG_DEFAULT_REPLICATION_FACTOR:
+        type: STRING
+        required: true
+        default: 1
+      KAFKA_CFG_SUPER_USERS:
+        type: STRING
+        required: true
+        default: User:admin
+      KAFKA_CFG_ADVERTISED_LISTENERS:
+        type: STRING
+        required: true
+        default: "INTERNAL://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9092"
+      KAFKA_CFG_LISTENERS:
+        type: STRING
+        required: true
+        default: INTERNAL://:9093,CLIENT://:9092
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR:
+        type: STRING
+        required: true
+        default: 1
+      KAFKA_CFG_LOG_RETENTION_HOURS:
+        type: STRING
+        required: true
+        default: 168
+      KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES:
+        type: STRING
+        required: true
+        default: 10000
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: false
+      KAFKA_CFG_ZOOKEEPER_CONNECT:
+        type: STRING
+        required: true
+        default: kafka-zookeeper
+      KAFKA_CFG_NUM_NETWORK_THREADS:
+        type: STRING
+        required: true
+        default: 3
+      KAFKA_ZOOKEEPER_PROTOCOL:
+        type: STRING
+        required: true
+        default: PLAINTEXT
+      KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND:
+        type: STRING
+        required: true
+        default: true
+      KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR:
+        type: STRING
+        required: true
+        default: 1
+      KAFKA_CFG_LOG_RETENTION_BYTES:
+        type: STRING
+        required: true
+        default: 1073741824
+      KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS:
+        type: STRING
+        required: true
+        default: 300000
+      KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES:
+        type: STRING
+        required: true
+        default: 104857600
+      KAFKA_INTER_BROKER_LISTENER_NAME:
+        type: STRING
+        required: true
+        default: INTERNAL
+      KAFKA_CFG_NUM_IO_THREADS:
+        type: STRING
+        required: true
+        default: 8
+      ALLOW_PLAINTEXT_LISTENER:
+        type: STRING
+        required: true
+        default: yes
+      KAFKA_LOG_DIR:
+        type: STRING
+        required: true
+        default: /opt/bitnami/kafka/logs
+      KAFKA_CFG_NUM_PARTITIONS:
+        type: STRING
+        required: true
+        default: 1
+      KAFKA_CFG_AUTHORIZER_CLASS_NAME:
+        type: STRING
+        required: true
+        default: 
+      KAFKA_CFG_DELETE_TOPIC_ENABLE:
+        type: STRING
+        required: true
+        default: false
+      KAFKA_CFG_MESSAGE_MAX_BYTES:
+        type: STRING
+        required: true
+        default: 1000012
+      KAFKA_VOLUME_DIR:
+        type: STRING
+        required: true
+        default: /bitnami/kafka
+      KAFKA_CFG_LOG_DIRS:
+        type: STRING
+        required: true
+        default: /bitnami/kafka/data
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE:
+        type: STRING
+        required: true
+        default: true
+      KAFKA_HEAP_OPTS:
+        type: STRING
+        required: true
+        default: -Xmx1024m -Xms1024m
+      containerPort_kafka-client:
+        type: INTEGER
+        required: true
+        default: 9092
+      containerPort_kafka-internal:
+        type: INTEGER
+        required: true
+        default: 9093
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

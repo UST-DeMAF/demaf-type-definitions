@@ -1,0 +1,83 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.flagd-SoftwareApplication:
+    derived_from: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      command:
+        type: STRING
+        required: false
+        default: start --uri file:./etc/flagd/demo.flagd.json
+      FLAGD_OTEL_COLLECTOR_URI:
+        type: STRING
+        required: false
+        default: otelcol:4317
+      FLAGD_METRICS_EXPORTER:
+        type: STRING
+        required: false
+        default: otel
+      OTEL_RESOURCE_ATTRIBUTES:
+        type: STRING
+        required: false
+        default: service.namespace=opentelemetry-demo,service.version=1.11.1
+      OTEL_SERVICE_NAME:
+        type: STRING
+        required: false
+        default: flagd
+      network_mode:
+        type: STRING
+        required: false
+        default: bridge
+      memory:
+        type: STRING
+        required: false
+        default: 50
+      name:
+        type: STRING
+        required: false
+        default: flagd
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: opentelemetry-demo
+      ports.internal:
+        type: STRING
+        required: false
+        default: 8013
+      volumes.host_path:
+        type: STRING
+        required: false
+        default: abspath("files/flagd")
+      volumes.container_path:
+        type: STRING
+        required: false
+        default: /etc/flagd
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

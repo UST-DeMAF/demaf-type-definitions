@@ -1,0 +1,71 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.grafana-SoftwareApplication:
+    derived_from: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_service:
+        type: STRING
+        required: true
+        default: 80:3000
+      GF_PATHS_PROVISIONING:
+        type: STRING
+        required: true
+        default: /etc/grafana/provisioning
+      GF_PATHS_PLUGINS:
+        type: STRING
+        required: true
+        default: /var/lib/grafana/plugins
+      GF_PATHS_DATA:
+        type: STRING
+        required: true
+        default: /var/lib/grafana/
+      GF_PATHS_LOGS:
+        type: STRING
+        required: true
+        default: /var/log/grafana
+      containerPort_grafana:
+        type: INTEGER
+        required: true
+        default: 3000
+      containerPort_gossip-tcp:
+        type: INTEGER
+        required: true
+        default: 9094
+      containerPort_gossip-udp:
+        type: INTEGER
+        required: true
+        default: 9094
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

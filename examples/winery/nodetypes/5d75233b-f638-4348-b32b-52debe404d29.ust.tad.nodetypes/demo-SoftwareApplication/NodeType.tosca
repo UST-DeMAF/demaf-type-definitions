@@ -1,0 +1,323 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.demo-SoftwareApplication:
+    derived_from: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "5d75233b-f638-4348-b32b-52debe404d29.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_tcp-service:
+        type: STRING
+        required: true
+        default: 8081:8081
+      OTEL_RESOURCE_ATTRIBUTES:
+        type: STRING
+        required: true
+        default: "service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.11.1"
+      OTEL_COLLECTOR_PORT_GRPC:
+        type: STRING
+        required: true
+        default: 4317
+      OTEL_COLLECTOR_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-otelcol
+      OTEL_COLLECTOR_NAME:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-otelcol
+      IMAGE_PROVIDER_PORT:
+        type: STRING
+        required: true
+        default: 8081
+      OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+        type: STRING
+        required: true
+        default: cumulative
+      containerPort_service:
+        type: INTEGER
+        required: true
+        default: 8081
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: IfNotPresent
+      GRAFANA_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 80
+      JAEGER_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 16686
+      FRONTEND_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      FRONTEND_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-frontend
+      ENVOY_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      IMAGE_PROVIDER_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-imageprovider
+      LOCUST_WEB_PORT:
+        type: STRING
+        required: true
+        default: 8089
+      OTEL_COLLECTOR_PORT_HTTP:
+        type: STRING
+        required: true
+        default: 4318
+      FLAGD_PORT:
+        type: STRING
+        required: true
+        default: 8013
+      JAEGER_SERVICE_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-jaeger-query
+      LOCUST_WEB_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-loadgenerator
+      GRAFANA_SERVICE_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-grafana
+      FLAGD_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-flagd
+      OTEL_EXPORTER_OTLP_ENDPOINT:
+        type: STRING
+        required: true
+        default: http://opentelemetry-demo-otelcol:4317
+      QUOTE_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: http://opentelemetry-demo-quoteservice:8080
+      SHIPPING_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      ASPNETCORE_URLS:
+        type: STRING
+        required: true
+        default: http://*:8080
+      VALKEY_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-valkey:6379
+      CART_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      MONGO_PASSWORD:
+        type: STRING
+        required: true
+        default: mongo_product_catalog
+      MONGO_HOST:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-mongo
+      MONGO_PORT:
+        type: STRING
+        required: true
+        default: 27017
+      PRODUCT_CATALOG_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      MONGO_USERNAME:
+        type: STRING
+        required: true
+        default: mongo
+      CURRENCY_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-currencyservice:8080
+      PAYMENT_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-paymentservice:8080
+      CART_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-cartservice:8080
+      SHIPPING_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-shippingservice:8080
+      CHECKOUT_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      EMAIL_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: http://opentelemetry-demo-emailservice:8080
+      PRODUCT_CATALOG_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-productcatalogservice:8080
+      KAFKA_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-kafka:9092
+      CURRENCY_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      VERSION:
+        type: STRING
+        required: true
+        default: 1.11.1
+      WEB_OTEL_SERVICE_NAME:
+        type: STRING
+        required: true
+        default: frontend-web
+      PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+        type: STRING
+        required: true
+        default: http://localhost:8080/otlp-http/v1/traces
+      FRONTEND_ADDR:
+        type: STRING
+        required: true
+        default: :8080
+      AD_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-adservice:8080
+      RECOMMENDATION_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-recommendationservice:8080
+      CHECKOUT_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: opentelemetry-demo-checkoutservice:8080
+      KAFKA_HEAP_OPTS:
+        type: STRING
+        required: true
+        default: -Xmx400M -Xms400M
+      KAFKA_ADVERTISED_LISTENERS:
+        type: STRING
+        required: true
+        default: PLAINTEXT://opentelemetry-demo-kafka:9092
+      containerPort_controller:
+        type: INTEGER
+        required: true
+        default: 9093
+      containerPort_plaintext:
+        type: INTEGER
+        required: true
+        default: 9092
+      exposedPort_controller:
+        type: STRING
+        required: true
+        default: 9093:9093
+      exposedPort_plaintext:
+        type: STRING
+        required: true
+        default: 9092:9092
+      QUOTE_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      OTEL_PHP_AUTOLOAD_ENABLED:
+        type: STRING
+        required: true
+        default: true
+      APP_ENV:
+        type: STRING
+        required: true
+        default: production
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+        type: STRING
+        required: true
+        default: http://opentelemetry-demo-otelcol:4318/v1/traces
+      EMAIL_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      AD_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      OTEL_LOGS_EXPORTER:
+        type: STRING
+        required: true
+        default: otlp
+      OTEL_PYTHON_LOG_CORRELATION:
+        type: STRING
+        required: true
+        default: true
+      RECOMMENDATION_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION:
+        type: STRING
+        required: true
+        default: python
+      PAYMENT_SERVICE_PORT:
+        type: STRING
+        required: true
+        default: 8080
+      LOCUST_USERS:
+        type: STRING
+        required: true
+        default: 10
+      LOCUST_BROWSER_TRAFFIC_ENABLED:
+        type: STRING
+        required: true
+        default: true
+      LOCUST_HOST:
+        type: STRING
+        required: true
+        default: http://opentelemetry-demo-frontendproxy:8080
+      LOCUST_AUTOSTART:
+        type: STRING
+        required: true
+        default: true
+      LOCUST_SPAWN_RATE:
+        type: STRING
+        required: true
+        default: 1
+      LOCUST_HEADLESS:
+        type: STRING
+        required: true
+        default: false
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 5d75233b-f638-4348-b32b-52debe404d29.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

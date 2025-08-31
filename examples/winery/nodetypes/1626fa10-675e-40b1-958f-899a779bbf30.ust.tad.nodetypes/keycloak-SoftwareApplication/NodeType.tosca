@@ -1,0 +1,75 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.keycloak-SoftwareApplication:
+    derived_from: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      exposedPort_http_8080:8080:
+        type: STRING
+        required: true
+        default: 8080:8080
+      exposedPort_http_80:8080:
+        type: STRING
+        required: true
+        default: 80:8080
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: false
+      KC_BOOTSTRAP_ADMIN_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/keycloak/secrets/admin-password
+      KEYCLOAK_DATABASE_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: /opt/bitnami/keycloak/secrets/db-password
+      KEYCLOAK_HTTP_RELATIVE_PATH:
+        type: STRING
+        required: true
+        default: /keycloak/
+      KC_SPI_ADMIN_REALM:
+        type: STRING
+        required: true
+        default: master
+      containerPort_discovery:
+        type: INTEGER
+        required: true
+        default: 7800
+      containerPort_http:
+        type: INTEGER
+        required: true
+        default: 8080
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: Always
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 1626fa10-675e-40b1-958f-899a779bbf30.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

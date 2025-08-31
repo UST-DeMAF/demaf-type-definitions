@@ -1,0 +1,315 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes.demo-SoftwareApplication:
+    derived_from: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      OTEL_RESOURCE_ATTRIBUTES:
+        type: STRING
+        required: false
+        default: service.name=frauddetectionservice,service.namespace=opentelemetry-demo,service.version=1.11.1
+      OTEL_SERVICE_NAME:
+        type: STRING
+        required: false
+        default: frauddetectionservice
+      OTEL_EXPORTER_OTLP_ENDPOINT:
+        type: STRING
+        required: false
+        default: http://otelcol:4318
+      FLAGD_HOST:
+        type: STRING
+        required: false
+        default: flagd
+      KAFKA_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: kafka:9092
+      FLAGD_PORT:
+        type: STRING
+        required: false
+        default: 8013
+      OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL_SPAN_ATTRIBUTES:
+        type: STRING
+        required: false
+        default: true
+      OTEL_INSTRUMENTATION_MESSAGING_EXPERIMENTAL_RECEIVE_TELEMETRY_ENABLED:
+        type: STRING
+        required: false
+        default: true
+      OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+        type: STRING
+        required: false
+        default: cumulative
+      OTEL_COLLECTOR_HOST:
+        type: STRING
+        required: false
+        default: otelcol
+      LOCUST_WEB_PORT:
+        type: STRING
+        required: false
+        default: 8089
+      ENVOY_PORT:
+        type: STRING
+        required: false
+        default: 8080
+      LOCUST_WEB_HOST:
+        type: STRING
+        required: false
+        default: loadgenerator
+      OTEL_COLLECTOR_PORT_GRPC:
+        type: STRING
+        required: false
+        default: 4317
+      GRAFANA_SERVICE_HOST:
+        type: STRING
+        required: false
+        default: grafana
+      FRONTEND_PORT:
+        type: STRING
+        required: false
+        default: 8080
+      IMAGE_PROVIDER_HOST:
+        type: STRING
+        required: false
+        default: imageprovider
+      FRONTEND_HOST:
+        type: STRING
+        required: false
+        default: frontend
+      IMAGE_PROVIDER_PORT:
+        type: STRING
+        required: false
+        default: 8081
+      OTEL_COLLECTOR_PORT_HTTP:
+        type: STRING
+        required: false
+        default: 4318
+      JAEGER_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 16686
+      GRAFANA_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 3000
+      JAEGER_SERVICE_HOST:
+        type: STRING
+        required: false
+        default: jaeger
+      LOCUST_HOST:
+        type: STRING
+        required: false
+        default: http://frontendproxy:8080
+      LOCUST_BROWSER_TRAFFIC_ENABLED:
+        type: STRING
+        required: false
+        default: true
+      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION:
+        type: STRING
+        required: false
+        default: python
+      LOCUST_AUTOSTART:
+        type: STRING
+        required: false
+        default: true
+      PORT:
+        type: STRING
+        required: false
+        default: 8080
+      LOCUST_USERS:
+        type: STRING
+        required: false
+        default: 10
+      LOCUST_HEADLESS:
+        type: STRING
+        required: false
+        default: false
+      PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+        type: STRING
+        required: false
+        default: http://otelcol:8080/otlp-http/v1/traces
+      AD_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 9555
+      OTEL_LOGS_EXPORTER:
+        type: STRING
+        required: false
+        default: otlp
+      APP_ENV:
+        type: STRING
+        required: false
+        default: production
+      EMAIL_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 6060
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+        type: STRING
+        required: false
+        default: http://otelcol:4318/v1/traces
+      VERSION:
+        type: STRING
+        required: false
+        default: 1.11.1
+      QUOTE_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: http://quoteservice:8090
+      SHIPPING_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 50050
+      REDIS_ADDR:
+        type: STRING
+        required: false
+        default: valkeycart:6379
+      ASPNETCORE_URLS:
+        type: STRING
+        required: false
+        default: http://*:7070
+      CART_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 7070
+      VALKEY_ADDR:
+        type: STRING
+        required: false
+        default: valkeycart:6379
+      CURRENCY_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 7001
+      KAFKA_HEAP_OPTS:
+        type: STRING
+        required: false
+        default: -Xmx400m -Xms400m
+      KAFKA_ADVERTISED_LISTENERS:
+        type: STRING
+        required: false
+        default: PLAINTEXT://kafka:9092
+      CURRENCY_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: currencyservice:7001
+      PAYMENT_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: paymentservice:50051
+      PRODUCT_CATALOG_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: productcatalogservice:3550
+      CART_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: cartservice:7070
+      EMAIL_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: http://emailservice:6060
+      CHECKOUT_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 5050
+      SHIPPING_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: shippingservice:50050
+      QUOTE_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 8090
+      OTEL_PHP_INTERNAL_METRICS_ENABLED:
+        type: STRING
+        required: false
+        default: true
+      OTEL_PHP_AUTOLOAD_ENABLED:
+        type: STRING
+        required: false
+        default: true
+      OTEL_PYTHON_LOG_CORRELATION:
+        type: STRING
+        required: false
+        default: true
+      RECOMMENDATION_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 9001
+      WEB_OTEL_SERVICE_NAME:
+        type: STRING
+        required: false
+        default: frontend-web
+      FRONTEND_ADDR:
+        type: STRING
+        required: false
+        default: frontend:8080
+      CHECKOUT_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: checkoutservice:5050
+      RECOMMENDATION_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: recommendationservice:9001
+      AD_SERVICE_ADDR:
+        type: STRING
+        required: false
+        default: adservice:9555
+      ENV_PLATFORM:
+        type: STRING
+        required: false
+        default: local
+      PRODUCT_CATALOG_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 3550
+      MONGO_PASSWORD:
+        type: STRING
+        required: false
+        default: mongo_product_catalog
+      MONGO_PORT:
+        type: STRING
+        required: false
+        default: 27017
+      MONGO_USERNAME:
+        type: STRING
+        required: false
+        default: mongo
+      MONGO_HOSTNAME:
+        type: STRING
+        required: false
+        default: mongo
+      PAYMENT_SERVICE_PORT:
+        type: STRING
+        required: false
+        default: 50051
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 8eeec593-ffc3-4dc2-a031-874e948932e9.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

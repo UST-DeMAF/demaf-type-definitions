@@ -1,0 +1,818 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: "ust.tad.servicetemplates"
+  name: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2
+topology_template:
+  node_templates:
+    postgres-orchestrator_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.eventuate-tram-sagas-postgres-SoftwareApplication
+      metadata:
+        x: '760'
+        y: '514'
+        displayName: postgres-orchestrator
+      properties:
+        exposedPort: 5432:5432
+        POSTGRES_DB: eventuate
+        POSTGRES_PASSWORD: eventuate
+        POSTGRES_USER: eventuate
+        USE_DB_ID: true
+        containerPort: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: postgres-orchestrator_HostedOn_t2store
+            capability: feature
+      artifacts:
+        eventuateio/eventuate-tram-sagas-postgres:0.23.0.RELEASE:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/eventuateio/eventuate-tram-sagas-postgres
+    postgres-orchestrator-datadir-volume_5:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.Storage
+      metadata:
+        x: '382'
+        y: '345'
+        displayName: postgres-orchestrator-datadir-volume
+      properties:
+        storage_size: 1Gi
+      requirements:
+        - attach:
+            node: postgres-orchestrator_0
+            relationship: postgres-orchestrator-datadir-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: postgres-orchestrator-datadir-volume_HostedOn_t2store
+            capability: feature
+    creditinstitute_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.creditinstitute-SoftwareApplication
+      metadata:
+        x: '512'
+        y: '514'
+        displayName: creditinstitute
+      properties:
+        exposedPort: 80:8080
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: creditinstitute_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/creditinstitute:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/creditinstitute
+    postgres-inventory_1:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.eventuate-tram-sagas-postgres-SoftwareApplication
+      metadata:
+        x: '2447'
+        y: '514'
+        displayName: postgres-inventory
+      properties:
+        exposedPort: 5432:5432
+        POSTGRES_DB: inventory
+        USE_DB_ID: true
+        POSTGRES_PASSWORD: inventory
+        POSTGRES_USER: inventory
+        containerPort: 5432
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: postgres-inventory_HostedOn_t2store
+            capability: feature
+      artifacts:
+        eventuateio/eventuate-tram-sagas-postgres:0.23.0.RELEASE:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/eventuateio/eventuate-tram-sagas-postgres
+    mongo-order-mongodb_1:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.mongodb-DatabaseSystem
+      metadata:
+        x: '214'
+        y: '514'
+        displayName: mongo-order-mongodb
+      properties:
+        exposedPort_mongodb: 27017:27017
+        MONGODB_DISABLE_SYSTEM_LOG: no
+        ALLOW_EMPTY_PASSWORD: yes
+        BITNAMI_DEBUG: false
+        MONGODB_PORT_NUMBER: 27017
+        MONGODB_SYSTEM_LOG_VERBOSITY: 0
+        MONGODB_ENABLE_IPV6: no
+        MONGODB_DISABLE_JAVASCRIPT: no
+        MONGODB_ENABLE_JOURNAL: yes
+        MONGODB_ENABLE_DIRECTORY_PER_DB: no
+        containerPort_mongodb: 27017
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: mongo-order-mongodb_HostedOn_t2store
+            capability: feature
+      artifacts:
+        docker.io/bitnami/mongodb:8.0.11-debian-12-r0:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/mongodb
+    kafka-zookeeper_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.zookeeper-SoftwareApplication
+      metadata:
+        x: '1515'
+        y: '668'
+        displayName: kafka-zookeeper
+      properties:
+        exposedPort_tcp-follower: 2888:2888
+        exposedPort_tcp-election: 3888:3888
+        exposedPort_tcp-client: 2181:2181
+        ZOO_4LW_COMMANDS_WHITELIST: srvr, mntr, ruok
+        ALLOW_ANONYMOUS_LOGIN: yes
+        ZOO_SYNC_LIMIT: 5
+        ZOO_MAX_SESSION_TIMEOUT: 40000
+        ZOO_TICK_TIME: 2000
+        ZOO_ENABLE_QUORUM_AUTH: no
+        ZOO_PRE_ALLOC_SIZE: 65536
+        ZOO_SERVERS: kafka-zookeeper-0.kafka-zookeeper-headless.default.svc.cluster.local:2888:3888::1
+        ZOO_AUTOPURGE_RETAIN_COUNT: 3
+        ZOO_SNAPCOUNT: 100000
+        ZOO_LOG_LEVEL: ERROR
+        ZOO_MAX_CLIENT_CNXNS: 60
+        ZOO_INIT_LIMIT: 10
+        BITNAMI_DEBUG: false
+        ZOO_ENABLE_AUTH: no
+        ZOO_DATA_LOG_DIR: 
+        ZOO_LISTEN_ALLIPS_ENABLED: no
+        ZOO_PORT_NUMBER: 2181
+        ZOO_AUTOPURGE_INTERVAL: 0
+        ZOO_HEAP_SIZE: 1024
+        containerPort_client: 2181
+        containerPort_election: 3888
+        containerPort_follower: 2888
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: kafka-zookeeper_HostedOn_t2store
+            capability: feature
+      artifacts:
+        docker.io/bitnami/zookeeper:3.8.0-debian-11-r36:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/zookeeper
+    kafka-zookeeper-data-volume_3:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.Storage
+      metadata:
+        x: '1059'
+        y: '514'
+        displayName: kafka-zookeeper-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: kafka-zookeeper_0
+            relationship: kafka-zookeeper-data-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: kafka-zookeeper-data-volume_HostedOn_t2store
+            capability: feature
+    cdcservice_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.eventuate-cdc-service-SoftwareApplication
+      metadata:
+        x: '1912'
+        y: '345'
+        displayName: cdcservice
+      properties:
+        exposedPort_8099: 8099:8080
+        EVENTUATE_CDC_READER_READER1_OUTBOXID: 1
+        EVENTUATE_CDC_READER_READER1_DATASOURCEURL: jdbc:postgresql://postgres-orchestrator/eventuate
+        EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME: inventory
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+        EVENTUATE_CDC_READER_READER2_DATASOURCEURL: jdbc:postgresql://postgres-inventory/inventory
+        EVENTUATE_CDC_PIPELINE_PIPELINE2_READER: reader2
+        EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE: eventuate-tram
+        EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/orchestrator
+        EVENTUATE_CDC_READER_READER2_TYPE: postgres-wal
+        EVENTUATE_CDC_READER_READER2_OUTBOXID: 2
+        EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME: eventuate
+        EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD: inventory
+        EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME: org.postgresql.Driver
+        EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+        JAVA_OPTS: -Xmx64m
+        EVENTUATE_CDC_READER_READER1_TYPE: postgres-wal
+        EVENTUATE_CDC_PIPELINE_PIPELINE1_READER: reader1
+        EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD: eventuate
+        EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH: /eventuate/cdc/leader/inventory_service
+        EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE: eventuate-tram
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: postgres-orchestrator_0
+            relationship: cdcservice_ConnectsTo_postgres-orchestrator
+            capability: feature
+        - connect:
+            node: postgres-inventory_1
+            relationship: cdcservice_ConnectsTo_postgres-inventory
+            capability: feature
+        - connect:
+            node: kafka_0
+            relationship: cdcservice_ConnectsTo_kafka
+            capability: feature
+        - connect:
+            node: kafka-zookeeper_0
+            relationship: cdcservice_ConnectsTo_kafka-zookeeper
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: cdcservice_HostedOn_t2store
+            capability: feature
+      artifacts:
+        eventuateio/eventuate-cdc-service:0.16.0.RELEASE:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/eventuateio/eventuate-cdc-service
+    postgres-inventory-datadir-volume_4:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.Storage
+      metadata:
+        x: '2715'
+        y: '345'
+        displayName: postgres-inventory-datadir-volume
+      properties:
+        storage_size: 1Gi
+      requirements:
+        - attach:
+            node: postgres-inventory_1
+            relationship: postgres-inventory-datadir-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: postgres-inventory-datadir-volume_HostedOn_t2store
+            capability: feature
+    inventory_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.inventory-SoftwareApplication
+      metadata:
+        x: '2219'
+        y: '345'
+        displayName: inventory
+      properties:
+        exposedPort: 80:8080
+        T2_INVENTORY_SET_UNITS_TO_MAX: FALSE
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-inventory/inventory
+        SPRING_PROFILES_ACTIVE: saga
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        T2_INVENTORY_SIZE: 25
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+        SPRING_DATASOURCE_PASSWORD: inventory
+        EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+        T2_INVENTORY_TTL: 0
+        T2_INVENTORY_TASKRATE: 0
+        SPRING_DATASOURCE_USERNAME: inventory
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: postgres-inventory_1
+            relationship: inventory_ConnectsTo_postgres-inventory
+            capability: feature
+        - connect:
+            node: kafka_0
+            relationship: inventory_ConnectsTo_kafka
+            capability: feature
+        - connect:
+            node: kafka-zookeeper_0
+            relationship: inventory_ConnectsTo_kafka-zookeeper
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: inventory_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/inventory:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/inventory
+    cart_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.cart-SoftwareApplication
+      metadata:
+        x: '2864'
+        y: '429'
+        displayName: cart
+      properties:
+        exposedPort: 80:8080
+        T2_CART_TTL: 0
+        MONGO_HOST: mongo-cart-mongodb
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        T2_CART_TASKRATE: 0
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: mongo-cart-mongodb_0
+            relationship: cart_ConnectsTo_mongo-cart-mongodb
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: cart_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/cart:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/cart
+    MicrosoftAzure_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.CloudProvider
+      metadata:
+        x: '2112'
+        y: '923'
+        displayName: MicrosoftAzure
+    uibackend_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.uibackend-SoftwareApplication
+      metadata:
+        x: '2542'
+        y: '222'
+        displayName: uibackend
+      properties:
+        exposedPort: 80:8080
+        T2_COMPUTATION_SIMULATOR_ENABLED: FALSE
+        T2_COMPUTATION_SIMULATOR_URL: http://computation-simulator/compute
+        T2_RESERVATION_ENDPOINT: reservation
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        T2_CART_URL: http://cart/cart
+        T2_ORCHESTRATOR_URL: http://orchestrator/order
+        T2_INVENTORY_URL: http://inventory/inventory
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: cart_0
+            relationship: uibackend_ConnectsTo_cart
+            capability: feature
+        - connect:
+            node: orchestrator_0
+            relationship: uibackend_ConnectsTo_orchestrator
+            capability: feature
+        - connect:
+            node: inventory_0
+            relationship: uibackend_ConnectsTo_inventory
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: uibackend_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/uibackend:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/uibackend
+    orchestrator_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.orchestrator-SoftwareApplication
+      metadata:
+        x: '1628'
+        y: '345'
+        displayName: orchestrator
+      properties:
+        exposedPort: 80:8080
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+        SPRING_DATASOURCE_PASSWORD: eventuate
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orchestrator/eventuate
+        SPRING_DATASOURCE_USERNAME: eventuate
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: postgres-orchestrator_0
+            relationship: orchestrator_ConnectsTo_postgres-orchestrator
+            capability: feature
+        - connect:
+            node: kafka_0
+            relationship: orchestrator_ConnectsTo_kafka
+            capability: feature
+        - connect:
+            node: kafka-zookeeper_0
+            relationship: orchestrator_ConnectsTo_kafka-zookeeper
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: orchestrator_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/orchestrator:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/orchestrator
+    mongo-cart-mongodb-datadir-volume_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.Storage
+      metadata:
+        x: '2995'
+        y: '514'
+        displayName: mongo-cart-mongodb-datadir-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: mongo-cart-mongodb_0
+            relationship: mongo-cart-mongodb-datadir-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: mongo-cart-mongodb-datadir-volume_HostedOn_t2store
+            capability: feature
+    t2store_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.azurerm_kubernetes_cluster
+      metadata:
+        x: '2112'
+        y: '801'
+        displayName: t2store
+      properties:
+        tags: {"Environment":"Production"}
+        location: West Europe
+        name: t2store-aks1
+        resource_group_name: t2store-resources
+        dns_prefix: t2storeaks1
+        identity.type: SystemAssigned
+        default_node_pool.node_count: 1
+        default_node_pool.name: default_node
+        default_node_pool.vm_size: standard_b4ms
+      requirements:
+        - host:
+            node: MicrosoftAzure_0
+            relationship: t2store_HostedOn_MicrosoftAzure
+            capability: feature
+    kafka-data-volume_2:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.Storage
+      metadata:
+        x: '2467'
+        y: '345'
+        displayName: kafka-data-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: kafka_0
+            relationship: kafka-data-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: kafka-data-volume_HostedOn_t2store
+            capability: feature
+    ui_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.ui-SoftwareApplication
+      metadata:
+        x: '3019'
+        y: '100'
+        displayName: ui
+      properties:
+        exposedPort: 80:8080
+        T2_UIBACKEND_URL: http://uibackend
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: uibackend_0
+            relationship: ui_ConnectsTo_uibackend
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: ui_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/ui:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/ui
+    kafka_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.kafka-MessageBroker
+      metadata:
+        x: '1751'
+        y: '514'
+        displayName: kafka
+      properties:
+        exposedPort_tcp-client: 9092:9092
+        exposedPort_tcp-internal: 9093:9093
+        KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES: 102400
+        KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES: 102400
+        KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CLIENT:PLAINTEXT
+        KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_CFG_LOG_FLUSH_INTERVAL_MS: 1000
+        KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 6000
+        KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+        KAFKA_CFG_LOG_SEGMENT_BYTES: 1073741824
+        KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: 1
+        KAFKA_CFG_SUPER_USERS: User:admin
+        KAFKA_CFG_ADVERTISED_LISTENERS: "INTERNAL://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).kafka-headless.default.svc.cluster.local:9092"
+        KAFKA_CFG_LISTENERS: INTERNAL://:9093,CLIENT://:9092
+        KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
+        KAFKA_CFG_LOG_RETENTION_HOURS: 168
+        KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES: 10000
+        BITNAMI_DEBUG: false
+        KAFKA_CFG_ZOOKEEPER_CONNECT: kafka-zookeeper
+        KAFKA_CFG_NUM_NETWORK_THREADS: 3
+        KAFKA_ZOOKEEPER_PROTOCOL: PLAINTEXT
+        KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND: true
+        KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR: 1
+        KAFKA_CFG_LOG_RETENTION_BYTES: 1073741824
+        KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+        KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES: 104857600
+        KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+        KAFKA_CFG_NUM_IO_THREADS: 8
+        ALLOW_PLAINTEXT_LISTENER: yes
+        KAFKA_LOG_DIR: /opt/bitnami/kafka/logs
+        KAFKA_CFG_NUM_PARTITIONS: 1
+        KAFKA_CFG_AUTHORIZER_CLASS_NAME: 
+        KAFKA_CFG_DELETE_TOPIC_ENABLE: false
+        KAFKA_CFG_MESSAGE_MAX_BYTES: 1000012
+        KAFKA_VOLUME_DIR: /bitnami/kafka
+        KAFKA_CFG_LOG_DIRS: /bitnami/kafka/data
+        KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+        KAFKA_HEAP_OPTS: -Xmx1024m -Xms1024m
+        containerPort_kafka-client: 9092
+        containerPort_kafka-internal: 9093
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - connect:
+            node: kafka-zookeeper_0
+            relationship: kafka_ConnectsTo_kafka-zookeeper
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: kafka_HostedOn_t2store
+            capability: feature
+      artifacts:
+        docker.io/bitnami/kafka:3.2.3-debian-11-r1:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/kafka
+    mongo-order-mongodb-datadir-volume_1:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.Storage
+      metadata:
+        x: '112'
+        y: '345'
+        displayName: mongo-order-mongodb-datadir-volume
+      properties:
+        storage_size: 8Gi
+      requirements:
+        - attach:
+            node: mongo-order-mongodb_1
+            relationship: mongo-order-mongodb-datadir-mount
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: mongo-order-mongodb-datadir-volume_HostedOn_t2store
+            capability: feature
+    payment_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.payment-SoftwareApplication
+      metadata:
+        x: '1340'
+        y: '345'
+        displayName: payment
+      properties:
+        exposedPort: 80:8080
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+        SPRING_DATASOURCE_PASSWORD: eventuate
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orchestrator/eventuate
+        T2_PAYMENT_PROVIDER_ENABLED: TRUE
+        T2_PAYMENT_PROVIDER_DUMMY_URL: http://creditinstitute/pay
+        SPRING_DATASOURCE_USERNAME: eventuate
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        T2_PAYMENT_PROVIDER_TIMEOUT: 5
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: postgres-orchestrator_0
+            relationship: payment_ConnectsTo_postgres-orchestrator
+            capability: feature
+        - connect:
+            node: creditinstitute_0
+            relationship: payment_ConnectsTo_creditinstitute
+            capability: feature
+        - connect:
+            node: kafka_0
+            relationship: payment_ConnectsTo_kafka
+            capability: feature
+        - connect:
+            node: kafka-zookeeper_0
+            relationship: payment_ConnectsTo_kafka-zookeeper
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: payment_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/payment:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/payment
+    mongo-cart-mongodb_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.mongodb-DatabaseSystem
+      metadata:
+        x: '2840'
+        y: '668'
+        displayName: mongo-cart-mongodb
+      properties:
+        exposedPort_mongodb: 27017:27017
+        MONGODB_DISABLE_SYSTEM_LOG: no
+        ALLOW_EMPTY_PASSWORD: yes
+        BITNAMI_DEBUG: false
+        MONGODB_PORT_NUMBER: 27017
+        MONGODB_SYSTEM_LOG_VERBOSITY: 0
+        MONGODB_ENABLE_IPV6: no
+        MONGODB_DISABLE_JAVASCRIPT: no
+        MONGODB_ENABLE_JOURNAL: yes
+        MONGODB_ENABLE_DIRECTORY_PER_DB: no
+        containerPort_mongodb: 27017
+        imagePullPolicy: IfNotPresent
+      requirements:
+        - host:
+            node: t2store_0
+            relationship: mongo-cart-mongodb_HostedOn_t2store
+            capability: feature
+      artifacts:
+        docker.io/bitnami/mongodb:8.0.11-debian-12-r0:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/bitnami/mongodb
+    order_0:
+      type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.nodetypes.order-SoftwareApplication
+      metadata:
+        x: '664'
+        y: '345'
+        displayName: order
+      properties:
+        exposedPort: 80:8080
+        MONGO_HOST: mongo-order-mongodb
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+        SPRING_DATASOURCE_PASSWORD: eventuate
+        EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+        EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: kafka-zookeeper:2181
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orchestrator/eventuate
+        SPRING_DATASOURCE_USERNAME: eventuate
+        T2_JAEGER_ENABLED: FALSE
+        T2_JAEGER_HOST: simplest-agent
+        containerPort: 8080
+        imagePullPolicy: Always
+      requirements:
+        - connect:
+            node: postgres-orchestrator_0
+            relationship: order_ConnectsTo_postgres-orchestrator
+            capability: feature
+        - connect:
+            node: mongo-order-mongodb_1
+            relationship: order_ConnectsTo_mongo-order-mongodb
+            capability: feature
+        - connect:
+            node: kafka_0
+            relationship: order_ConnectsTo_kafka
+            capability: feature
+        - connect:
+            node: kafka-zookeeper_0
+            relationship: order_ConnectsTo_kafka-zookeeper
+            capability: feature
+        - host:
+            node: t2store_0
+            relationship: order_HostedOn_t2store
+            capability: feature
+      artifacts:
+        t2project/order:main:
+          type: b38ed5e1-8fe6-4428-b9a2-31d4eb1ba7d2.ust.tad.artifacttypes.docker_image
+          description: ""
+          deploy_path: ""
+          file: https://hub.docker.com/r/t2project/order
+  relationship_templates: 
+    t2store_HostedOn_MicrosoftAzure:
+      type: tosca.relationships.HostedOn
+    mongo-cart-mongodb_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    mongo-cart-mongodb-datadir-mount:
+      type: tosca.relationships.AttachesTo
+    mongo-cart-mongodb-datadir-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    mongo-order-mongodb_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    mongo-order-mongodb-datadir-mount:
+      type: tosca.relationships.AttachesTo
+    mongo-order-mongodb-datadir-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    kafka_ConnectsTo_kafka-zookeeper:
+      type: tosca.relationships.ConnectsTo
+    kafka_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    kafka-zookeeper_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    kafka-data-mount:
+      type: tosca.relationships.AttachesTo
+    kafka-data-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    kafka-zookeeper-data-mount:
+      type: tosca.relationships.AttachesTo
+    kafka-zookeeper-data-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    orchestrator_ConnectsTo_postgres-orchestrator:
+      type: tosca.relationships.ConnectsTo
+    orchestrator_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    orchestrator_ConnectsTo_kafka-zookeeper:
+      type: tosca.relationships.ConnectsTo
+    orchestrator_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    cart_ConnectsTo_mongo-cart-mongodb:
+      type: tosca.relationships.ConnectsTo
+    cart_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    inventory_ConnectsTo_postgres-inventory:
+      type: tosca.relationships.ConnectsTo
+    inventory_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    inventory_ConnectsTo_kafka-zookeeper:
+      type: tosca.relationships.ConnectsTo
+    inventory_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    postgres-orchestrator_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    uibackend_ConnectsTo_cart:
+      type: tosca.relationships.ConnectsTo
+    uibackend_ConnectsTo_orchestrator:
+      type: tosca.relationships.ConnectsTo
+    uibackend_ConnectsTo_inventory:
+      type: tosca.relationships.ConnectsTo
+    uibackend_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    order_ConnectsTo_postgres-orchestrator:
+      type: tosca.relationships.ConnectsTo
+    order_ConnectsTo_mongo-order-mongodb:
+      type: tosca.relationships.ConnectsTo
+    order_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    order_ConnectsTo_kafka-zookeeper:
+      type: tosca.relationships.ConnectsTo
+    order_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    ui_ConnectsTo_uibackend:
+      type: tosca.relationships.ConnectsTo
+    ui_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    payment_ConnectsTo_postgres-orchestrator:
+      type: tosca.relationships.ConnectsTo
+    payment_ConnectsTo_creditinstitute:
+      type: tosca.relationships.ConnectsTo
+    payment_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    payment_ConnectsTo_kafka-zookeeper:
+      type: tosca.relationships.ConnectsTo
+    payment_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    creditinstitute_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    cdcservice_ConnectsTo_postgres-orchestrator:
+      type: tosca.relationships.ConnectsTo
+    cdcservice_ConnectsTo_postgres-inventory:
+      type: tosca.relationships.ConnectsTo
+    cdcservice_ConnectsTo_kafka:
+      type: tosca.relationships.ConnectsTo
+    cdcservice_ConnectsTo_kafka-zookeeper:
+      type: tosca.relationships.ConnectsTo
+    cdcservice_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    postgres-inventory_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    postgres-inventory-datadir-mount:
+      type: tosca.relationships.AttachesTo
+    postgres-inventory-datadir-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn
+    postgres-orchestrator-datadir-mount:
+      type: tosca.relationships.AttachesTo
+    postgres-orchestrator-datadir-volume_HostedOn_t2store:
+      type: tosca.relationships.HostedOn

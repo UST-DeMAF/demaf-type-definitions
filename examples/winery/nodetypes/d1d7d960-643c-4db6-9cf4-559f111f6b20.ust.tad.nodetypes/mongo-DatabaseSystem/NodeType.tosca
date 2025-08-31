@@ -1,0 +1,95 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.mongo-DatabaseSystem:
+    derived_from: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      hostname:
+        type: STRING
+        required: false
+        default: mongo
+      name:
+        type: STRING
+        required: false
+        default: mongodb-catalog
+      memory:
+        type: STRING
+        required: false
+        default: 256
+      network_mode:
+        type: STRING
+        required: false
+        default: bridge
+      MONGO_INITDB_ROOT_USERNAME:
+        type: STRING
+        required: false
+        default: mongo
+      MONGO_INITDB_ROOT_PASSWORD:
+        type: STRING
+        required: false
+        default: mongo_product_catalog
+      restart:
+        type: STRING
+        required: false
+        default: unless-stopped
+      healthcheck.timeout:
+        type: STRING
+        required: false
+        default: 10s
+      healthcheck.interval:
+        type: STRING
+        required: false
+        default: 5s
+      healthcheck.test:
+        type: STRING
+        required: false
+        default: echo db.runCommand(ping).ok | mongosh localhost:27017/test --quiet
+      healthcheck.start_period:
+        type: STRING
+        required: false
+        default: 10s
+      healthcheck.retries:
+        type: STRING
+        required: false
+        default: 10
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: opentelemetry-demo
+      ports.internal:
+        type: STRING
+        required: false
+        default: 27017
+      ports.external:
+        type: STRING
+        required: false
+        default: 27017
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: d1d7d960-643c-4db6-9cf4-559f111f6b20.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""
