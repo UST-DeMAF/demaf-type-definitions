@@ -59,11 +59,11 @@ component_types:
       operations: []
   - Compute:
       extends: "BaseType"
-      description: null
+      description: "Infrastructure refers to systems that execute code directly, including virtual machines and serverless functions, as opposed to software deployed on an external host."
       properties: []
       operations: []
   - Platform:
       extends: "BaseType"
-      description: null
+      description: "A managed platform service in which the provider is responsible for operating the underlying hardware, operating system, and runtime environment, while the user supplies only the application code or configuration."
       properties: []
       operations: []
