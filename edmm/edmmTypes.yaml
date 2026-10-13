@@ -57,3 +57,13 @@ component_types:
       description: null
       properties: []
       operations: []
+  - Compute:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - Platform:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []

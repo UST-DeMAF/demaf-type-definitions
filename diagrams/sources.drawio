@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" pages="2">
   <diagram id="OR5KotwKgrwa0lNR5D0V" name="Component Type System">
-    <mxGraphModel dx="2850" dy="828" grid="0" gridSize="5.9055" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#121212)" math="0" shadow="0">
+    <mxGraphModel dx="3852" dy="1238" grid="0" gridSize="5.9055" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#121212)" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -555,8 +555,8 @@
             <mxPoint x="438" y="-101" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="note-platform-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" value="&lt;b&gt;Platform:&lt;/b&gt;&lt;br&gt;For services that take an entire application and run it, such as Elastic Beanstalk, App Runner, and Amplify. NO HOST!" vertex="1">
-          <mxGeometry height="52" width="350" x="1648" y="120" as="geometry" />
+        <mxCell id="note-platform-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" value="&lt;b&gt;Platform:&lt;/b&gt;&lt;br&gt;We just hand over our code, like Elastic Beanstalk, App Runner, and Amplify. AWS manages the OS, the runtime, and the underlying machine for us, so there is mostly no host to speak of, Beanstalk still lets us reach the instance underneath if we really need to, but App Runner and Amplify hide it completely. Compare this to EC2, where we control the OS, runtime, and most other details ourselves." vertex="1">
+          <mxGeometry height="107" width="455" x="1642" y="72.5" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
