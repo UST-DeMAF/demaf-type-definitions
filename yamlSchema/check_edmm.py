@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """Checks EDMM models in the YAML serialization of the DeMAF.
 
-First, each model is validated against edmm.schema.json. If its structure is valid, the
-constraints that JSON Schema cannot express are checked:
+Each model is checked in two steps, and each finding is reported as an error or a warning.
+
+Step 1: The model is validated against edmm.schema.json. Every schema violation is an
+error, reported with its location in the model (the path of keys and list indices) and the
+violated rule. A file that cannot be read as YAML is a single error. If the model violates
+the schema, step 2 is skipped, because its checks require a valid structure.
+
+Step 2: Violations of the following constraints, which JSON Schema cannot express, are
+errors, reported with the list and the name of the element:
 
 - the names of components, relations, component types, and relation types are unique, and
   so are the property keys within each element and each type
@@ -16,7 +23,7 @@ constraints that JSON Schema cannot express are checked:
   type and its supertypes require
 - every property value matches the type of its property definition
 
-In addition, warnings are reported for
+The following findings are warnings, because they do not make the model inconsistent:
 
 - properties of a component or relation that no property definition of its type or its
   supertypes declares
@@ -183,6 +190,10 @@ def check_file(path: Path, validator: jsonschema.Draft7Validator, predefined: se
     return checker.errors, checker.warnings
 
 
+def plural(count: int, word: str) -> str:
+    return f"{count} {word}{'' if count == 1 else 's'}"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check EDMM models in the YAML serialization of the DeMAF.")
     parser.add_argument("models", nargs="+", type=Path, metavar="MODEL.yaml")
@@ -198,7 +209,7 @@ def main() -> None:
             print(f"{path}: error: {message}")
         for message in warnings:
             print(f"{path}: warning: {message}")
-        print(f"{path}: {len(errors)} errors, {len(warnings)} warnings")
+        print(f"{path}: {plural(len(errors), 'error')}, {plural(len(warnings), 'warning')}")
         failed |= bool(errors) or (args.strict and bool(warnings))
     sys.exit(1 if failed else 0)
 

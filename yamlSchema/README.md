@@ -2,8 +2,7 @@
 
 This folder provides a schema and a checker for EDMM models in the YAML serialization that the DeMAF creates, as written by the `yamlserializer` package of the [models service](<https://github.com/UST-DeMAF/models-service>):
 
-- [edmm.schema.json](edmm.schema.json): a [JSON Schema](https://json-schema.org/) for the structure of EDMM models, against which YAML tools validate YAML files.
-  JSON Schema is versioned in drafts; the schema uses draft-07, the version that editors and validators support most widely.
+- [edmm.schema.json](edmm.schema.json): a [JSON Schema](https://json-schema.org/) (using version draft-07) for the structure of EDMM models, against which YAML tools validate YAML files.
 - [check_edmm.py](check_edmm.py): a script that validates EDMM models against the schema and checks further constraints
 
 ## Structure of EDMM Models
@@ -112,7 +111,19 @@ A local path to `edmm.schema.json` works as well.
 ## Checking EDMM Models
 
 JSON Schema validates the structure of each element, but not the references between elements.
-In addition to validating the structure, `check_edmm.py` therefore checks that
+`check_edmm.py` therefore checks each model in two steps and reports each finding as an error or a warning.
+
+**Step 1: Schema validation.** The model is validated against `edmm.schema.json`.
+Every schema violation is an error, reported with its location in the model (the path of keys and list indices) and the violated rule, e.g.:
+
+```text
+model.yaml: error: components/4/backend: Additional properties are not allowed ('replicas' was unexpected)
+```
+
+A file that cannot be read as YAML is reported as a single error.
+If the model violates the schema, step 2 is skipped, because its checks require a valid structure.
+
+**Step 2: Constraints.** Violations of the following constraints are errors:
 
 - the names of components, relations, component types, and relation types are unique, and so are the property keys within each element and each type,
 - the type of every component and relation is defined in the model, i.e., in `component_types` or `relation_types`,
@@ -121,10 +132,20 @@ In addition to validating the structure, `check_edmm.py` therefore checks that
 - every component and relation has all properties that the property definitions of its type and its supertypes require, and
 - every property value matches the type of its property definition.
 
-In addition, it warns about
+The following findings are warnings, because they do not make the model inconsistent:
 
 - properties of a component or relation that no property definition of its type or its supertypes declares, and
 - types that are neither the type of a component or relation nor the supertype of another type, except for the predefined types of the [DeMAF type system](../edmm/).
+
+Errors and warnings of step 2 are reported with the list and the name of the element, e.g.:
+
+```text
+model.yaml: error: relations/my-app_ConnectsTo_my-database: target 'my-db' is not a component
+model.yaml: warning: components/my-app: property 'version' is not defined by type 'my-app-SoftwareApplication' or its supertypes
+```
+
+For each model, the script ends with a summary line such as `model.yaml: 1 error, 1 warning`.
+It exits with code 1 if a model has errors, or with `--strict` also if a model has warnings, and with code 0 otherwise.
 
 The script requires Python 3.10 or later with PyYAML and jsonschema.
 Install the dependencies into a virtual environment and test all examples in [../examples](../examples/):
@@ -135,5 +156,3 @@ source .venv/bin/activate
 pip install -r requirements.txt
 python3 check_edmm.py ../examples/*/*_edmm.yaml
 ```
-
-It prints the errors and warnings of each model and exits with code 1 if a model has errors, or with `--strict` also if it has warnings.
