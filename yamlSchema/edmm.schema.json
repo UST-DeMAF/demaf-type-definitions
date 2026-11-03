@@ -1,0 +1,384 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/UST-DeMAF/demaf-type-definitions/main/yamlSchema/edmm.schema.json",
+  "title": "DeMAF EDMM model",
+  "description": "YAML serialization of EDMM models as written by the DeMAF models service (yamlserializer package). Each list entry is a map with exactly one key, the name of the element. \"-\" denotes a missing type, source, target, parent type, or file URI.",
+  "type": "object",
+  "required": [
+    "properties",
+    "components",
+    "relations",
+    "component_types",
+    "relation_types"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "properties": {
+      "$ref": "#/definitions/propertyList"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "$ref": "#/definitions/component"
+            }
+          }
+        ]
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "$ref": "#/definitions/relation"
+            }
+          }
+        ]
+      }
+    },
+    "component_types": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "$ref": "#/definitions/elementType"
+            }
+          }
+        ]
+      }
+    },
+    "relation_types": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "$ref": "#/definitions/elementType"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "namedEntry": {
+      "description": "A map with exactly one key, the name of the element.",
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "propertyNames": {
+        "minLength": 1
+      }
+    },
+    "scalar": {
+      "type": [
+        "string",
+        "integer",
+        "number",
+        "boolean"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "propertyList": {
+      "description": "Properties of a model, component, or relation: maps from the property key to its value.",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "$ref": "#/definitions/scalar"
+            }
+          }
+        ]
+      }
+    },
+    "artifactList": {
+      "description": "Artifacts: maps from the artifact type (e.g., docker_image, file) to the artifact.",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "name",
+                "fileURI"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "fileURI": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "operationList": {
+      "description": "Operations of a component or relation: maps from the operation name to its artifacts.",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
+          },
+          {
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "artifacts"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "artifacts": {
+                  "$ref": "#/definitions/artifactList"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": [
+        "type",
+        "description",
+        "properties",
+        "operations",
+        "artifacts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "$ref": "#/definitions/description"
+        },
+        "properties": {
+          "$ref": "#/definitions/propertyList"
+        },
+        "operations": {
+          "$ref": "#/definitions/operationList"
+        },
+        "artifacts": {
+          "$ref": "#/definitions/artifactList"
+        }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "required": [
+        "type",
+        "description",
+        "source",
+        "target",
+        "properties",
+        "operations"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "$ref": "#/definitions/description"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "properties": {
+          "$ref": "#/definitions/propertyList"
+        },
+        "operations": {
+          "$ref": "#/definitions/operationList"
+        }
+      }
+    },
+    "propertyDefinition": {
+      "description": "Definition of a property in a component or relation type. The default value must match the property type.",
+      "type": "object",
+      "required": [
+        "type",
+        "required"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "STRING",
+            "INTEGER",
+            "DOUBLE",
+            "BOOLEAN"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "default_value": {
+          "$ref": "#/definitions/scalar"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "STRING"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default_value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "INTEGER"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default_value": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "DOUBLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default_value": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "BOOLEAN"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default_value": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "elementType": {
+      "description": "A component or relation type. \"extends\" names the parent type, or is \"-\" for a root type.",
+      "type": "object",
+      "required": [
+        "extends",
+        "description",
+        "properties",
+        "operations"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "extends": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "$ref": "#/definitions/description"
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/namedEntry"
+              },
+              {
+                "additionalProperties": {
+                  "$ref": "#/definitions/propertyDefinition"
+                }
+              }
+            ]
+          }
+        },
+        "operations": {
+          "description": "Operations of a type: maps from the operation name to \"~\".",
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/namedEntry"
+              },
+              {
+                "additionalProperties": {
+                  "enum": [
+                    "~",
+                    null
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
