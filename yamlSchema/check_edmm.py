@@ -5,8 +5,8 @@ Each model is checked in two steps, and each finding is reported as an error or 
 
 Step 1: The model is validated against edmm.schema.json. Every schema violation is an
 error, reported with its location in the model (the path of keys and list indices) and the
-violated rule. A file that cannot be read as YAML is a single error. If the model violates
-the schema, step 2 is skipped, because its checks require a valid structure.
+violated rule. A file that cannot be read as UTF-8 encoded YAML is a single error. If the
+model violates the schema, step 2 is skipped, because its checks require a valid structure.
 
 Step 2: Violations of the following constraints, which JSON Schema cannot express, are
 errors, reported with the list and the name of the element:
@@ -20,11 +20,14 @@ errors, reported with the list and the name of the element:
 - every component type hierarchy ends at BaseType and every relation type hierarchy at
   DependsOn, without cycles
 - every component and relation has all properties that the property definitions of its
-  type and its supertypes require
+  type and its supertypes require, unless the property definition has a default value
 - every property value matches the type of its property definition
 
 The following findings are warnings, because they do not make the model inconsistent:
 
+- required properties of a component or relation that are not assigned, so that the
+  default value of their property definition applies; an empty string counts as no
+  default value, because the DeMAF writes it for properties without a default value
 - properties of a component or relation that no property definition of its type or its
   supertypes declares
 - types that are neither the type of a component or relation nor the supertype of another
@@ -150,7 +153,14 @@ class Checker:
         values = dict(entries(properties))
         definitions = self.definitions(type_name, types)
         for key, definition in definitions.items():
-            if definition["required"] and key not in values:
+            if not definition["required"] or key in values:
+                continue
+            # As in TOSCA, the default value applies to a property that is not assigned. The DeMAF
+            # writes an empty string for properties without a default value, so it is none.
+            if definition.get("default_value", "") != "":
+                self.warnings.append(
+                    f"{path}: required property '{key}' of type '{type_name}' is not assigned, its default value applies")
+            else:
                 self.errors.append(f"{path}: required property '{key}' of type '{type_name}' is missing")
         for key, value in values.items():
             if key not in definitions:
@@ -185,7 +195,7 @@ def schema_message(error: jsonschema.ValidationError) -> str:
 def check_file(path: Path, validator: jsonschema.Draft7Validator, predefined: set[str]) -> tuple[list[str], list[str]]:
     try:
         model = yaml.safe_load(path.read_text(encoding="utf-8"))
-    except (OSError, yaml.YAMLError) as error:
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as error:
         return [f"cannot be read as YAML: {error}"], []
     schema_errors = sorted(validator.iter_errors(model), key=lambda e: list(e.absolute_path))
     if schema_errors:

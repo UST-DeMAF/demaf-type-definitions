@@ -137,7 +137,7 @@ Every schema violation is an error, reported with its location in the model (the
 model.yaml: error: components/4/backend: Additional properties are not allowed ('replicas' was unexpected)
 ```
 
-A file that cannot be read as YAML is reported as a single error.
+A file that cannot be read as UTF-8 encoded YAML is reported as a single error.
 If the model violates the schema, step 2 is skipped, because its checks require a valid structure.
 
 **Step 2: Constraints.** Violations of the following constraints are errors:
@@ -146,11 +146,12 @@ If the model violates the schema, step 2 is skipped, because its checks require 
 - the type of every component and relation is defined in the model, i.e., in `component_types` or `relation_types`,
 - the source and the target of every relation are components of the model and not the same component,
 - every component type hierarchy ends at `BaseType` and every relation type hierarchy at `DependsOn`, without cycles,
-- every component and relation has all properties that the property definitions of its type and its supertypes require, and
+- every component and relation has all properties that the property definitions of its type and its supertypes require, unless the property definition has a default value, and
 - every property value matches the type of its property definition.
 
 The following findings are warnings, because they do not make the model inconsistent:
 
+- required properties of a component or relation that are not assigned, so that the default value of their property definition applies (as in TOSCA); an empty string counts as no default value, because the DeMAF writes it for properties without a default value,
 - properties of a component or relation that no property definition of its type or its supertypes declares, and
 - types that are neither the type of a component or relation nor the supertype of another type, except for the predefined types of the [DeMAF type system](../edmm/).
 
