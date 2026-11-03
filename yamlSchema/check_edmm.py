@@ -2,17 +2,26 @@
 """Checks EDMM models in the YAML serialization of the DeMAF.
 
 First, each model is validated against edmm.schema.json. If its structure is valid, the
-consistency rules that JSON Schema cannot express are checked:
+constraints that JSON Schema cannot express are checked:
 
-- names of components, relations, and types are unique, and so are property keys
-- every component and relation has a defined type
-- every relation connects two different, existing components
-- every type hierarchy ends at BaseType (components) or DependsOn (relations), without cycles
-- every element has the properties that its type and supertypes require
+- the names of components, relations, component types, and relation types are unique, and
+  so are the property keys within each element and each type
+- the type of every component and relation is defined in the model, i.e., in
+  component_types or relation_types
+- the source and the target of every relation are components of the model and not the
+  same component
+- every component type hierarchy ends at BaseType and every relation type hierarchy at
+  DependsOn, without cycles
+- every component and relation has all properties that the property definitions of its
+  type and its supertypes require
 - every property value matches the type of its property definition
 
-Properties that no type of an element defines and types that are never used are reported
-as warnings, except for the predefined types of the DeMAF type system in ../edmm.
+In addition, warnings are reported for
+
+- properties of a component or relation that no property definition of its type or its
+  supertypes declares
+- types that are neither the type of a component or relation nor the supertype of another
+  type, except for the predefined types of the DeMAF type system in ../edmm
 
 Usage: python3 check_edmm.py [--strict] MODEL.yaml [MODEL.yaml ...]
 Requires PyYAML and jsonschema (pip install -r requirements.txt). The exit code is 1 if a

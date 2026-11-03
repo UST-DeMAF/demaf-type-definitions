@@ -118,7 +118,7 @@
       }
     },
     "artifactList": {
-      "description": "Artifacts: maps from the artifact type (e.g., docker_image, file) to the artifact.",
+      "description": "Artifacts: maps from the artifact type (e.g., docker_image, file) to the name and, optionally, the file URI of the artifact.",
       "type": "array",
       "items": {
         "allOf": [
@@ -129,8 +129,7 @@
             "additionalProperties": {
               "type": "object",
               "required": [
-                "name",
-                "fileURI"
+                "name"
               ],
               "additionalProperties": false,
               "properties": {
@@ -360,7 +359,7 @@
           }
         },
         "operations": {
-          "description": "Operations of a type: maps from the operation name to \"~\".",
+          "description": "Operations of a type only declare the operation name, which the models service maps to the string \"~\" (null is accepted as well).",
           "type": "array",
           "items": {
             "allOf": [

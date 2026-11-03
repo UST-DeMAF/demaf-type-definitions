@@ -2,50 +2,92 @@
 
 This folder provides a schema and a checker for EDMM models in the YAML serialization that the DeMAF creates, as written by the `yamlserializer` package of the [models service](<https://github.com/UST-DeMAF/models-service>):
 
-- [edmm.schema.json](edmm.schema.json): a JSON Schema (draft-07), which YAML tools use to validate YAML files, for the structure of EDMM models
-- [check_edmm.py](check_edmm.py): a script that validates EDMM models against the schema and checks their consistency
+- [edmm.schema.json](edmm.schema.json): a [JSON Schema](https://json-schema.org/) for the structure of EDMM models, against which YAML tools validate YAML files.
+  JSON Schema is versioned in drafts; the schema uses draft-07, the version that editors and validators support most widely.
+- [check_edmm.py](check_edmm.py): a script that validates EDMM models against the schema and checks further constraints
 
 ## Structure of EDMM Models
 
-An EDMM model has the top-level keys `properties`, `components`, `relations`, `component_types`, and `relation_types`, each with a list as value.
-Each entry of these lists is a map with exactly one key, the name of the element, whose value defines the element:
+An EDMM model has the top-level keys `properties`, `components`, `relations`, `component_types`, and `relation_types`, each with a list as value, which may be empty.
+Each entry of these lists is a map with exactly one key, the name of the element, whose value defines the element.
+The following example shows a complete EDMM model with an application that connects to a database:
 
 ```yaml
+properties: []
 components:
-  - backend:
-      type: "backend-SoftwareApplication"
+  - my-app:
+      type: "my-app-SoftwareApplication"
       description: null
       properties:
-        - containerPort: 8080
-      operations: []
+        - port: 8080
+      operations:
+        - start:
+            artifacts:
+              - file:
+                  name: "start.sh"
       artifacts:
         - docker_image:
-            name: "t2project/backend:main"
-            fileURI: "https://hub.docker.com/r/t2project/backend"
+            name: "example/my-app:1.0"
+            fileURI: "https://hub.docker.com/r/example/my-app"
+  - my-database:
+      type: "DatabaseSystem"
+      description: null
+      properties: []
+      operations: []
+      artifacts: []
 relations:
-  - backend_ConnectsTo_postgres:
+  - my-app_ConnectsTo_my-database:
       type: "ConnectsTo"
       description: null
-      source: "backend"
-      target: "postgres"
+      source: "my-app"
+      target: "my-database"
       properties: []
       operations: []
 component_types:
-  - backend-SoftwareApplication:
+  - BaseType:
+      extends: "-"
+      description: null
+      properties: []
+      operations: []
+  - SoftwareApplication:
+      extends: "BaseType"
+      description: null
+      properties: []
+      operations: []
+  - DatabaseSystem:
+      extends: "SoftwareApplication"
+      description: null
+      properties: []
+      operations: []
+  - my-app-SoftwareApplication:
       extends: "SoftwareApplication"
       description: null
       properties:
-        - containerPort:
+        - port:
             type: "INTEGER"
             required: true
             default_value: 8080
+      operations:
+        - start: "~"
+relation_types:
+  - DependsOn:
+      extends: "-"
+      description: null
+      properties: []
+      operations: []
+  - ConnectsTo:
+      extends: "DependsOn"
+      description: null
+      properties: []
       operations: []
 ```
 
-- **Properties** of the model, components, and relations map a property key to a string, integer, double, or boolean value.
-- **Operations** of components and relations map the operation name to its `artifacts`; operations of types map the operation name to `~`.
-- **Artifacts** map the artifact type (e.g., `docker_image` or `file`) to its `name` and `fileURI`.
-- **Property definitions** of types have a `type` (`STRING`, `INTEGER`, `DOUBLE`, or `BOOLEAN`), whether they are `required`, and optionally a `default_value` of that type.
+- **Properties** of the model, components, and relations assign values: each maps a property key to its value, which is a string, integer, double, or boolean (`port: 8080` of `my-app`).
+- **Property definitions** of component and relation types declare which properties the elements of the type have: each maps a property key to its `type` (`STRING`, `INTEGER`, `DOUBLE`, or `BOOLEAN`), whether it is `required`, and optionally a `default_value` of that type (`port` of `my-app-SoftwareApplication`).
+  A component or relation is defined by the property definitions of its type and of all supertypes of its type, and its properties assign values to them.
+- **Operations** of components and relations map the operation name to the `artifacts` that implement it.
+  Operations of types only declare the operation name, which the models service maps to the string `"~"`.
+- **Artifacts** map the artifact type (e.g., `docker_image` or `file`) to the `name` of the artifact and optionally its `fileURI`.
 - `"-"` denotes a missing type, source, target, parent type (`extends`), or file URI.
 
 ## Validation in the Editor
@@ -72,18 +114,24 @@ A local path to `edmm.schema.json` works as well.
 JSON Schema validates the structure of each element, but not the references between elements.
 In addition to validating the structure, `check_edmm.py` therefore checks that
 
-- the names of components, relations, and types are unique, and so are the property keys of each element,
-- every component and relation has a type that the model defines,
-- every relation connects two different components of the model,
-- every type hierarchy ends at `BaseType` (component types) or `DependsOn` (relation types), without cycles,
-- every component and relation has the properties that its type and its supertypes require, and
+- the names of components, relations, component types, and relation types are unique, and so are the property keys within each element and each type,
+- the type of every component and relation is defined in the model, i.e., in `component_types` or `relation_types`,
+- the source and the target of every relation are components of the model and not the same component,
+- every component type hierarchy ends at `BaseType` and every relation type hierarchy at `DependsOn`, without cycles,
+- every component and relation has all properties that the property definitions of its type and its supertypes require, and
 - every property value matches the type of its property definition.
 
-As warnings, it reports properties that no type of an element defines and types that are neither used nor extended, except for the predefined types of the [DeMAF type system](../edmm/).
+In addition, it warns about
 
-The script requires Python 3.10 or later with PyYAML and jsonschema:
+- properties of a component or relation that no property definition of its type or its supertypes declares, and
+- types that are neither the type of a component or relation nor the supertype of another type, except for the predefined types of the [DeMAF type system](../edmm/).
+
+The script requires Python 3.10 or later with PyYAML and jsonschema.
+Install the dependencies into a virtual environment and test all examples in [../examples](../examples/):
 
 ```shell
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python3 check_edmm.py ../examples/*/*_edmm.yaml
 ```
