@@ -1,9 +1,42 @@
 # YAML Schema for EDMM Models
 
-This folder provides a schema and a checker for EDMM models in the YAML serialization that the DeMAF creates, as written by the `yamlserializer` package of the [models service](<https://github.com/UST-DeMAF/models-service>):
+This folder provides a schema and a checker for EDMM models in the YAML serialization that the DeMAF creates:
 
 - [edmm.schema.json](edmm.schema.json): a [JSON Schema](https://json-schema.org/) (using version draft-07) for the structure of EDMM models, against which YAML tools validate YAML files.
 - [check_edmm.py](check_edmm.py): a script that validates EDMM models against the schema and checks further constraints
+
+See below for usage, editor integrations, and explanations on how EDMM models are structured and how the valdation works.
+
+## Usage
+
+The script requires Python 3.10 or later with PyYAML and jsonschema.
+Install the dependencies into a virtual environment and test all examples in [../examples](../examples/):
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 check_edmm.py ../examples/*/*_edmm.yaml
+```
+
+## Schema Validation in Editors
+
+Editors with YAML language support, such as Visual Studio Code with the [YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml), validate EDMM models against the schema and offer completion while editing.
+Either add the following line at the top of an EDMM model:
+
+```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/UST-DeMAF/demaf-type-definitions/main/yamlSchema/edmm.schema.json
+```
+
+or associate the schema with file patterns in the settings of the editor, e.g., for all EDMM models of the examples:
+
+```json
+"yaml.schemas": {
+  "https://raw.githubusercontent.com/UST-DeMAF/demaf-type-definitions/main/yamlSchema/edmm.schema.json": ["*_edmm.yaml"]
+}
+```
+
+A local path to `edmm.schema.json` works as well.
 
 ## Structure of EDMM Models
 
@@ -83,7 +116,7 @@ relation_types:
 - **Properties** of the model, components, and relations assign values: each maps a property key to its value, which is a string, integer, double, or boolean (`port: 8080` of `my-app`).
 - **Property definitions** of component and relation types declare which properties the elements of the type have: each maps a property key to its `type` (`STRING`, `INTEGER`, `DOUBLE`, or `BOOLEAN`), whether it is `required`, and optionally a `default_value` of that type (`port` of `my-app-SoftwareApplication`).
   A component or relation is defined by the property definitions of its type and of all supertypes of its type, and its properties assign values to them.
-- **Operations** of components, relations, and types map the operation name to its definition, as in the EDMM YAML specification: either `~` (null) if the operation is only declared (`start` of `my-app-SoftwareApplication`), the file URI of the artifact that implements it (short form), or a map with optional `description`, `metadata`, `artifacts`, and further keys (long form, `start` of `my-app`).
+- **Operations** of components, relations, and types map the operation name to its definition: either `~` (null) if the operation is only declared (`start` of `my-app-SoftwareApplication`), the file URI of the artifact that implements it (short form), or a map with optional `description`, `metadata`, `artifacts`, and further keys (long form, `start` of `my-app`).
   The models service writes the string `"~"` for operations of types, which the schema accepts as a short form.
 - **Artifacts** map the artifact type (e.g., `docker_image` or `file`) to the artifact, which has a `name` and may have a `fileURI` and further properties (`digest` of the image of `my-app`).
 - **Descriptions and metadata** are optional on components, relations, types, property definitions, and operations in long form: a `description` is a string or null, and `metadata` is a map of strings (`metadata` of `my-app`).
@@ -91,25 +124,6 @@ relation_types:
 - **Further keys** are allowed in artifacts and in operations in long form.
   The model, components, relations, types, and property definitions only allow the keys described above, so that misspelled keys are detected; use `metadata` for additional information.
 - `"-"` denotes a missing type, source, target, parent type (`extends`), or file URI.
-
-## Validation in the Editor
-
-Editors with YAML language support, such as Visual Studio Code with the [YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml), validate EDMM models against the schema and offer completion while editing.
-Either add the following line at the top of an EDMM model:
-
-```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/UST-DeMAF/demaf-type-definitions/main/yamlSchema/edmm.schema.json
-```
-
-or associate the schema with file patterns in the settings of the editor, e.g., for all EDMM models of the examples:
-
-```json
-"yaml.schemas": {
-  "https://raw.githubusercontent.com/UST-DeMAF/demaf-type-definitions/main/yamlSchema/edmm.schema.json": ["*_edmm.yaml"]
-}
-```
-
-A local path to `edmm.schema.json` works as well.
 
 ## Checking EDMM Models
 
@@ -149,13 +163,3 @@ model.yaml: warning: components/my-app: property 'version' is not defined by typ
 
 For each model, the script ends with a summary line such as `model.yaml: 1 error, 1 warning`.
 It exits with code 1 if a model has errors, or with `--strict` also if a model has warnings, and with code 0 otherwise.
-
-The script requires Python 3.10 or later with PyYAML and jsonschema.
-Install the dependencies into a virtual environment and test all examples in [../examples](../examples/):
-
-```shell
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 check_edmm.py ../examples/*/*_edmm.yaml
-```
