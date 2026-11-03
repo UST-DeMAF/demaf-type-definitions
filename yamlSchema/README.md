@@ -5,7 +5,7 @@ This folder provides a schema and a checker for EDMM models in the YAML serializ
 - [edmm.schema.json](edmm.schema.json): a [JSON Schema](https://json-schema.org/) (using version draft-07) for the structure of EDMM models, against which YAML tools validate YAML files.
 - [check_edmm.py](check_edmm.py): a script that validates EDMM models against the schema and checks further constraints
 
-See below for usage, editor integrations, and explanations on how EDMM models are structured and how the valdation works.
+See below for usage, editor integrations, and explanations on how EDMM models are structured and how the validation works.
 
 ## Usage
 
