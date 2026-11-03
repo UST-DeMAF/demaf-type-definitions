@@ -118,7 +118,7 @@ class Checker:
             else:
                 if seen[-1] != ROOT_TYPES[kind]:
                     self.errors.append(f"{kind}/{name}: type hierarchy ends at '{seen[-1]}' instead of '{ROOT_TYPES[kind]}'")
-            self.unique_keys(f"{kind}/{name}", definition["properties"])
+            self.unique_keys(f"{kind}/{name}", definition.get("properties", []))
         return types
 
     def unique_keys(self, path: str, properties: list) -> None:
@@ -134,7 +134,7 @@ class Checker:
             current = types[current]["extends"]
         result = {}
         for name in reversed(chain):
-            result.update(entries(types[name]["properties"]))
+            result.update(entries(types[name].get("properties", [])))
         return result
 
     def check_element(self, path: str, element: dict, types: dict, kind: str) -> None:
@@ -145,8 +145,9 @@ class Checker:
         if type_name not in types:
             self.errors.append(f"{path}: type '{type_name}' is not defined in {kind}")
             return
-        self.unique_keys(path, element["properties"])
-        values = dict(entries(element["properties"]))
+        properties = element.get("properties", [])
+        self.unique_keys(path, properties)
+        values = dict(entries(properties))
         definitions = self.definitions(type_name, types)
         for key, definition in definitions.items():
             if definition["required"] and key not in values:
@@ -176,8 +177,8 @@ def schema_message(error: jsonschema.ValidationError) -> str:
         return f"{location}: an entry must be a map with exactly one key, the name of the element"
     if error.validator == "oneOf" and "operations" in error.absolute_path:
         # The default message does not name the alternatives
-        return (f"{location}: an operation must be null, the file URI of its artifact, or a map with "
-                "description, metadata, and artifacts")
+        return (f"{location}: an operation must be null, the file URI of its artifact, or a map "
+                "(with optional description, metadata, and artifacts)")
     return f"{location}: {error.message if len(error.message) <= 200 else error.message[:200] + '...'}"
 
 

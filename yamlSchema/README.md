@@ -83,10 +83,13 @@ relation_types:
 - **Properties** of the model, components, and relations assign values: each maps a property key to its value, which is a string, integer, double, or boolean (`port: 8080` of `my-app`).
 - **Property definitions** of component and relation types declare which properties the elements of the type have: each maps a property key to its `type` (`STRING`, `INTEGER`, `DOUBLE`, or `BOOLEAN`), whether it is `required`, and optionally a `default_value` of that type (`port` of `my-app-SoftwareApplication`).
   A component or relation is defined by the property definitions of its type and of all supertypes of its type, and its properties assign values to them.
-- **Operations** of components, relations, and types map the operation name to its definition, as in the EDMM YAML specification: either `~` (null) if the operation is only declared (`start` of `my-app-SoftwareApplication`), the file URI of the artifact that implements it (short form), or a map with optional `description`, `metadata`, and `artifacts` (long form, `start` of `my-app`).
+- **Operations** of components, relations, and types map the operation name to its definition, as in the EDMM YAML specification: either `~` (null) if the operation is only declared (`start` of `my-app-SoftwareApplication`), the file URI of the artifact that implements it (short form), or a map with optional `description`, `metadata`, `artifacts`, and further keys (long form, `start` of `my-app`).
   The models service writes the string `"~"` for operations of types, which the schema accepts as a short form.
 - **Artifacts** map the artifact type (e.g., `docker_image` or `file`) to the artifact, which has a `name` and may have a `fileURI` and further properties (`digest` of the image of `my-app`).
 - **Descriptions and metadata** are optional on components, relations, types, property definitions, and operations in long form: a `description` is a string or null, and `metadata` is a map of strings (`metadata` of `my-app`).
+- **Lists of elements**: components, relations, and types may omit their `properties`, `operations`, and `artifacts` (components only); the models service always writes them, if necessary as empty lists.
+- **Further keys** are allowed in artifacts and in operations in long form.
+  The model, components, relations, types, and property definitions only allow the keys described above, so that misspelled keys are detected; use `metadata` for additional information.
 - `"-"` denotes a missing type, source, target, parent type (`extends`), or file URI.
 
 ## Validation in the Editor

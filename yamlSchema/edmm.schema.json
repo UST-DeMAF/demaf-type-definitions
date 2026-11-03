@@ -182,7 +182,7 @@
       }
     },
     "operation": {
-      "description": "Definition of an operation, as in the EDMM YAML specification: null if the operation is only declared, the file URI of the implementing artifact (short form), or a map with an optional description, metadata, and artifacts (long form). The models service writes \"~\" for operations of types, which is accepted as a short form.",
+      "description": "Definition of an operation, as in the EDMM YAML specification: null if the operation is only declared, the file URI of the implementing artifact (short form), or a map with an optional description, metadata, artifacts, and further keys (long form). The models service writes \"~\" for operations of types, which is accepted as a short form.",
       "oneOf": [
         {
           "type": "null"
@@ -192,7 +192,6 @@
         },
         {
           "type": "object",
-          "additionalProperties": false,
           "properties": {
             "description": {
               "$ref": "#/definitions/description"
@@ -203,17 +202,15 @@
             "artifacts": {
               "$ref": "#/definitions/artifactList"
             }
-          }
+          },
+          "additionalProperties": true
         }
       ]
     },
     "component": {
       "type": "object",
       "required": [
-        "type",
-        "properties",
-        "operations",
-        "artifacts"
+        "type"
       ],
       "additionalProperties": false,
       "properties": {
@@ -243,9 +240,7 @@
       "required": [
         "type",
         "source",
-        "target",
-        "properties",
-        "operations"
+        "target"
       ],
       "additionalProperties": false,
       "properties": {
@@ -376,9 +371,7 @@
       "description": "A component or relation type. \"extends\" names the parent type, or is \"-\" for a root type.",
       "type": "object",
       "required": [
-        "extends",
-        "properties",
-        "operations"
+        "extends"
       ],
       "additionalProperties": false,
       "properties": {
