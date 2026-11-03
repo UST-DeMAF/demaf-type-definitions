@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/UST-DeMAF/demaf-type-definitions/main/yamlSchema/edmm.schema.json",
   "title": "DeMAF EDMM model",
-  "description": "YAML serialization of EDMM models as written by the DeMAF models service (yamlserializer package). Each list entry is a map with exactly one key, the name of the element. \"-\" denotes a missing type, source, target, parent type, or file URI.",
+  "description": "YAML serialization of EDMM models as written by the DeMAF models service (yamlserializer package), extended by the optional elements of the EDMM YAML specification (https://github.com/UST-EDMM/spec-yaml). Each list entry is a map with exactly one key, the name of the element. \"-\" denotes a missing type, source, target, parent type, or file URI.",
   "type": "object",
   "required": [
     "properties",
@@ -13,6 +13,19 @@
   ],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "description": "Version of the deployment model.",
+      "type": [
+        "string",
+        "number"
+      ]
+    },
+    "description": {
+      "$ref": "#/definitions/description"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
     "properties": {
       "$ref": "#/definitions/propertyList"
     },
@@ -101,6 +114,13 @@
         "null"
       ]
     },
+    "metadata": {
+      "description": "Map of strings, as in the EDMM YAML specification.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "propertyList": {
       "description": "Properties of a model, component, or relation: maps from the property key to its value.",
       "type": "array",
@@ -118,7 +138,7 @@
       }
     },
     "artifactList": {
-      "description": "Artifacts: maps from the artifact type (e.g., docker_image, file) to the name and, optionally, the file URI of the artifact.",
+      "description": "Artifacts: maps from the artifact type (e.g., docker_image, file) to the artifact, which has a name and may have a file URI and further properties.",
       "type": "array",
       "items": {
         "allOf": [
@@ -131,7 +151,6 @@
               "required": [
                 "name"
               ],
-              "additionalProperties": false,
               "properties": {
                 "name": {
                   "type": "string"
@@ -139,14 +158,15 @@
                 "fileURI": {
                   "type": "string"
                 }
-              }
+              },
+              "additionalProperties": true
             }
           }
         ]
       }
     },
     "operationList": {
-      "description": "Operations of a component or relation: maps from the operation name to its artifacts.",
+      "description": "Operations of a component, relation, or type: maps from the operation name to its definition.",
       "type": "array",
       "items": {
         "allOf": [
@@ -155,26 +175,42 @@
           },
           {
             "additionalProperties": {
-              "type": "object",
-              "required": [
-                "artifacts"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "artifacts": {
-                  "$ref": "#/definitions/artifactList"
-                }
-              }
+              "$ref": "#/definitions/operation"
             }
           }
         ]
       }
     },
+    "operation": {
+      "description": "Definition of an operation, as in the EDMM YAML specification: null if the operation is only declared, the file URI of the implementing artifact (short form), or a map with an optional description, metadata, and artifacts (long form). The models service writes \"~\" for operations of types, which is accepted as a short form.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "$ref": "#/definitions/description"
+            },
+            "metadata": {
+              "$ref": "#/definitions/metadata"
+            },
+            "artifacts": {
+              "$ref": "#/definitions/artifactList"
+            }
+          }
+        }
+      ]
+    },
     "component": {
       "type": "object",
       "required": [
         "type",
-        "description",
         "properties",
         "operations",
         "artifacts"
@@ -187,6 +223,9 @@
         },
         "description": {
           "$ref": "#/definitions/description"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         },
         "properties": {
           "$ref": "#/definitions/propertyList"
@@ -203,7 +242,6 @@
       "type": "object",
       "required": [
         "type",
-        "description",
         "source",
         "target",
         "properties",
@@ -217,6 +255,9 @@
         },
         "description": {
           "$ref": "#/definitions/description"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         },
         "source": {
           "type": "string",
@@ -250,6 +291,12 @@
             "DOUBLE",
             "BOOLEAN"
           ]
+        },
+        "description": {
+          "$ref": "#/definitions/description"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         },
         "required": {
           "type": "boolean"
@@ -330,7 +377,6 @@
       "type": "object",
       "required": [
         "extends",
-        "description",
         "properties",
         "operations"
       ],
@@ -342,6 +388,9 @@
         },
         "description": {
           "$ref": "#/definitions/description"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         },
         "properties": {
           "type": "array",
@@ -359,23 +408,7 @@
           }
         },
         "operations": {
-          "description": "Operations of a type only declare the operation name, which the models service maps to the string \"~\" (null is accepted as well).",
-          "type": "array",
-          "items": {
-            "allOf": [
-              {
-                "$ref": "#/definitions/namedEntry"
-              },
-              {
-                "additionalProperties": {
-                  "enum": [
-                    "~",
-                    null
-                  ]
-                }
-              }
-            ]
-          }
+          "$ref": "#/definitions/operationList"
         }
       }
     }

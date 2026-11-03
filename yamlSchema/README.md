@@ -8,15 +8,19 @@ This folder provides a schema and a checker for EDMM models in the YAML serializ
 ## Structure of EDMM Models
 
 An EDMM model has the top-level keys `properties`, `components`, `relations`, `component_types`, and `relation_types`, each with a list as value, which may be empty.
-Each entry of these lists is a map with exactly one key, the name of the element, whose value defines the element.
+Optionally, it has a `version`, a `description`, and `metadata`.
+Each entry of the lists is a map with exactly one key, the name of the element, whose value defines the element.
 The following example shows a complete EDMM model with an application that connects to a database:
 
 ```yaml
+version: "1.0"
+description: "An application that connects to a database"
 properties: []
 components:
   - my-app:
       type: "my-app-SoftwareApplication"
-      description: null
+      metadata:
+        team: "example"
       properties:
         - port: 8080
       operations:
@@ -28,16 +32,16 @@ components:
         - docker_image:
             name: "example/my-app:1.0"
             fileURI: "https://hub.docker.com/r/example/my-app"
+            digest: "sha256:0123abcd"
   - my-database:
       type: "DatabaseSystem"
-      description: null
+      description: "The database of my-app"
       properties: []
       operations: []
       artifacts: []
 relations:
   - my-app_ConnectsTo_my-database:
       type: "ConnectsTo"
-      description: null
       source: "my-app"
       target: "my-database"
       properties: []
@@ -45,38 +49,33 @@ relations:
 component_types:
   - BaseType:
       extends: "-"
-      description: null
       properties: []
       operations: []
   - SoftwareApplication:
       extends: "BaseType"
-      description: null
       properties: []
       operations: []
   - DatabaseSystem:
       extends: "SoftwareApplication"
-      description: null
       properties: []
       operations: []
   - my-app-SoftwareApplication:
       extends: "SoftwareApplication"
-      description: null
       properties:
         - port:
             type: "INTEGER"
+            description: "Port on which my-app listens"
             required: true
             default_value: 8080
       operations:
-        - start: "~"
+        - start: ~
 relation_types:
   - DependsOn:
       extends: "-"
-      description: null
       properties: []
       operations: []
   - ConnectsTo:
       extends: "DependsOn"
-      description: null
       properties: []
       operations: []
 ```
@@ -84,9 +83,10 @@ relation_types:
 - **Properties** of the model, components, and relations assign values: each maps a property key to its value, which is a string, integer, double, or boolean (`port: 8080` of `my-app`).
 - **Property definitions** of component and relation types declare which properties the elements of the type have: each maps a property key to its `type` (`STRING`, `INTEGER`, `DOUBLE`, or `BOOLEAN`), whether it is `required`, and optionally a `default_value` of that type (`port` of `my-app-SoftwareApplication`).
   A component or relation is defined by the property definitions of its type and of all supertypes of its type, and its properties assign values to them.
-- **Operations** of components and relations map the operation name to the `artifacts` that implement it.
-  Operations of types only declare the operation name, which the models service maps to the string `"~"`.
-- **Artifacts** map the artifact type (e.g., `docker_image` or `file`) to the `name` of the artifact and optionally its `fileURI`.
+- **Operations** of components, relations, and types map the operation name to its definition, as in the EDMM YAML specification: either `~` (null) if the operation is only declared (`start` of `my-app-SoftwareApplication`), the file URI of the artifact that implements it (short form), or a map with optional `description`, `metadata`, and `artifacts` (long form, `start` of `my-app`).
+  The models service writes the string `"~"` for operations of types, which the schema accepts as a short form.
+- **Artifacts** map the artifact type (e.g., `docker_image` or `file`) to the artifact, which has a `name` and may have a `fileURI` and further properties (`digest` of the image of `my-app`).
+- **Descriptions and metadata** are optional on components, relations, types, property definitions, and operations in long form: a `description` is a string or null, and `metadata` is a map of strings (`metadata` of `my-app`).
 - `"-"` denotes a missing type, source, target, parent type (`extends`), or file URI.
 
 ## Validation in the Editor

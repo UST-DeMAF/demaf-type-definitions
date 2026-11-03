@@ -174,6 +174,10 @@ def schema_message(error: jsonschema.ValidationError) -> str:
     if error.validator in ("minProperties", "maxProperties"):
         # The default message repeats the complete element
         return f"{location}: an entry must be a map with exactly one key, the name of the element"
+    if error.validator == "oneOf" and "operations" in error.absolute_path:
+        # The default message does not name the alternatives
+        return (f"{location}: an operation must be null, the file URI of its artifact, or a map with "
+                "description, metadata, and artifacts")
     return f"{location}: {error.message if len(error.message) <= 200 else error.message[:200] + '...'}"
 
 
