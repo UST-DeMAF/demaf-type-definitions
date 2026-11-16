@@ -630,11 +630,11 @@ components:
             name: "opensearchproject/opensearch:2.16.0"
             fileURI: "https://hub.docker.com/r/opensearchproject/opensearch"
 relations:
-  - jaeger_ConnectsTo_prometheus-server:
+  - jaeger_ConnectsTo_prometheus:
       type: "ConnectsTo"
       description: null
       source: "jaeger"
-      target: "prometheus-server"
+      target: "prometheus"
       properties: []
       operations: []
   - accountingservice_ConnectsTo_kafka:
@@ -1043,11 +1043,11 @@ relations:
       target: "opensearch"
       properties: []
       operations: []
-  - otelcol_ConnectsTo_prometheus-server:
+  - otelcol_ConnectsTo_prometheus:
       type: "ConnectsTo"
       description: null
       source: "otelcol"
-      target: "prometheus-server"
+      target: "prometheus"
       properties: []
       operations: []
   - otelcol_ConnectsTo_jaeger:
@@ -1057,18 +1057,18 @@ relations:
       target: "jaeger"
       properties: []
       operations: []
-  - prometheus-server_ConnectsTo_otelcol:
+  - prometheus_ConnectsTo_otelcol:
       type: "ConnectsTo"
       description: null
-      source: "prometheus-server"
+      source: "prometheus"
       target: "otelcol"
       properties: []
       operations: []
-  - grafana_ConnectsTo_prometheus-server:
+  - grafana_ConnectsTo_prometheus:
       type: "ConnectsTo"
       description: null
       source: "grafana"
-      target: "prometheus-server"
+      target: "prometheus"
       properties: []
       operations: []
   - grafana_ConnectsTo_jaeger:
