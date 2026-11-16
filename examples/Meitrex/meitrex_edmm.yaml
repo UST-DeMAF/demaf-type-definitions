@@ -2305,15 +2305,15 @@ component_types:
             default_value: "6379:6379"
         - REDIS_MASTER_HOST:
             type: "STRING"
-            required: true
+            required: false
             default_value: "redis-master-0.redis-headless.default.svc.cluster.local"
         - REDIS_MASTER_PASSWORD_FILE:
             type: "STRING"
-            required: true
+            required: false
             default_value: "/opt/bitnami/redis/secrets/redis-password"
         - REDIS_MASTER_PORT_NUMBER:
             type: "STRING"
-            required: true
+            required: false
             default_value: "6379"
       operations: []
   - Storage:
