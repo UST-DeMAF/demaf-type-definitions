@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
+# Meitrex EDMM Model (v1.1); changes: ../CHANGELOG.md
 ---
 properties: []
 components: 
@@ -1147,11 +1149,11 @@ relations:
       target: "gits-flashcard-service"
       properties: []
       operations: []
-  - dapr-sidecar-injector_ConnectsTo_graphql_gateway:
+  - dapr-sidecar-injector_ConnectsTo_gits-gateway:
       type: "ConnectsTo"
       description: null
       source: "dapr-sidecar-injector"
-      target: "graphql_gateway"
+      target: "gits-gateway"
       properties: []
       operations: []
   - dapr-sidecar-injector_ConnectsTo_gits-media-service:
@@ -2303,15 +2305,15 @@ component_types:
             default_value: "6379:6379"
         - REDIS_MASTER_HOST:
             type: "STRING"
-            required: true
+            required: false
             default_value: "redis-master-0.redis-headless.default.svc.cluster.local"
         - REDIS_MASTER_PASSWORD_FILE:
             type: "STRING"
-            required: true
+            required: false
             default_value: "/opt/bitnami/redis/secrets/redis-password"
         - REDIS_MASTER_PORT_NUMBER:
             type: "STRING"
-            required: true
+            required: false
             default_value: "6379"
       operations: []
   - Storage:

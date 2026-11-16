@@ -2,11 +2,11 @@
 
 Each example consists of
 
-- a technology-specific deployment model in `deploymentModel/`, which is taken from the source listed below, and
-- the corresponding EDMM model (`*_edmm.yaml`) created with the DeMAF.
+- A technology-specific deployment model in `deploymentModel/`, which is taken from the source listed below, and
+- the corresponding EDMM model (`*_edmm.yaml`), versioned in [CHANGELOG.md](CHANGELOG.md).
 
 The deployment models are subject to the licenses of their sources listed below, not to the license of this repository.
-The EDMM models and the TOSCA models in [winery](winery/) generated from them were created with the DeMAF and are licensed under the [Apache License 2.0](../LICENSE) of this repository.
+The EDMM models and the TOSCA models in [winery](winery/) generated from them are licensed under the [Apache License 2.0](../LICENSE) of this repository.
 
 | Example | Deployment technology | Source | License | Modifications |
 | --- | --- | --- | --- | --- |

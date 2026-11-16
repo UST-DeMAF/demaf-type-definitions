@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
+# OTEL-Shop-Terraform EDMM Model (v1.1); changes: ../CHANGELOG.md
 ---
 properties: []
 components: 
@@ -224,10 +226,10 @@ components:
         - hostname: "frontendproxy"
         - memory: "50"
         - restart: "unless-stopped"
-        - ports.external: "1000"
-        - ports.external: "8080"
-        - ports.internal: "1000"
-        - ports.internal: "8080"
+        - ports.0.external: "1000"
+        - ports.1.external: "8080"
+        - ports.0.internal: "1000"
+        - ports.1.internal: "8080"
         - FRONTEND_PORT: "8080"
         - FRONTEND_HOST: "frontend"
         - LOCUST_WEB_HOST: "loadgenerator"
@@ -525,8 +527,8 @@ components:
         - restart: "unless-stopped"
         - network_mode: "bridge"
         - networks_advanced.name: "opentelemetry-demo"
-        - ports.internal: "16686"
-        - ports.internal: "4317"
+        - ports.0.internal: "16686"
+        - ports.1.internal: "4317"
         - METRICS_STORAGE_TYPE: "prometheus"
       operations: []
       artifacts:
@@ -543,10 +545,10 @@ components:
         - memory: "100"
         - restart: "unless-stopped"
         - GF_INSTALL_PLUGINS: "grafana-opensearch-datasource"
-        - volumes.container_path: "/etc/grafana/provisioning/"
-        - volumes.host_path: "abspath(\"files/grafana/provisioning/\")"
-        - volumes.container_path: "/etc/grafana/grafana.ini"
-        - volumes.host_path: "abspath(\"files/grafana/grafana.ini\")"
+        - volumes.1.container_path: "/etc/grafana/provisioning/"
+        - volumes.1.host_path: "abspath(\"files/grafana/provisioning/\")"
+        - volumes.0.container_path: "/etc/grafana/grafana.ini"
+        - volumes.0.host_path: "abspath(\"files/grafana/grafana.ini\")"
         - ports.internal: "3000"
       operations: []
       artifacts:
@@ -566,14 +568,14 @@ components:
         - restart: "unless-stopped"
         - command: "--config=/etc/otelcol-config.yml --config=/etc/otelcol-config-extras.yml"
         - user: "0:0"
-        - volumes.host_path: "/var/run/docker.sock"
-        - volumes.container_path: "/var/run/docker.sock"
-        - volumes.host_path: "abspath(\"files/otelcollector/otelcol-config-extras.yml\")"
-        - volumes.container_path: "/etc/otelcol-config-extras.yml"
-        - volumes.host_path: "abspath(\"files/otelcollector/otelcol-config.yml\")"
-        - volumes.container_path: "/etc/otelcol-config.yml"
-        - ports.internal: "4317"
-        - ports.internal: "4318"
+        - volumes.2.host_path: "/var/run/docker.sock"
+        - volumes.2.container_path: "/var/run/docker.sock"
+        - volumes.1.host_path: "abspath(\"files/otelcollector/otelcol-config-extras.yml\")"
+        - volumes.1.container_path: "/etc/otelcol-config-extras.yml"
+        - volumes.0.host_path: "abspath(\"files/otelcollector/otelcol-config.yml\")"
+        - volumes.0.container_path: "/etc/otelcol-config.yml"
+        - ports.0.internal: "4317"
+        - ports.1.internal: "4318"
         - ENVOY_PORT: "8080"
         - OTEL_COLLECTOR_HOST: "otelcol"
         - OTEL_COLLECTOR_PORT_GRPC: "4317"
@@ -628,11 +630,11 @@ components:
             name: "opensearchproject/opensearch:2.16.0"
             fileURI: "https://hub.docker.com/r/opensearchproject/opensearch"
 relations:
-  - jaeger_ConnectsTo_prometheus-server:
+  - jaeger_ConnectsTo_prometheus:
       type: "ConnectsTo"
       description: null
       source: "jaeger"
-      target: "prometheus-server"
+      target: "prometheus"
       properties: []
       operations: []
   - accountingservice_ConnectsTo_kafka:
@@ -1041,11 +1043,11 @@ relations:
       target: "opensearch"
       properties: []
       operations: []
-  - otelcol_ConnectsTo_prometheus-server:
+  - otelcol_ConnectsTo_prometheus:
       type: "ConnectsTo"
       description: null
       source: "otelcol"
-      target: "prometheus-server"
+      target: "prometheus"
       properties: []
       operations: []
   - otelcol_ConnectsTo_jaeger:
@@ -1055,18 +1057,18 @@ relations:
       target: "jaeger"
       properties: []
       operations: []
-  - prometheus-server_ConnectsTo_otelcol:
+  - prometheus_ConnectsTo_otelcol:
       type: "ConnectsTo"
       description: null
-      source: "prometheus-server"
+      source: "prometheus"
       target: "otelcol"
       properties: []
       operations: []
-  - grafana_ConnectsTo_prometheus-server:
+  - grafana_ConnectsTo_prometheus:
       type: "ConnectsTo"
       description: null
       source: "grafana"
-      target: "prometheus-server"
+      target: "prometheus"
       properties: []
       operations: []
   - grafana_ConnectsTo_jaeger:
@@ -1307,19 +1309,19 @@ component_types:
             type: "STRING"
             required: false
             default_value: "grafana-opensearch-datasource"
-        - volumes.host_path:
+        - volumes.1.host_path:
             type: "STRING"
             required: false
             default_value: "abspath(\"files/grafana/provisioning/\")"
-        - volumes.container_path:
+        - volumes.1.container_path:
             type: "STRING"
             required: false
             default_value: "/etc/grafana/provisioning/"
-        - volumes.host_path:
+        - volumes.0.host_path:
             type: "STRING"
             required: false
             default_value: "abspath(\"files/grafana/grafana.ini\")"
-        - volumes.container_path:
+        - volumes.0.container_path:
             type: "STRING"
             required: false
             default_value: "/etc/grafana/grafana.ini"
@@ -1356,11 +1358,11 @@ component_types:
             type: "STRING"
             required: false
             default_value: "opentelemetry-demo"
-        - ports.internal:
+        - ports.0.internal:
             type: "STRING"
             required: false
             default_value: "16686"
-        - ports.internal:
+        - ports.1.internal:
             type: "STRING"
             required: false
             default_value: "4317"
@@ -1409,35 +1411,35 @@ component_types:
             type: "STRING"
             required: false
             default_value: "0:0"
-        - volumes.host_path:
+        - volumes.2.host_path:
             type: "STRING"
             required: false
             default_value: "/var/run/docker.sock"
-        - volumes.container_path:
+        - volumes.2.container_path:
             type: "STRING"
             required: false
             default_value: "/var/run/docker.sock"
-        - volumes.host_path:
+        - volumes.1.host_path:
             type: "STRING"
             required: false
             default_value: "abspath(\"files/otelcollector/otelcol-config-extras.yml\")"
-        - volumes.container_path:
+        - volumes.1.container_path:
             type: "STRING"
             required: false
             default_value: "/etc/otelcol-config-extras.yml"
-        - volumes.host_path:
+        - volumes.0.host_path:
             type: "STRING"
             required: false
             default_value: "abspath(\"files/otelcollector/otelcol-config.yml\")"
-        - volumes.container_path:
+        - volumes.0.container_path:
             type: "STRING"
             required: false
             default_value: "/etc/otelcol-config.yml"
-        - ports.internal:
+        - ports.0.internal:
             type: "STRING"
             required: false
             default_value: "4317"
-        - ports.internal:
+        - ports.1.internal:
             type: "STRING"
             required: false
             default_value: "4318"
@@ -2164,19 +2166,19 @@ component_types:
             type: "STRING"
             required: false
             default_value: "unless-stopped"
-        - ports.internal:
+        - ports.0.internal:
             type: "STRING"
             required: false
             default_value: "1000"
-        - ports.external:
+        - ports.0.external:
             type: "STRING"
             required: false
             default_value: "1000"
-        - ports.internal:
+        - ports.1.internal:
             type: "STRING"
             required: false
             default_value: "8080"
-        - ports.external:
+        - ports.1.external:
             type: "STRING"
             required: false
             default_value: "8080"
@@ -2536,7 +2538,7 @@ component_types:
             type: "STRING"
             required: false
             default_value: "mongo_product_catalog"
-        - MONGO_HOST:
+        - MONGO_HOSTNAME:
             type: "STRING"
             required: false
             default_value: "mongo"
