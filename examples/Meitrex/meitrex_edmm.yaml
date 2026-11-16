@@ -1149,11 +1149,11 @@ relations:
       target: "gits-flashcard-service"
       properties: []
       operations: []
-  - dapr-sidecar-injector_ConnectsTo_graphql_gateway:
+  - dapr-sidecar-injector_ConnectsTo_gits-gateway:
       type: "ConnectsTo"
       description: null
       source: "dapr-sidecar-injector"
-      target: "graphql_gateway"
+      target: "gits-gateway"
       properties: []
       operations: []
   - dapr-sidecar-injector_ConnectsTo_gits-media-service:

@@ -11,3 +11,4 @@ They are versioned as a set:
 
 ## v1.1
 
+- **Meitrex**: The relation `dapr-sidecar-injector_ConnectsTo_graphql_gateway` targeted `graphql_gateway`, which is no component; the component is `gits-gateway` (type `graphql_gateway-SoftwareApplication`, image `ghcr.io/it-rex-platform/graphql_gateway`, defined in `deploymentModel/gateway.tf` like the other dapr-enabled services the injector connects to). The relation now targets `gits-gateway` and is named accordingly. Found by `check_edmm.py` and the comparison script of the LLM-transformation evaluation (2026-11-16). Metrics unchanged: the actual model contains no injector-to-gateway relation under either name, so the relation stays a false negative.
