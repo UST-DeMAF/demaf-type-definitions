@@ -1589,6 +1589,31 @@ component_types:
         - OTEL_RESOURCE_ATTRIBUTES:
             type: "STRING"
             required: false
+            default_value: "service.name=accountingservice,service.namespace=opentelemetry-demo,service.version=1.11.1"
+        - OTEL_SERVICE_NAME:
+            type: "STRING"
+            required: false
+            default_value: "accountingservice"
+        - KAFKA_SERVICE_ADDR:
+            type: "STRING"
+            required: false
+            default_value: "kafka:9092"
+      operations: []
+  - adservice-SoftwareApplication:
+      extends: "SoftwareApplication"
+      description: null
+      properties: 
+        - OTEL_EXPORTER_OTLP_ENDPOINT:
+            type: "STRING"
+            required: false
+            default_value: "http://otelcol:4318"
+        - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+            type: "STRING"
+            required: false
+            default_value: "cumulative"
+        - OTEL_RESOURCE_ATTRIBUTES:
+            type: "STRING"
+            required: false
             default_value: "service.name=adservice,service.namespace=opentelemetry-demo,service.version=1.11.1"
         - OTEL_SERVICE_NAME:
             type: "STRING"
