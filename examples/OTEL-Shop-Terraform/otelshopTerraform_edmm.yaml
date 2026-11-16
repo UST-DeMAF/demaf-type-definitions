@@ -2538,7 +2538,7 @@ component_types:
             type: "STRING"
             required: false
             default_value: "mongo_product_catalog"
-        - MONGO_HOST:
+        - MONGO_HOSTNAME:
             type: "STRING"
             required: false
             default_value: "mongo"
