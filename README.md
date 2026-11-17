@@ -2,7 +2,7 @@
 
 In this repository we provide the definitions of abstract component and relation types the DeMAF uses to create EDMM models either as
 
-1. [EDMM Yaml files](edmm/)
+1. [EDMM YAML files](edmm/)
 1. or corresponding definitions of [TOSCA node types and relationship types](tosca/)
 
 The DeMAF Type Definitions are loosely based on a mix of

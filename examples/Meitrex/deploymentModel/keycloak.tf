@@ -2,7 +2,13 @@ resource "helm_release" "keycloak" {
   name       = "keycloak"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "keycloak"
+  version    = "24.7.7"
   namespace  = kubernetes_namespace.gits.metadata[0].name
+
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
 
   set {
     name  = "auth.adminUser"

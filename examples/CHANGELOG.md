@@ -6,7 +6,26 @@ The example EDMM models (`*_edmm.yaml`) are versioned as a set:
 | --- | --- | --- |
 | v1 | git tag `edmm-model-v1` | The models as published with the supplemental material of the CoopIS 2025 evaluation ([doi:10.5281/zenodo.15882026](https://doi.org/10.5281/zenodo.15882026)), byte-identical. |
 | v1.1 | git tag `edmm-model-v1.1` | Consistency fixes only, based on errors and warnings reported by the EDMM YAML schema and the check script. Each fix is logged below with its evidence in the deployment model and what found it. |
+| v1.2 | git tag `edmm-model-v1.2` | Helm chart versions pinned in the deployment models to the versions of the rendered templates in `helmTemplates/`. The EDMM models are unchanged. |
 | v2 | planned | Scope extension (more properties, new cases). |
+
+## v1.2 Pin Helm Chart Versions
+
+The deployment models of Meitrex, T2Store-Microservices, and T2Store-Modulith installed 16 of their 17 Helm releases without a chart version, so they installed whatever version was current, which differs from the versions the EDMM models describe.
+Each release is now pinned to the chart version of its rendered template in `helmTemplates/` (from the `helm.sh/chart` label; for Dapr, whose template has no chart label, from the version of its images and its app version, which equals the chart version).
+
+| Example | Releases | Chart | Version | Pinned in |
+| --- | --- | --- | --- | --- |
+| Meitrex | `content-`, `course-`, `flashcard-`, `media-`, `quiz-`, `reward-`, `skilllevel-`, `user-service-db` | `postgresql` | 16.7.17 | `version` of each `helm_release` in `deploymentModel/*.tf` |
+| Meitrex | `keycloak` | `keycloak` | 24.7.7 | `deploymentModel/keycloak.tf` |
+| Meitrex | `minio` | `minio` | 17.0.11 | `deploymentModel/media_service.tf` |
+| Meitrex | `redis` | `redis` | 21.2.10 | `deploymentModel/dapr.tf` |
+| Meitrex | `dapr` | `dapr` | 1.15.6 | `deploymentModel/dapr.tf` |
+| Meitrex | `keel` | `keel` | 1.0.5 | `deploymentModel/keel.tf` |
+| T2Store-Microservices | `mongo-cart`, `mongo-order` | `mongodb` | 16.5.29 | `--version` in `deploymentModel/azure-start.sh` |
+| T2Store-Modulith | `mongo` | `mongodb` | 16.5.29 | `--version` in `deploymentModel/azure-start.sh` |
+
+Since chart 24.7.7 rejects the custom Keycloak image of Meitrex unless insecure images are allowed, `deploymentModel/keycloak.tf` now sets `global.security.allowInsecureImages` to `true`, as the Meitrex repository does since its commit [`10b62e9`](https://github.com/MEITREX/infrastructure/commit/10b62e9).
 
 ## v1.1 Fix Schema Errors and Warnings
 

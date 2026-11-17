@@ -111,6 +111,7 @@ resource "helm_release" "course_service_db" {
   name       = "course-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
+  version    = "16.7.17"
   namespace  = kubernetes_namespace.gits.metadata[0].name
 
   set {

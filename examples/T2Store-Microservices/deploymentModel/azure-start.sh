@@ -12,8 +12,8 @@ az aks get-credentials --resource-group t2store-resources --name t2store-aks1
 
 # Install t2-store
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install mongo-cart --set auth.enabled=false bitnami/mongodb
-helm install mongo-order --set auth.enabled=false bitnami/mongodb
+helm install mongo-cart --set auth.enabled=false bitnami/mongodb --version 16.5.29
+helm install mongo-order --set auth.enabled=false bitnami/mongodb --version 16.5.29
 helm install kafka bitnami/kafka --version 18.5.0 
 
 kubectl create -f k8/.
