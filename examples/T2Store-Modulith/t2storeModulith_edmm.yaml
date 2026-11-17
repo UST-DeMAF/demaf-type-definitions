@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
-# T2Store-Modulith EDMM Model (v1.1); changes: ../CHANGELOG.md
+# T2Store-Modulith EDMM Model (v1.2); changes: ../CHANGELOG.md
 ---
 properties: []
 components:

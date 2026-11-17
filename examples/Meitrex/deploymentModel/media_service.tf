@@ -124,6 +124,7 @@ resource "helm_release" "media_service_db" {
   name       = "media-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
+  version    = "16.7.17"
   namespace  = kubernetes_namespace.gits.metadata[0].name
 
   set {
@@ -157,6 +158,7 @@ resource "helm_release" "minio" {
   name       = "minio"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "minio"
+  version    = "17.0.11"
   namespace  = kubernetes_namespace.gits.metadata[0].name
 
   set {

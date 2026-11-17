@@ -2,6 +2,7 @@ resource "helm_release" "dapr" {
   name       = "dapr"
   repository = "https://dapr.github.io/helm-charts"
   chart      = "dapr"
+  version    = "1.15.6"
   namespace  = kubernetes_namespace.gits.metadata[0].name
 }
 
@@ -15,6 +16,7 @@ resource "helm_release" "redis" {
   name       = "redis"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "redis"
+  version    = "21.2.10"
   namespace  = kubernetes_namespace.gits.metadata[0].name
 
   set {

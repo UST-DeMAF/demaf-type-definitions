@@ -12,6 +12,6 @@ az aks get-credentials --resource-group t2store-resources --name t2store-aks1
 
 # Install t2-store
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install mongo --set auth.enabled=false bitnami/mongodb
+helm install mongo --set auth.enabled=false bitnami/mongodb --version 16.5.29
 
 kubectl create -f k8/.

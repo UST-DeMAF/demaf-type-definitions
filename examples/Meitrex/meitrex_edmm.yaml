@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
-# Meitrex EDMM Model (v1.1); changes: ../CHANGELOG.md
+# Meitrex EDMM Model (v1.2); changes: ../CHANGELOG.md
 ---
 properties: []
 components: 
