@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
-# OTEL-Shop-Ansible EDMM Model (v1.2); changes: ../CHANGELOG.md
+# OTEL-Shop-Ansible EDMM Model (v1.3); changes: ../CHANGELOG.md
 ---
 properties: []
 components: 
@@ -13,24 +13,6 @@ components:
             artifacts: 
               - bash:
                   name: "/bin/sh docker network create -d bridge opentelemetry-demo"
-                  fileURI: "-"
-        - Ensure services are started:
-            artifacts:
-              - launchd:
-                  name: "[accountingservice, adservice, cartservice, checkoutservice,\
-                    \ emailservice, flagd, frauddetectionserice, frontend, frontendproxy,\
-                    \ grafana, imageprovider, jaeger, kafka, loadgenerator, mongo, opensearch,\
-                    \ otelcol, paymentservice, productcatalogservice, prometheus, quoteservice,\
-                    \ recommendationservice, shippingservice, valkeycart] started"
-                  fileURI: "-"
-        - Ensure services are enabled to start at boot:
-            artifacts:
-              - launchd:
-                  name: "[accountingservice, adservice, cartservice, checkoutservice,\
-                    \ emailservice, flagd, frauddetectionserice, frontend, frontendproxy,\
-                    \ grafana, imageprovider, jaeger, kafka, loadgenerator, mongo, opensearch,\
-                    \ otelcol, paymentservice, productcatalogservice, prometheus, quoteservice,\
-                    \ recommendationservice, shippingservice, valkeycart] enabled"
                   fileURI: "-"
       artifacts: []
   - accountingservice:
@@ -713,23 +695,23 @@ components:
         - Pull the latest Docker image:
             artifacts:
               - docker_image:
-                  name: "ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
-                  fileURI: "ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
+                  name: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
+                  fileURI: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
               - bash:
-                  name: "/bin/sh docker pull ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
+                  name: "/bin/sh docker pull ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
                   fileURI: "-"
         - Deploy Service:
             artifacts:
               - docker_image:
-                  name: "ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
-                  fileURI: "ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
+                  name: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
+                  fileURI: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
               - bash:
-                  name: "/bin/sh docker run ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
+                  name: "/bin/sh docker run ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
                   fileURI: "-"
       artifacts:
         - docker_image:
-            name: "ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
-            fileURI: "ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice"
+            name: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
+            fileURI: "ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice"
   - prometheus:
       type: "prometheus-SoftwareApplication"
       description: null

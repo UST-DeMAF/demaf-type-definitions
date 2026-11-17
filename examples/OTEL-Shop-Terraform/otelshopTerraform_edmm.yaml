@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
-# OTEL-Shop-Terraform EDMM Model (v1.2); changes: ../CHANGELOG.md
+# OTEL-Shop-Terraform EDMM Model (v1.3); changes: ../CHANGELOG.md
 ---
 properties: []
 components: 

@@ -7,7 +7,15 @@ The example EDMM models (`*_edmm.yaml`) are versioned as a set:
 | v1 | git tag `edmm-model-v1` | The models as published with the supplemental material of the CoopIS 2025 evaluation ([doi:10.5281/zenodo.15882026](https://doi.org/10.5281/zenodo.15882026)), byte-identical. |
 | v1.1 | git tag `edmm-model-v1.1` | Consistency fixes only, based on errors and warnings reported by the EDMM YAML schema and the check script. Each fix is logged below with its evidence in the deployment model and what found it. |
 | v1.2 | git tag `edmm-model-v1.2` | Helm chart versions pinned in the deployment models to the versions of the rendered templates in `helmTemplates/`. The EDMM models are unchanged. |
+| v1.3 | git tag `edmm-model-v1.3` | Repair of the OTEL-Shop-Ansible deployment model and the corresponding changes in its EDMM model. |
 | v2 | planned | Scope extension (more properties, new cases). |
+
+## v1.3 Repair OTEL-Shop-Ansible
+
+- **OTEL-Shop-Ansible**: The role `productcatalogservice` ran the official image `ghcr.io/open-telemetry/demo:1.11.1-productcatalogservice`, which does not use the MongoDB that the role configures (`MONGO_*` variables) and that the example adds to the demo. The role now runs our image `ghcr.io/ust-demaf/demo:1.11.1-productcatalogservice` (`image_name` in `deploymentModel/roles/productcatalogservice/defaults/main.yaml`), like the OTEL-Shop-Kubernetes and OTEL-Shop-Terraform examples. In the EDMM model, the eight image references in the artifacts and operations of `productcatalogservice` changed accordingly.
+- **OTEL-Shop-Ansible**: The two post tasks of `deploymentModel/main.yaml`, "Ensure services are started" and "Ensure services are enabled to start at boot", used `community.general.launchd`, which manages launchd services on macOS hosts, not the Docker containers that the roles create; their lists also contained `frauddetectionserice` instead of `frauddetectionservice`. The roles already start the containers with `docker_container`, and `restart_policy: unless-stopped` restarts them at boot, so both post tasks are removed. In the EDMM model, the two corresponding operations of `localhost` are removed.
+
+**Known issue**: In OTEL-Shop-Ansible and OTEL-Shop-Terraform, `frontendproxy` and `loadgenerator` depend on each other (role dependencies in `roles/*/meta/main.yaml`, `depends_on` in `main.tf`), because the two services connect to each other. Ansible and Terraform reject this cycle (`ansible-playbook --syntax-check`, `terraform validate`), so these two deployment models cannot be deployed as they are. The EDMM models are not affected. The cycle will be resolved in v2.
 
 ## v1.2 Pin Helm Chart Versions
 
