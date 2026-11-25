@@ -3,6 +3,7 @@ tosca_definitions_version: demaf
 relationship_types:
   demaf.relationships.HostedOn:
     derived_from: demaf.relationships.DependsOn
+    description: "The source component is deployed on the target component and uses resources that the target component provides."
     metadata:
       targetNamespace: "demaf.relationships"
       abstract: "false"

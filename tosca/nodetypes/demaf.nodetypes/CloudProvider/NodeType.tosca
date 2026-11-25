@@ -3,6 +3,7 @@ tosca_definitions_version: demaf
 node_types:
   demaf.nodetypes.CloudProvider:
     derived_from: demaf.nodetypes.BaseType
+    description: "The cloud infrastructure of a provider, on which cloud services and other resources are deployed on demand."
     metadata:
       targetNamespace: "demaf.nodetypes"
       abstract: "false"

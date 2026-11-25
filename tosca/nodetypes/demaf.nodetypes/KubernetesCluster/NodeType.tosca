@@ -3,6 +3,7 @@ tosca_definitions_version: demaf
 node_types:
   demaf.nodetypes.KubernetesCluster:
     derived_from: demaf.nodetypes.ContainerPlatform
+    description: "A set of machines, called nodes, managed by a Kubernetes control plane, on which components are deployed as pods."
     metadata:
       targetNamespace: "demaf.nodetypes"
       abstract: "false"
