@@ -9,3 +9,4 @@ Changes to the example models are listed in [examples/CHANGELOG.md](examples/CHA
 - `ContainerPlatform` derives from `Platform` instead of `BaseType`.
 - `localhost-type` is removed. It is not an abstract type but the type the DeMAF generates for the Ansible host `localhost`; the OTEL-Shop-Ansible example model still defines it.
 - The TOSCA types in [tosca/](tosca/) are aligned with the EDMM types: they get the same descriptions and changes, and `Compute` and `Platform` are added.
+- The README lists all descriptions and shows the type hierarchies as Mermaid diagrams instead of the images in [diagrams/](diagrams/), which are no longer maintained.
