@@ -22,14 +22,14 @@ provider "docker" {
 }
 ```
 
-Also, you have to set the ```project_path``` variable to the main directory of the open-telemetry-demo.
+Also, you have to set the ```project_path``` variable to the directory of this deployment model, which contains the `main.tf`.
 
-If the open telemetry demo is in your user documents folder your path variable should look like this.
+If this repository is in your user documents folder your path variable should look like this.
 
 ```shell
 variable "project_path" {
   type = string
-  default = "c:\\Users\\YourUser\\Documents\\open-telemetry-demo"
+  default = "c:\\Users\\YourUser\\Documents\\demaf-type-definitions\\examples\\OTEL-Shop-Terraform\\deploymentModel"
   description = "Path to the project"
 }
 ```
@@ -39,9 +39,9 @@ The last step is to change the ```host_path``` attributes fo the of the ```flagd
 ```shell
 #volumes {
     # linux or mac
-    #host_path      = abspath("../src/grafana/grafana.ini")
+    #host_path      = abspath("files/grafana/grafana.ini")
     # windows
-    host_path      = "${var.project_path}${var.seperator}src${var.seperator}grafana${var.seperator}grafana.ini"
+    host_path      = "${var.project_path}${var.seperator}files${var.seperator}grafana${var.seperator}grafana.ini"
     container_path = "/etc/grafana/grafana.ini"
  }
  ```

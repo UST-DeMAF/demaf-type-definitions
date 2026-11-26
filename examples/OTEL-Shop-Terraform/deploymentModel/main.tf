@@ -360,8 +360,7 @@ resource "docker_container" "imageprovider" {
 resource "docker_container" "loadgenerator" {
   name  = "load-generator"
   image = "ghcr.io/open-telemetry/demo:1.11.1-loadgenerator"
-  depends_on = [docker_container.frontendproxy,
-    docker_container.otelcol,
+  depends_on = [docker_container.otelcol,
   docker_container.flagd]
   network_mode = "bridge"
   networks_advanced {
@@ -570,7 +569,7 @@ resource "docker_container" "flagd" {
     # linux or mac
     host_path      = abspath("files/flagd")
     # windows
-    #host_path      = "${var.project_path}${var.seperator}src${var.seperator}flagd"
+    #host_path      = "${var.project_path}${var.seperator}files${var.seperator}flagd"
     container_path = "/etc/flagd"
   }
 
@@ -703,7 +702,7 @@ resource "docker_container" "grafana" {
     # linux or mac
     host_path      = abspath("files/grafana/grafana.ini")
     # windows
-    #host_path      = "${var.project_path}${var.seperator}src${var.seperator}grafana${var.seperator}grafana.ini"
+    #host_path      = "${var.project_path}${var.seperator}files${var.seperator}grafana${var.seperator}grafana.ini"
     container_path = "/etc/grafana/grafana.ini"
 
   }
@@ -711,7 +710,7 @@ resource "docker_container" "grafana" {
     # linux or mac
     host_path      = abspath("files/grafana/provisioning/")
     # windows	
-    #host_path      = "${var.project_path}${var.seperator}src${var.seperator}grafana${var.seperator}provisioning{var.seperator}"
+    #host_path      = "${var.project_path}${var.seperator}files${var.seperator}grafana${var.seperator}provisioning${var.seperator}"
     container_path = "/etc/grafana/provisioning/"
   }
   ports {
@@ -740,14 +739,14 @@ resource "docker_container" "otelcol" {
     # linux or mac
     host_path      = abspath("files/otelcollector/otelcol-config.yml")
     # windows
-    #host_path      = "${var.project_path}${var.seperator}src${var.seperator}otelcollector${var.seperator}otelcol-config.yml"
+    #host_path      = "${var.project_path}${var.seperator}files${var.seperator}otelcollector${var.seperator}otelcol-config.yml"
     container_path = "/etc/otelcol-config.yml"
   }
   volumes {
     # linux or mac
     host_path      = abspath("files/otelcollector/otelcol-config-extras.yml")
     # windows
-    # host_path      = "${var.project_path}${var.seperator}src${var.seperator}otelcollector${var.seperator}otelcol-config-extras.yml"
+    # host_path      = "${var.project_path}${var.seperator}files${var.seperator}otelcollector${var.seperator}otelcol-config-extras.yml"
     container_path = "/etc/otelcol-config-extras.yml"
   }
   volumes {
@@ -791,7 +790,7 @@ resource "docker_container" "prometheus" {
     # linux or mac
     host_path      = abspath("files/prometheus/prometheus-config.yaml")
     # windows
-    #host_path      = "${var.project_path}${var.seperator}src${var.seperator}prometheus${var.seperator}prometheus-config.yaml"
+    #host_path      = "${var.project_path}${var.seperator}files${var.seperator}prometheus${var.seperator}prometheus-config.yaml"
     container_path = "/etc/prometheus/prometheus-config.yaml"
   }
   memory  = 300

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
-# OTEL-Shop-Terraform EDMM Model (v1.3); changes: ../CHANGELOG.md
+# OTEL-Shop-Terraform EDMM Model (v1.4); changes: ../CHANGELOG.md
 ---
 properties: []
 components: 
@@ -1263,22 +1263,27 @@ relations:
 component_types:
   - BaseType:
       extends: "-"
-      description: null
+      description: "The default component type from which all other component types derive."
+      properties: []
+      operations: []
+  - Platform:
+      extends: "BaseType"
+      description: "A system on which other components are deployed in a form that the system defines, such as container images or application code, and which provides the resources that these components use."
       properties: []
       operations: []
   - ContainerPlatform:
-      extends: "BaseType"
-      description: null
+      extends: "Platform"
+      description: "A platform on which components are deployed as containers."
       properties: []
       operations: []
   - DockerEngine:
       extends: "ContainerPlatform"
-      description: null
+      description: "A Docker Engine, on which components are deployed as Docker containers."
       properties: []
       operations: []
   - SoftwareApplication:
       extends: "BaseType"
-      description: null
+      description: "Software that is deployed on another component and provides functionality to users or other components."
       properties: []
       operations: []
   - grafana-SoftwareApplication:
@@ -2801,7 +2806,7 @@ component_types:
       operations: []
   - DatabaseSystem:
       extends: "SoftwareApplication"
-      description: null
+      description: "A system that stores and manages data and provides access to it through an interface."
       properties: []
       operations: []
   - mongo-DatabaseSystem:
@@ -2904,7 +2909,7 @@ component_types:
       operations: []
   - MessageBroker:
       extends: "SoftwareApplication"
-      description: null
+      description: "An intermediary that receives messages from sending components and delivers them to receiving components."
       properties: []
       operations: []
   - kafka-MessageBroker:
@@ -2983,25 +2988,26 @@ component_types:
 relation_types:
   - DependsOn:
       extends: "-"
-      description: null
+      description: "The source component depends on the target component. This is the default relation type from which all other relation types derive."
       properties: []
       operations: []
   - HostedOn:
       extends: "DependsOn"
-      description: null
+      description: "The source component is deployed on the target component and uses resources that the target component provides."
       properties: []
       operations: []
   - ConnectsTo:
       extends: "DependsOn"
-      description: null
+      description: "The source component opens network connections to the target component to communicate with it."
       properties: []
       operations: []
   - AttachesTo:
       extends: "DependsOn"
-      description: null
+      description: "The source component provides storage that is attached to the target component at the path given by `location`."
       properties:
         - location:
             type: "STRING"
+            description: "The path at which the storage is available to the component."
             required: true
             default_value: ""
       operations: []

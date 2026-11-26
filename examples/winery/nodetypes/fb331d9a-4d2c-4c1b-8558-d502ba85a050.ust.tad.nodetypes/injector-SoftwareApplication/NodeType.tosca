@@ -1,0 +1,111 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.injector-SoftwareApplication:
+    derived_from: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      DAPR_TRUST_ANCHORS_FILE:
+        type: STRING
+        required: true
+        default: 
+      DAPR_CONTROL_PLANE_TRUST_DOMAIN:
+        type: STRING
+        required: true
+        default: 
+      DAPR_SENTRY_ADDRESS:
+        type: STRING
+        required: true
+        default: 
+      KUBE_CLUSTER_DOMAIN:
+        type: STRING
+        required: true
+        default: 
+      SIDECAR_IMAGE:
+        type: STRING
+        required: true
+        default: 
+      SIDECAR_IMAGE_PULL_POLICY:
+        type: STRING
+        required: true
+        default: 
+      SIDECAR_RUN_AS_NON_ROOT:
+        type: STRING
+        required: true
+        default: 
+      ENABLE_K8S_DOWNWARD_APIS:
+        type: STRING
+        required: true
+        default: 
+      SIDECAR_DROP_ALL_CAPABILITIES:
+        type: STRING
+        required: true
+        default: 
+      SIDECAR_READ_ONLY_ROOT_FILESYSTEM:
+        type: STRING
+        required: true
+        default: 
+      IGNORE_ENTRYPOINT_TOLERATIONS:
+        type: STRING
+        required: true
+        default: 
+      ACTORS_ENABLED:
+        type: STRING
+        required: true
+        default: 
+      ACTORS_SERVICE_NAME:
+        type: STRING
+        required: true
+        default: 
+      ACTORS_SERVICE_ADDRESS:
+        type: STRING
+        required: true
+        default: 
+      containerPort_https:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_https:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

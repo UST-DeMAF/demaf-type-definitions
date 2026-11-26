@@ -3,6 +3,7 @@ tosca_definitions_version: demaf
 node_types:
   demaf.nodetypes.SoftwareApplication:
     derived_from: demaf.nodetypes.BaseType
+    description: "Software that is deployed on another component and provides functionality to users or other components."
     metadata:
       targetNamespace: "demaf.nodetypes"
       abstract: "false"

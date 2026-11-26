@@ -1,25 +1,26 @@
 relation_types:
   - DependsOn:
       extends: "-"
-      description: null
+      description: "The source component depends on the target component. This is the default relation type from which all other relation types derive."
       properties: []
       operations: []
   - HostedOn:
       extends: "DependsOn"
-      description: null
+      description: "The source component is deployed on the target component and uses resources that the target component provides."
       properties: []
       operations: []
   - ConnectsTo:
       extends: "DependsOn"
-      description: null
+      description: "The source component opens network connections to the target component to communicate with it."
       properties: []
       operations: []
   - AttachesTo:
       extends: "DependsOn"
-      description: null
+      description: "The source component provides storage that is attached to the target component at the path given by `location`."
       properties:
         - location:
             type: "STRING"
+            description: "The path at which the storage is available to the component."
             required: true
             default_value: ""
       operations: []

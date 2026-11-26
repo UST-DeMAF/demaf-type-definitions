@@ -1,0 +1,131 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.nodetypes.eventuate-cdc-service-SoftwareApplication:
+    derived_from: 0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      JAVA_OPTS:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_TYPE:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_PIPELINE_PIPELINE1_READER:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_TYPE:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_PIPELINE_PIPELINE2_READER:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_TYPE:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_DATASOURCEURL:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_DATASOURCEUSERNAME:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_DATASOURCEPASSWORD:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_DATASOURCEDRIVERCLASSNAME:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_LEADERSHIPLOCKPATH:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER1_OUTBOXID:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_TYPE:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_DATASOURCEURL:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_DATASOURCEUSERNAME:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_DATASOURCEPASSWORD:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_DATASOURCEDRIVERCLASSNAME:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_LEADERSHIPLOCKPATH:
+        type: STRING
+        required: true
+        default: 
+      EVENTUATE_CDC_READER_READER2_OUTBOXID:
+        type: STRING
+        required: true
+        default: 
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_8099:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

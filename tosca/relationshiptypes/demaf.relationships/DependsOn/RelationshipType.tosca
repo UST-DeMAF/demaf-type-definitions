@@ -2,6 +2,7 @@ tosca_definitions_version: demaf
 
 relationship_types:
   demaf.relationships.DependsOn:
+    description: "The source component depends on the target component. This is the default relation type from which all other relation types derive."
     metadata:
       targetNamespace: "demaf.relationships"
       abstract: "false"

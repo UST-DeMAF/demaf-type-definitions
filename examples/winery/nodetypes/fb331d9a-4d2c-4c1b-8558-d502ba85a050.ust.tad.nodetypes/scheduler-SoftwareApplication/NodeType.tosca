@@ -1,0 +1,75 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.scheduler-SoftwareApplication:
+    derived_from: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_etcd-client:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_etcd-peer:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_api_443:50006:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_api_50006:50006:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_etcd-client:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_etcd-peer:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

@@ -1,0 +1,115 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.nodetypes.modulith-SoftwareApplication:
+    derived_from: fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      SPRING_PROFILES_ACTIVE:
+        type: STRING
+        required: true
+        default: 
+      MONGO_HOST:
+        type: STRING
+        required: true
+        default: 
+      SPRING_DATASOURCE_USERNAME:
+        type: STRING
+        required: true
+        default: 
+      SPRING_DATASOURCE_PASSWORD:
+        type: STRING
+        required: true
+        default: 
+      SPRING_DATASOURCE_URL:
+        type: STRING
+        required: true
+        default: 
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME:
+        type: STRING
+        required: true
+        default: 
+      T2_CART_TTL:
+        type: STRING
+        required: true
+        default: 
+      T2_CART_TASKRATE:
+        type: STRING
+        required: true
+        default: 
+      T2_INVENTORY_SIZE:
+        type: STRING
+        required: true
+        default: 
+      T2_INVENTORY_TASKRATE:
+        type: STRING
+        required: true
+        default: 
+      T2_INVENTORY_TTL:
+        type: STRING
+        required: true
+        default: 
+      T2_INVENTORY_SET_UNITS_TO_MAX:
+        type: STRING
+        required: true
+        default: 
+      T2_PAYMENT_PROVIDER_ENABLED:
+        type: STRING
+        required: true
+        default: 
+      T2_PAYMENT_PROVIDER_DUMMY_URL:
+        type: STRING
+        required: true
+        default: 
+      T2_PAYMENT_PROVIDER_TIMEOUT:
+        type: STRING
+        required: true
+        default: 
+      T2_COMPUTATION_SIMULATOR_ENABLED:
+        type: STRING
+        required: true
+        default: 
+      T2_COMPUTATION_SIMULATOR_PI_TOTAL_POINTS:
+        type: STRING
+        required: true
+        default: 
+      containerPort:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

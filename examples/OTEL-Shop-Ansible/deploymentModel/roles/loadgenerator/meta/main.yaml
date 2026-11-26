@@ -1,5 +1,4 @@
 ---
 dependencies:
-  - role: frontendproxy
   - role: flagd
   - role: otelcol

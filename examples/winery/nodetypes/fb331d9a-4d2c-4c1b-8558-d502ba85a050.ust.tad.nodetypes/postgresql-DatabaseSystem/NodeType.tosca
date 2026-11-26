@@ -1,0 +1,111 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.postgresql-DatabaseSystem:
+    derived_from: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_PORT_NUMBER:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_VOLUME_DIR:
+        type: STRING
+        required: true
+        default: 
+      PGDATA:
+        type: STRING
+        required: true
+        default: 
+      POSTGRES_USER:
+        type: STRING
+        required: true
+        default: 
+      POSTGRES_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: 
+      POSTGRES_POSTGRES_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: 
+      POSTGRES_DATABASE:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_ENABLE_LDAP:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_ENABLE_TLS:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_LOG_HOSTNAME:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_LOG_CONNECTIONS:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_LOG_DISCONNECTIONS:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_PGAUDIT_LOG_CATALOG:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_CLIENT_MIN_MESSAGES:
+        type: STRING
+        required: true
+        default: 
+      POSTGRESQL_SHARED_PRELOAD_LIBRARIES:
+        type: STRING
+        required: true
+        default: 
+      containerPort_tcp-postgresql:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_tcp-postgresql:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

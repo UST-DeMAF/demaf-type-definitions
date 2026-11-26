@@ -3,12 +3,14 @@ tosca_definitions_version: demaf
 relationship_types:
   demaf.relationships.AttachesTo:
     derived_from: demaf.relationships.DependsOn
+    description: "The source component provides storage that is attached to the target component at the path given by `location`."
     metadata:
       targetNamespace: "demaf.relationships"
       abstract: "false"
       final: "false"
     properties:
       location:
+        description: "The path at which the storage is available to the component."
         type: string
         constraints:
           - min_length: 1

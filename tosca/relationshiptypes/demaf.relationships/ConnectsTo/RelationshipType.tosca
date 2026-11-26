@@ -3,6 +3,7 @@ tosca_definitions_version: demaf
 relationship_types:
   demaf.relationships.ConnectsTo:
     derived_from: demaf.relationships.DependsOn
+    description: "The source component opens network connections to the target component to communicate with it."
     metadata:
       targetNamespace: "demaf.relationships"
       abstract: "false"

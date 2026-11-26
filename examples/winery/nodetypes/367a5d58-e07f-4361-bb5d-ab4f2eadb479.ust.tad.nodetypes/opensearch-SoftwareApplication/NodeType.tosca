@@ -1,0 +1,99 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.opensearch-SoftwareApplication:
+    derived_from: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      discovery.seed_hosts:
+        type: STRING
+        required: true
+        default: 
+      cluster.name:
+        type: STRING
+        required: true
+        default: 
+      network.host:
+        type: STRING
+        required: true
+        default: 
+      OPENSEARCH_JAVA_OPTS:
+        type: STRING
+        required: true
+        default: 
+      node.roles:
+        type: STRING
+        required: true
+        default: 
+      discovery.type:
+        type: STRING
+        required: true
+        default: 
+      bootstrap.memory_lock:
+        type: STRING
+        required: true
+        default: 
+      DISABLE_INSTALL_DEMO_CONFIG:
+        type: STRING
+        required: true
+        default: 
+      DISABLE_SECURITY_PLUGIN:
+        type: STRING
+        required: true
+        default: 
+      containerPort_http:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_transport:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_http:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_transport:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

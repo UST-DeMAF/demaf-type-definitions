@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../yamlSchema/edmm.schema.json
-# T2Store-Modulith EDMM Model (v1.3); changes: ../CHANGELOG.md
+# T2Store-Modulith EDMM Model (v1.4); changes: ../CHANGELOG.md
 ---
 properties: []
 components:
@@ -15,7 +15,6 @@ components:
       properties:
         - name: "t2store-aks1"
         - location: "West Europe"
-        - resource_group_name: "t2store-resources"
         - dns_prefix: "t2storeaks1"
         - default_node_pool.name: "default_node"
         - default_node_pool.node_count: "1"
@@ -206,22 +205,27 @@ relations:
 component_types:
   - BaseType:
       extends: "-"
-      description: null
+      description: "The default component type from which all other component types derive."
       properties: []
       operations: []
   - CloudProvider:
       extends: "BaseType"
-      description: null
+      description: "The cloud infrastructure of a provider, on which cloud services and other resources are deployed on demand."
+      properties: []
+      operations: []
+  - Platform:
+      extends: "BaseType"
+      description: "A system on which other components are deployed in a form that the system defines, such as container images or application code, and which provides the resources that these components use."
       properties: []
       operations: []
   - ContainerPlatform:
-      extends: "BaseType"
-      description: null
+      extends: "Platform"
+      description: "A platform on which components are deployed as containers."
       properties: []
       operations: []
   - KubernetesCluster:
       extends: "ContainerPlatform"
-      description: null
+      description: "A set of machines, called nodes, managed by a Kubernetes control plane, on which components are deployed as pods."
       properties: []
       operations: []
   - azurerm_kubernetes_cluster:
@@ -236,10 +240,6 @@ component_types:
             type: "STRING"
             required: false
             default_value: "West Europe"
-        - resource_group_name:
-            type: "STRING"
-            required: false
-            default_value: "t2store-resources"
         - dns_prefix:
             type: "STRING"
             required: false
@@ -267,7 +267,7 @@ component_types:
       operations: []
   - SoftwareApplication:
       extends: "BaseType"
-      description: null
+      description: "Software that is deployed on another component and provides functionality to users or other components."
       properties: []
       operations: []
   - modulith-SoftwareApplication:
@@ -382,7 +382,7 @@ component_types:
       operations: []
   - DatabaseSystem:
       extends: "SoftwareApplication"
-      description: null
+      description: "A system that stores and manages data and provides access to it through an interface."
       properties: []
       operations: []
   - mongodb-DatabaseSystem:
@@ -465,35 +465,37 @@ component_types:
       operations: []
   - Storage:
       extends: "BaseType"
-      description: null
+      description: "A storage volume that is attached to a component and holds the component's data persistently."
       properties:
         - storage_size:
             type: "STRING"
+            description: "The capacity of the storage volume."
             required: true
             default_value: ""
       operations: []
 relation_types:
   - DependsOn:
       extends: "-"
-      description: null
+      description: "The source component depends on the target component. This is the default relation type from which all other relation types derive."
       properties: []
       operations: []
   - HostedOn:
       extends: "DependsOn"
-      description: null
+      description: "The source component is deployed on the target component and uses resources that the target component provides."
       properties: []
       operations: []
   - ConnectsTo:
       extends: "DependsOn"
-      description: null
+      description: "The source component opens network connections to the target component to communicate with it."
       properties: []
       operations: []
   - AttachesTo:
       extends: "DependsOn"
-      description: null
+      description: "The source component provides storage that is attached to the target component at the path given by `location`."
       properties:
         - location:
             type: "STRING"
+            description: "The path at which the storage is available to the component."
             required: true
             default_value: ""
       operations: []

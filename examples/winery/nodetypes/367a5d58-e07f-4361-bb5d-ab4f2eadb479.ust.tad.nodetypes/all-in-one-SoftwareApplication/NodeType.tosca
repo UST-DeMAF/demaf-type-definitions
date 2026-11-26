@@ -1,0 +1,143 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.all-in-one-SoftwareApplication:
+    derived_from: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      METRICS_STORAGE_TYPE:
+        type: STRING
+        required: true
+        default: 
+      SPAN_STORAGE_TYPE:
+        type: STRING
+        required: true
+        default: 
+      COLLECTOR_ZIPKIN_HOST_PORT:
+        type: STRING
+        required: true
+        default: 
+      JAEGER_DISABLED:
+        type: STRING
+        required: true
+        default: 
+      COLLECTOR_OTLP_ENABLED:
+        type: STRING
+        required: true
+        default: 
+      containerPort_5775:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_6831:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_6832:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_5778:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_16686:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_16685:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_9411:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_4317:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_4318:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_zk-compact-trft:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_config-rest:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_jg-compact-trft:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_jg-binary-trft:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_http-zipkin:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_otlp-grpc:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_otlp-http:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_http-query:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_grpc-query:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_c-tchan-trft:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_http-c-binary-trft:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_grpc-http:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""
