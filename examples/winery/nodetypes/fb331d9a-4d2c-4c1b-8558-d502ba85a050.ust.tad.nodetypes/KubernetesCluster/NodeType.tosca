@@ -1,0 +1,28 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.KubernetesCluster:
+    derived_from: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.ContainerPlatform
+    metadata:
+      targetNamespace: "fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation

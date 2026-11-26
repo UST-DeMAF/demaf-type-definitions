@@ -1,0 +1,83 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.nodetypes.mongodb-DatabaseSystem:
+    derived_from: fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: 
+      ALLOW_EMPTY_PASSWORD:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_SYSTEM_LOG_VERBOSITY:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_DISABLE_SYSTEM_LOG:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_DISABLE_JAVASCRIPT:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_ENABLE_JOURNAL:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_PORT_NUMBER:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_ENABLE_IPV6:
+        type: STRING
+        required: true
+        default: 
+      MONGODB_ENABLE_DIRECTORY_PER_DB:
+        type: STRING
+        required: true
+        default: 
+      containerPort_mongodb:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_mongodb:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fe125fdc-1ee2-4785-8409-f6f5d3a4664d.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

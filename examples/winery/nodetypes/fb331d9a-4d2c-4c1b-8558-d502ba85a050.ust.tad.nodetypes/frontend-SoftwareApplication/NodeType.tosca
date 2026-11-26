@@ -1,0 +1,55 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.frontend-SoftwareApplication:
+    derived_from: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      NEXT_PUBLIC_BACKEND_URL:
+        type: STRING
+        required: true
+        default: 
+      NEXT_PUBLIC_OAUTH_REDIRECT_URL:
+        type: STRING
+        required: true
+        default: 
+      NEXT_PUBLIC_OAUTH_CLIENT_ID:
+        type: STRING
+        required: true
+        default: 
+      NEXT_PUBLIC_OAUTH_AUTHORITY:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

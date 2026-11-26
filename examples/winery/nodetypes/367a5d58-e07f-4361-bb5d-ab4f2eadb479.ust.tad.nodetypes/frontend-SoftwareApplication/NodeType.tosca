@@ -1,0 +1,119 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.frontend-SoftwareApplication:
+    derived_from: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      OTEL_COLLECTOR_NAME:
+        type: STRING
+        required: true
+        default: 
+      OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:
+        type: STRING
+        required: true
+        default: 
+      FRONTEND_PORT:
+        type: STRING
+        required: true
+        default: 
+      FRONTEND_ADDR:
+        type: STRING
+        required: true
+        default: 
+      AD_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      CART_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      CHECKOUT_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      CURRENCY_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      PRODUCT_CATALOG_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      RECOMMENDATION_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      SHIPPING_SERVICE_ADDR:
+        type: STRING
+        required: true
+        default: 
+      FLAGD_HOST:
+        type: STRING
+        required: true
+        default: 
+      FLAGD_PORT:
+        type: STRING
+        required: true
+        default: 
+      OTEL_COLLECTOR_HOST:
+        type: STRING
+        required: true
+        default: 
+      OTEL_EXPORTER_OTLP_ENDPOINT:
+        type: STRING
+        required: true
+        default: 
+      WEB_OTEL_SERVICE_NAME:
+        type: STRING
+        required: true
+        default: 
+      PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:
+        type: STRING
+        required: true
+        default: 
+      OTEL_RESOURCE_ATTRIBUTES:
+        type: STRING
+        required: true
+        default: 
+      containerPort_service:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_tcp-service:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

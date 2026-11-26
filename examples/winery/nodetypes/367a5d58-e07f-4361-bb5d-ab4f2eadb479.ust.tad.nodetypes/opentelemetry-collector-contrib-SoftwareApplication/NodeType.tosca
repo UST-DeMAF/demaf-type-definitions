@@ -1,0 +1,107 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.opentelemetry-collector-contrib-SoftwareApplication:
+    derived_from: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      GOMEMLIMIT:
+        type: STRING
+        required: true
+        default: 
+      containerPort_jaeger-compact:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_jaeger-grpc:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_jaeger-thrift:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_metrics:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_otlp:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_otlp-http:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_prometheus:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_zipkin:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_jaeger-compact:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_jaeger-grpc:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_jaeger-thrift:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_metrics:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_otlp:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_otlp-http:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_prometheus:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_zipkin:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 367a5d58-e07f-4361-bb5d-ab4f2eadb479.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

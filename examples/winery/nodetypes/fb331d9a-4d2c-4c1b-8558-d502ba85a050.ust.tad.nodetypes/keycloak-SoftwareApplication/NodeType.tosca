@@ -1,0 +1,139 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.keycloak-SoftwareApplication:
+    derived_from: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes.SoftwareApplication
+    metadata:
+      targetNamespace: "fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      imagePullPolicy:
+        type: STRING
+        required: false
+        default: 
+      BITNAMI_DEBUG:
+        type: STRING
+        required: true
+        default: 
+      KC_BOOTSTRAP_ADMIN_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_DATABASE_PASSWORD_FILE:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_HTTP_RELATIVE_PATH:
+        type: STRING
+        required: true
+        default: 
+      KC_SPI_ADMIN_REALM:
+        type: STRING
+        required: true
+        default: 
+      KC_BOOTSTRAP_ADMIN_USERNAME:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_HTTP_PORT:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_PROXY_HEADERS:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_ENABLE_STATISTICS:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_DATABASE_HOST:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_DATABASE_PORT:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_DATABASE_NAME:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_DATABASE_USER:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_PRODUCTION:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_ENABLE_HTTPS:
+        type: STRING
+        required: true
+        default: 
+      KC_CACHE_TYPE:
+        type: STRING
+        required: true
+        default: 
+      KC_CACHE_STACK:
+        type: STRING
+        required: true
+        default: 
+      KC_CACHE_CONFIG_FILE:
+        type: STRING
+        required: true
+        default: 
+      JAVA_OPTS_APPEND:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_LOG_OUTPUT:
+        type: STRING
+        required: true
+        default: 
+      KEYCLOAK_LOG_LEVEL:
+        type: STRING
+        required: true
+        default: 
+      containerPort_http:
+        type: INTEGER
+        required: true
+        default: 0
+      containerPort_discovery:
+        type: INTEGER
+        required: true
+        default: 0
+      exposedPort_http_8080:8080:
+        type: STRING
+        required: true
+        default: 
+      exposedPort_http_80:8080:
+        type: STRING
+        required: true
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: fb331d9a-4d2c-4c1b-8558-d502ba85a050.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

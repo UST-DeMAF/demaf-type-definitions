@@ -1,0 +1,9 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+artifact_types:
+  24b2fbf9-ff64-4030-b35e-66e5b597a01c.ust.tad.artifacttypes.docker_image:
+    derived_from: tosca.artifacts.Root
+    metadata:
+      targetNamespace: "24b2fbf9-ff64-4030-b35e-66e5b597a01c.ust.tad.artifacttypes"
+      abstract: "false"
+      final: "false"

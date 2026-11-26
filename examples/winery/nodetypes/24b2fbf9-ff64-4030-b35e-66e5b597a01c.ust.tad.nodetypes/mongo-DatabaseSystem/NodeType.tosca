@@ -1,0 +1,95 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  24b2fbf9-ff64-4030-b35e-66e5b597a01c.ust.tad.nodetypes.mongo-DatabaseSystem:
+    derived_from: 24b2fbf9-ff64-4030-b35e-66e5b597a01c.ust.tad.nodetypes.DatabaseSystem
+    metadata:
+      targetNamespace: "24b2fbf9-ff64-4030-b35e-66e5b597a01c.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    properties:
+      name:
+        type: STRING
+        required: false
+        default: 
+      memory:
+        type: STRING
+        required: false
+        default: 
+      restart:
+        type: STRING
+        required: false
+        default: 
+      network_mode:
+        type: STRING
+        required: false
+        default: 
+      networks_advanced.name:
+        type: STRING
+        required: false
+        default: 
+      hostname:
+        type: STRING
+        required: false
+        default: 
+      ports.internal:
+        type: STRING
+        required: false
+        default: 
+      ports.external:
+        type: STRING
+        required: false
+        default: 
+      MONGO_INITDB_ROOT_USERNAME:
+        type: STRING
+        required: false
+        default: 
+      MONGO_INITDB_ROOT_PASSWORD:
+        type: STRING
+        required: false
+        default: 
+      healthcheck.test:
+        type: STRING
+        required: false
+        default: 
+      healthcheck.start_period:
+        type: STRING
+        required: false
+        default: 
+      healthcheck.interval:
+        type: STRING
+        required: false
+        default: 
+      healthcheck.timeout:
+        type: STRING
+        required: false
+        default: 
+      healthcheck.retries:
+        type: STRING
+        required: false
+        default: 
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
+    artifacts:
+      docker_image:
+        type: 24b2fbf9-ff64-4030-b35e-66e5b597a01c.ust.tad.artifacttypes.docker_image
+        description: ""
+        deploy_path: ""
+        file: ""

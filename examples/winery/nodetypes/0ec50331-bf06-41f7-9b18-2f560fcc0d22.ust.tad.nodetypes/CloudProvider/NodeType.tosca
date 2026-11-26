@@ -1,0 +1,28 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.nodetypes.CloudProvider:
+    derived_from: 0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.nodetypes.BaseType
+    metadata:
+      targetNamespace: "0ec50331-bf06-41f7-9b18-2f560fcc0d22.ust.tad.nodetypes"
+      abstract: "false"
+      final: "false"
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          stop:
+            description: The standard stop operation
+          start:
+            description: The standard start operation
+          create:
+            description: The standard create operation
+          configure:
+            description: The standard configure operation
+          delete:
+            description: The standard delete operation
