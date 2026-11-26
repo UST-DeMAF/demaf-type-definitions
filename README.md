@@ -32,57 +32,57 @@ classDiagram
     direction TB
     class BaseType
     class CloudProvider
-    class Storage {
-        +String storage_size
-    }
-    class SoftwareApplication
-    class DatabaseSystem
-    class MessageBroker
     class Compute
     class Platform
     class ContainerPlatform
     class DockerEngine
     class KubernetesCluster
+    class SoftwareApplication
+    class DatabaseSystem
+    class MessageBroker
+    class Storage {
+        +String storage_size
+    }
 
+    class instance_Compute["instance-Compute"]
+    class elasticbeanstalk_Platform["elasticbeanstalk-Platform"]
+    class aws_eks_cluster
+    class azurerm_kubernetes_cluster
     class frontend_SoftwareApplication["frontend-SoftwareApplication"]
     class postgresql_DatabaseSystem["postgresql-DatabaseSystem"]
     class mongodb_DatabaseSystem["mongodb-DatabaseSystem"]
     class neo4j_DatabaseSystem["neo4j-DatabaseSystem"]
     class kafka_MessageBroker["kafka-MessageBroker"]
-    class instance_Compute["instance-Compute"]
-    class elasticbeanstalk_Platform["elasticbeanstalk-Platform"]
-    class aws_eks_cluster
-    class azurerm_kubernetes_cluster
+    <<generated>> instance_Compute
+    <<generated>> elasticbeanstalk_Platform
+    <<generated>> aws_eks_cluster
+    <<generated>> azurerm_kubernetes_cluster
     <<generated>> frontend_SoftwareApplication
     <<generated>> postgresql_DatabaseSystem
     <<generated>> mongodb_DatabaseSystem
     <<generated>> neo4j_DatabaseSystem
     <<generated>> kafka_MessageBroker
-    <<generated>> instance_Compute
-    <<generated>> elasticbeanstalk_Platform
-    <<generated>> aws_eks_cluster
-    <<generated>> azurerm_kubernetes_cluster
 
     BaseType <|-- CloudProvider
-    BaseType <|-- Storage
-    BaseType <|-- SoftwareApplication
     BaseType <|-- Compute
     BaseType <|-- Platform
-    SoftwareApplication <|-- DatabaseSystem
-    SoftwareApplication <|-- MessageBroker
+    BaseType <|-- SoftwareApplication
+    BaseType <|-- Storage
     Platform <|-- ContainerPlatform
     ContainerPlatform <|-- DockerEngine
     ContainerPlatform <|-- KubernetesCluster
+    SoftwareApplication <|-- DatabaseSystem
+    SoftwareApplication <|-- MessageBroker
 
+    Compute <|-- instance_Compute
+    Platform <|-- elasticbeanstalk_Platform
+    KubernetesCluster <|-- aws_eks_cluster
+    KubernetesCluster <|-- azurerm_kubernetes_cluster
     SoftwareApplication <|-- frontend_SoftwareApplication
     DatabaseSystem <|-- postgresql_DatabaseSystem
     DatabaseSystem <|-- mongodb_DatabaseSystem
     DatabaseSystem <|-- neo4j_DatabaseSystem
     MessageBroker <|-- kafka_MessageBroker
-    Compute <|-- instance_Compute
-    Platform <|-- elasticbeanstalk_Platform
-    KubernetesCluster <|-- aws_eks_cluster
-    KubernetesCluster <|-- azurerm_kubernetes_cluster
 ```
 
 Concrete types are named `<token>-<abstract type>`, where the token is, for example, the image name (`postgresql-DatabaseSystem`) or the AWS service (`elasticbeanstalk-Platform`), or after the resource type of the input deployment model (`azurerm_kubernetes_cluster`).
@@ -134,7 +134,7 @@ classDiagram
 
 ### Relations Between Component Types
 
-The following diagram shows how components of the abstract types are typically related:
+The following diagram shows how components of the abstract types are typically related. The relations of a type also apply to its subtypes, e.g., those of `Platform` to `ContainerPlatform`, `DockerEngine`, and `KubernetesCluster`, and those of `SoftwareApplication` to `DatabaseSystem` and `MessageBroker`:
 
 ```mermaid
 classDiagram
@@ -142,20 +142,19 @@ classDiagram
     class CloudProvider
     class Compute
     class Platform
-    class ContainerPlatform
     class SoftwareApplication
     class Storage
 
-    SoftwareApplication --> ContainerPlatform : HostedOn
     SoftwareApplication --> Platform : HostedOn
     SoftwareApplication --> Compute : HostedOn
     SoftwareApplication --> CloudProvider : HostedOn
     SoftwareApplication --> SoftwareApplication : ConnectsTo
     Storage --> SoftwareApplication : AttachesTo
     Storage --> Compute : AttachesTo
-    Storage --> ContainerPlatform : HostedOn
+    Storage --> Platform : HostedOn
+    Storage --> Compute : HostedOn
     Storage --> CloudProvider : HostedOn
-    ContainerPlatform --> CloudProvider : HostedOn
+    Platform --> Compute : HostedOn
     Platform --> CloudProvider : HostedOn
     Compute --> CloudProvider : HostedOn
 ```
