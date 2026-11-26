@@ -25,7 +25,7 @@ In [yamlSchema](yamlSchema/) we provide a JSON Schema for the YAML serialization
 
 ## Component Types
 
-The following diagram shows the component type hierarchy, with examples of concrete types (`<<generated>>`) that the DeMAF generates from the input deployment model, and the cloud provider components (`<<component>>`) that the DeMAF creates with the type `CloudProvider`:
+The following diagram shows the component type hierarchy, with examples of concrete types (`<<generated>>`) that the DeMAF generates from the input deployment model:
 
 ```mermaid
 classDiagram
@@ -43,13 +43,6 @@ classDiagram
     class ContainerPlatform
     class DockerEngine
     class KubernetesCluster
-
-    class AWS
-    class MicrosoftAzure
-    class GCP
-    <<component>> AWS
-    <<component>> MicrosoftAzure
-    <<component>> GCP
 
     class frontend_SoftwareApplication["frontend-SoftwareApplication"]
     class postgresql_DatabaseSystem["postgresql-DatabaseSystem"]
@@ -80,10 +73,6 @@ classDiagram
     Platform <|-- ContainerPlatform
     ContainerPlatform <|-- DockerEngine
     ContainerPlatform <|-- KubernetesCluster
-
-    CloudProvider <|.. AWS
-    CloudProvider <|.. MicrosoftAzure
-    CloudProvider <|.. GCP
 
     SoftwareApplication <|-- frontend_SoftwareApplication
     DatabaseSystem <|-- postgresql_DatabaseSystem
