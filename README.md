@@ -80,8 +80,7 @@ classDiagram
 ```
 
 Concrete types are named `<token>-<abstract type>`, where the token is, for example, the image name (`postgresql-DatabaseSystem`) or the AWS service (`elasticbeanstalk-Platform`), or after the resource type of the input deployment model (`azurerm_kubernetes_cluster`).
-Which images and resources the DeMAF classifies as which abstract type is described per technology in the [DeMAF documentation](https://github.com/UST-DeMAF/DeMAF-Documentation/tree/main/docs/transformations).
-Plugins may add optional properties to the types, e.g., the access level of a `ConnectsTo` relation derived from AWS IAM permissions.
+Optional properties may be added to the types.
 
 ### Component Type Descriptions
 
