@@ -32,8 +32,11 @@ The following findings are warnings, because they do not make the model inconsis
   supertypes declares
 - types that are neither the type of a component or relation nor the supertype of another
   type, except for the predefined types of the DeMAF type system in ../edmm
+- with --type-descriptions: types of the DeMAF type system, and their property
+  definitions, whose description differs from the one in ../edmm, including a missing
+  description (the example models repeat the descriptions of the type system)
 
-Usage: python3 check_edmm.py [--strict] MODEL.yaml [MODEL.yaml ...]
+Usage: python3 check_edmm.py [--strict] [--type-descriptions] MODEL.yaml [MODEL.yaml ...]
 Requires PyYAML and jsonschema (pip install -r requirements.txt). The exit code is 1 if a
 model has errors, or warnings with --strict, and 0 otherwise.
 """
@@ -65,20 +68,21 @@ def entries(items: list) -> list[tuple[str, object]]:
     return [next(iter(item.items())) for item in items]
 
 
-def predefined_types() -> set[str]:
-    """Names of the types of the DeMAF type system, which every EDMM model of the DeMAF includes."""
-    names = set()
+def type_system() -> dict[str, dict]:
+    """Definitions of the types of the DeMAF type system, which every EDMM model of the DeMAF includes."""
+    result = {kind: {} for kind in ROOT_TYPES}
     for path in TYPE_SYSTEM.glob("*.yaml"):
         definitions = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for kind in ROOT_TYPES:
-            names.update(name for name, _ in entries(definitions.get(kind) or []))
-    return names
+            result[kind].update(entries(definitions.get(kind) or []))
+    return result
 
 
 class Checker:
-    def __init__(self, model: dict, predefined: set[str]):
+    def __init__(self, model: dict, predefined: dict[str, dict], descriptions: bool = False):
         self.model = model
         self.predefined = predefined
+        self.descriptions = descriptions
         self.errors: list[str] = []
         self.warnings: list[str] = []
 
@@ -96,6 +100,8 @@ class Checker:
             if relation["source"] == relation["target"]:
                 self.errors.append(f"{path}: source and target are the same component")
         self.check_unused_types(types)
+        if self.descriptions:
+            self.check_descriptions(types)
 
     def unique(self, key: str) -> dict:
         result = {}
@@ -176,8 +182,23 @@ class Checker:
         for kind, definitions in types.items():
             parents = {d["extends"] for d in definitions.values()}
             for name in definitions:
-                if name not in used[kind] and name not in parents and name not in self.predefined:
+                if name not in used[kind] and name not in parents and name not in self.predefined[kind]:
                     self.warnings.append(f"{kind}/{name}: type is neither used nor extended")
+
+    def check_descriptions(self, types: dict) -> None:
+        for kind, definitions in types.items():
+            for name, definition in definitions.items():
+                reference = self.predefined[kind].get(name)
+                if reference is None:
+                    continue
+                if definition.get("description") != reference.get("description"):
+                    self.warnings.append(f"{kind}/{name}: description differs from the DeMAF type system")
+                reference_properties = dict(entries(reference.get("properties") or []))
+                for key, property_definition in entries(definition.get("properties", [])):
+                    if key in reference_properties and \
+                            property_definition.get("description") != reference_properties[key].get("description"):
+                        self.warnings.append(
+                            f"{kind}/{name}: description of property '{key}' differs from the DeMAF type system")
 
 
 def schema_message(error: jsonschema.ValidationError) -> str:
@@ -192,7 +213,8 @@ def schema_message(error: jsonschema.ValidationError) -> str:
     return f"{location}: {error.message if len(error.message) <= 200 else error.message[:200] + '...'}"
 
 
-def check_file(path: Path, validator: jsonschema.Draft7Validator, predefined: set[str]) -> tuple[list[str], list[str]]:
+def check_file(path: Path, validator: jsonschema.Draft7Validator, predefined: dict[str, dict],
+               descriptions: bool = False) -> tuple[list[str], list[str]]:
     try:
         model = yaml.safe_load(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, yaml.YAMLError) as error:
@@ -200,7 +222,7 @@ def check_file(path: Path, validator: jsonschema.Draft7Validator, predefined: se
     schema_errors = sorted(validator.iter_errors(model), key=lambda e: list(e.absolute_path))
     if schema_errors:
         return [schema_message(e) for e in schema_errors], []
-    checker = Checker(model, predefined)
+    checker = Checker(model, predefined, descriptions)
     checker.check()
     return checker.errors, checker.warnings
 
@@ -213,13 +235,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Check EDMM models in the YAML serialization of the DeMAF.")
     parser.add_argument("models", nargs="+", type=Path, metavar="MODEL.yaml")
     parser.add_argument("--strict", action="store_true", help="treat warnings as errors")
+    parser.add_argument("--type-descriptions", action="store_true",
+                        help="warn about types of the DeMAF type system whose descriptions differ from ../edmm")
     args = parser.parse_args()
 
     validator = jsonschema.Draft7Validator(json.loads(SCHEMA.read_text(encoding="utf-8")))
-    predefined = predefined_types()
+    predefined = type_system()
     failed = False
     for path in args.models:
-        errors, warnings = check_file(path, validator, predefined)
+        errors, warnings = check_file(path, validator, predefined, args.type_descriptions)
         for message in errors:
             print(f"{path}: error: {message}")
         for message in warnings:

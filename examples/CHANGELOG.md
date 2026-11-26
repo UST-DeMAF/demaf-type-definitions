@@ -8,11 +8,12 @@ The example EDMM models (`*_edmm.yaml`) are versioned as a set:
 | v1.1 | git tag `edmm-model-v1.1` | Consistency fixes only, based on errors and warnings reported by the EDMM YAML schema and the check script. Each fix is logged below with its evidence in the deployment model and what found it. |
 | v1.2 | git tag `edmm-model-v1.2` | Helm chart versions pinned in the deployment models to the versions of the rendered templates in `helmTemplates/`. The EDMM models are unchanged. |
 | v1.3 | git tag `edmm-model-v1.3` | Repair of the OTEL-Shop-Ansible deployment model and the corresponding changes in its EDMM model. |
-| v1.4 | git tag `edmm-model-v1.4` | Type hierarchy following the type definitions, repair of the dependency cycle in OTEL-Shop-Ansible and OTEL-Shop-Terraform, and removal of an Azure-specific property. |
+| v1.4 | git tag `edmm-model-v1.4` | Type hierarchy and type descriptions following the type definitions, repair of the dependency cycle in OTEL-Shop-Ansible and OTEL-Shop-Terraform, and removal of an Azure-specific property. |
 
-## v1.4 Type Hierarchy and Repairs
+## v1.4 Type Hierarchy, Type Descriptions, and Repairs
 
 - **All examples except OTEL-Shop-Ansible**: The type `ContainerPlatform` derives from `Platform` instead of `BaseType`, and the models define `Platform`, following the type definitions ([../CHANGELOG.md](../CHANGELOG.md)).
+- **All examples**: The types of the DeMAF type system and their property definitions have the descriptions of the type definitions instead of `null`; the description of `BaseType` in OTEL-Shop-Ansible replaces "This is the base type". `check_edmm.py --type-descriptions` checks that they match the type definitions.
 - **OTEL-Shop-Ansible, OTEL-Shop-Terraform**: `loadgenerator` no longer depends on `frontendproxy` (`deploymentModel/roles/loadgenerator/meta/main.yaml`, `depends_on` of `loadgenerator` in `deploymentModel/main.tf`), which resolves the dependency cycle; `ansible-playbook --syntax-check` and `terraform validate` now succeed. The EDMM models are unchanged: `loadgenerator` still connects to `frontendproxy` (`LOCUST_HOST`).
 - **OTEL-Shop-Terraform**: The commented Windows variants of the `host_path`s in `deploymentModel/main.tf` and the Windows instructions in `deploymentModel/README.md` point to `files/` instead of `src/`, and the Grafana provisioning path gets its missing `$`.
 - **T2Store-Microservices, T2Store-Modulith**: The property `resource_group_name` is removed from the cluster `t2store` and its type `azurerm_kubernetes_cluster`, since resource groups are an organizational concept of Azure.

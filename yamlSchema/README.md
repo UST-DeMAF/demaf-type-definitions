@@ -16,7 +16,7 @@ Install the dependencies into a virtual environment and test all examples in [..
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python3 check_edmm.py ../examples/*/*_edmm.yaml
+python3 check_edmm.py --type-descriptions ../examples/*/*_edmm.yaml
 ```
 
 ## Schema Validation in Editors
@@ -152,8 +152,9 @@ If the model violates the schema, step 2 is skipped, because its checks require 
 The following findings are warnings, because they do not make the model inconsistent:
 
 - required properties of a component or relation that are not assigned, so that the default value of their property definition applies (as in TOSCA); an empty string counts as no default value, because the DeMAF writes it for properties without a default value,
-- properties of a component or relation that no property definition of its type or its supertypes declares, and
-- types that are neither the type of a component or relation nor the supertype of another type, except for the predefined types of the [DeMAF type system](../edmm/).
+- properties of a component or relation that no property definition of its type or its supertypes declares,
+- types that are neither the type of a component or relation nor the supertype of another type, except for the predefined types of the [DeMAF type system](../edmm/), and
+- with `--type-descriptions`: types of the DeMAF type system, and their property definitions, whose description differs from the one in [../edmm](../edmm/), including a missing description. The example models repeat the descriptions of the type system, so this option checks that they are up to date.
 
 Errors and warnings of step 2 are reported with the list and the name of the element, e.g.:
 
