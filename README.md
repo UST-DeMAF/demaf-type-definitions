@@ -25,7 +25,7 @@ In [yamlSchema](yamlSchema/) we provide a JSON Schema for the YAML serialization
 
 ## Component Types
 
-The following diagram shows the component type hierarchy, with examples of concrete types (`<<generated>>`) that the DeMAF generates from the input deployment model:
+The following diagram shows the component type hierarchy, with examples of concrete types (`<<generated>>`) that the DeMAF generates from the input deployment model, and the cloud provider components (`<<component>>`) that the DeMAF creates with the type `CloudProvider`:
 
 ```mermaid
 classDiagram
@@ -44,19 +44,30 @@ classDiagram
     class DockerEngine
     class KubernetesCluster
 
+    class AWS
+    class MicrosoftAzure
+    class GCP
+    <<component>> AWS
+    <<component>> MicrosoftAzure
+    <<component>> GCP
+
     class frontend_SoftwareApplication["frontend-SoftwareApplication"]
     class postgresql_DatabaseSystem["postgresql-DatabaseSystem"]
+    class mongodb_DatabaseSystem["mongodb-DatabaseSystem"]
+    class neo4j_DatabaseSystem["neo4j-DatabaseSystem"]
     class kafka_MessageBroker["kafka-MessageBroker"]
     class instance_Compute["instance-Compute"]
     class elasticbeanstalk_Platform["elasticbeanstalk-Platform"]
-    class DefaultKubernetesCluster
+    class aws_eks_cluster
     class azurerm_kubernetes_cluster
     <<generated>> frontend_SoftwareApplication
     <<generated>> postgresql_DatabaseSystem
+    <<generated>> mongodb_DatabaseSystem
+    <<generated>> neo4j_DatabaseSystem
     <<generated>> kafka_MessageBroker
     <<generated>> instance_Compute
     <<generated>> elasticbeanstalk_Platform
-    <<generated>> DefaultKubernetesCluster
+    <<generated>> aws_eks_cluster
     <<generated>> azurerm_kubernetes_cluster
 
     BaseType <|-- CloudProvider
@@ -70,12 +81,18 @@ classDiagram
     ContainerPlatform <|-- DockerEngine
     ContainerPlatform <|-- KubernetesCluster
 
+    CloudProvider <|.. AWS
+    CloudProvider <|.. MicrosoftAzure
+    CloudProvider <|.. GCP
+
     SoftwareApplication <|-- frontend_SoftwareApplication
     DatabaseSystem <|-- postgresql_DatabaseSystem
+    DatabaseSystem <|-- mongodb_DatabaseSystem
+    DatabaseSystem <|-- neo4j_DatabaseSystem
     MessageBroker <|-- kafka_MessageBroker
     Compute <|-- instance_Compute
     Platform <|-- elasticbeanstalk_Platform
-    KubernetesCluster <|-- DefaultKubernetesCluster
+    KubernetesCluster <|-- aws_eks_cluster
     KubernetesCluster <|-- azurerm_kubernetes_cluster
 ```
 
@@ -143,9 +160,12 @@ classDiagram
     SoftwareApplication --> ContainerPlatform : HostedOn
     SoftwareApplication --> Platform : HostedOn
     SoftwareApplication --> Compute : HostedOn
+    SoftwareApplication --> CloudProvider : HostedOn
     SoftwareApplication --> SoftwareApplication : ConnectsTo
     Storage --> SoftwareApplication : AttachesTo
+    Storage --> Compute : AttachesTo
     Storage --> ContainerPlatform : HostedOn
+    Storage --> CloudProvider : HostedOn
     ContainerPlatform --> CloudProvider : HostedOn
     Platform --> CloudProvider : HostedOn
     Compute --> CloudProvider : HostedOn
